@@ -1,7 +1,0 @@
-{
-  "name": "uber",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular"
-}
