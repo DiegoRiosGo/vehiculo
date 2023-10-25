@@ -4,7 +4,7 @@ import { AlertController, Platform } from '@ionic/angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 
-
+// como usar SQLite https://como-programar.net/ionic/sqlite/
 @Injectable({
   providedIn: 'root'
 })

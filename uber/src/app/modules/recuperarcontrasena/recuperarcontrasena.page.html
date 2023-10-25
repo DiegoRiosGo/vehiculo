@@ -1,0 +1,49 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="."></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">recuperarcontrasena</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-card>
+    <ion-card-content>
+      <ion-item lines="none">
+        <ion-label>
+          <h2>Preguntas de seguridad</h2>
+          <p>Recuerde no compartir sus respuestas</p>
+        </ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>
+          <h2>Respuesta 1:</h2>
+          <ion-input placeholder="Ingrese aqui la respuesta"></ion-input>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          <h2>Respuesta 2:</h2>
+          <ion-input placeholder="Ingrese aqui la respuesta"></ion-input>
+        </ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>
+          <h2>Respuesta 3:</h2>
+          <ion-input placeholder="Ingrese aqui la respuesta"></ion-input>
+        </ion-label>
+      </ion-item>
+
+      <!-- Estilo para el botón "Ingresar" -->
+      <ion-button class="login-button" [routerLink]="['/modcontrasenia']" shape="round" expand="full">Aceptar</ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
