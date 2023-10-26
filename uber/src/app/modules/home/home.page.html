@@ -1,20 +1,12 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-text-center">
+  <img src="assets/logo.png" alt="Logo de la App" class="logo">
+  
+  <ion-button expand="full" color="yellow" [routerLink]="['/inicio-sesion']"> <!-- Color amarillo para el botón -->
+    Iniciar Sesión
+  </ion-button>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+  <ion-button expand="full" color="green" [routerLink]="['/registro']"> <!-- Color verde para el botón -->
+    Registro de Usuario
+  </ion-button>
 </ion-content>
