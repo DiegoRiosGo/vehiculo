@@ -1,12 +1,10 @@
+<ion-content class="ion-text-center" id="content-container">
+  <div class="background-gradient"></div>
 
-<ion-content class="ion-text-center">
-  <img src="assets/logo.png" alt="Logo de la App" class="logo">
-  
-  <ion-button expand="full" color="yellow" [routerLink]="['/inicio-sesion']"> <!-- Color amarillo para el botón -->
-    Iniciar Sesión
-  </ion-button>
+  <div id="centered-elements">
+    <img src="assets/logo.png" alt="Logo de la App" class="logo">
 
-  <ion-button expand="full" color="green" [routerLink]="['/registro']"> <!-- Color verde para el botón -->
-    Registro de Usuario
-  </ion-button>
+    <ion-button [routerLink]="['/inicio-sesion']" color="primary">Iniciar Sesión</ion-button>
+    <ion-button color="success" [routerLink]="['/registro']">Registrarse</ion-button>
+  </div>
 </ion-content>

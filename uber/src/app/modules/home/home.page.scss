@@ -1,16 +1,50 @@
+#content-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#centered-elements {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
 .logo {
   max-width: 80%;
   margin: 20px auto;
 }
 
+/* Estilos personalizados para el botón de Iniciar Sesión */
+ion-button[color="warning"] {
+  background-color: #f7b731;
+  /* Color de fondo amarillo */
+  border-color: #f7b731;
+  /* Color del borde amarillo */
+  color: #fff;
+  /* Color del texto blanco */
+}
+
+/* Estilos para los botones */
 ion-button {
-  margin: 10px 0; /* Espaciado entre los botones */
+  font-weight: bold;
+  /* Texto en negrita */
+  transition: background-color 0.3s, color 0.3s;
+  /* Transiciones suaves */
 }
 
-ion-header {
-  --ion-background-color: var(--ion-color-primary); /* Fondo azul para el encabezado */
-}
-
-ion-toolbar {
-  --ion-color-primary: #0078ff; /* Personalización del color azul */
+.background-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, #00b894, #0984e3);
+  /* Degradado de verde a azul */
+  z-index: -1;
 }
