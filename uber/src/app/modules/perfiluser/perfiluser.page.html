@@ -6,7 +6,7 @@
 
 <ion-content [fullscreen]="true">
   <ion-card>
-    <ion-img class="profile-image" src="../../assets/imagenes-img/graduation-1345143_640.png"
+    <ion-img class="profile-image" src="../../../assets/img/graduation-1345143_640.png"
       alt="Imagen de Perfil"></ion-img>
     <ion-card-header>
       <ion-card-title>Nombre del Usuario</ion-card-title>
@@ -16,7 +16,7 @@
     <ion-card-content>
       <!-- Iconos interactivos -->
       <ion-row>
-        <ion-col class="ion-text-center">
+        <ion-col class="ion-text-center" (click)="editProfile()">
           <ion-icon name="create" size="large"></ion-icon>
           <div>Editar perfil</div>
         </ion-col>

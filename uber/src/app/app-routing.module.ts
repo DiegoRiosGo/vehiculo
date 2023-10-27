@@ -30,10 +30,12 @@ const routes: Routes = [
   {
     path: 'registro',
     loadChildren: () => import('./modules/registro/registro.module').then( m => m.RegistroPageModule)
-  },  {
+  },
+  {
     path: 'adminvista',
     loadChildren: () => import('./modules/adminvista/adminvista.module').then( m => m.AdminvistaPageModule)
   },
+  
 
 
 ];

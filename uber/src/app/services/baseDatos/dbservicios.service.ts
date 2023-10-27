@@ -1,3 +1,4 @@
+import { JsonPipe } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
 import { AlertController, Platform } from '@ionic/angular';
@@ -10,51 +11,46 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class DbserviciosService {
   //variable para la coneccion a BD
-  public database!: SQLiteObject;
-
-  //variable para la creacion de tablas
+  public db!: SQLiteObject;
+  
+  constructor(public sqlite: SQLite, private platform: Platform, private alertController: AlertController) {
+    this.crearDB()
+  }
+  //crear la base de datos
   crearDB() {
   //verificar que la plataforma este lista
     this.platform.ready().then(() => {
       //crear la BD
       this.sqlite.create({
-        name: 'bdRapp.db',
+        name: 'dbUber.db',
         location: 'default'
       }).then((db: SQLiteObject) => {
-        this.database = db;
+        this.db = db;
+        alert('database created/opened')
         //llamo la funcion para crear tablas
         this.crearT();
-        //usuario admin por default
-        this.agregarUsuarioAdminDefault();
       }).catch(e => {
         this.presentAlert("Error al Crear la BD: " + e);
       })
     })
   }
-  //variables para insert iniciales
-
-  //observable para las tablas
   
-  //observable para la disponibilidad de la BD
-  private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false)
-  //constructor
-  constructor(public sqlite: SQLite, private platform: Platform, private alertController: AlertController) {
-    this.crearDB()
-  }
-
-  async presentAlert(msj: string) {
-    const alert = await this.alertController.create({
-      header: 'Alert',
-      message: msj,
-      buttons: ['OK'],
-    });
-  }
-
-
   async crearT() {
     try {
       //ejecutar las variables de creacion de tablas
+      await this.db.executeSql('CREATE TABLE IF NOT EXIST usuario (usuarioid INTEGER PRIMARY KEY AUTOINCREMENR, nombre VARCHAR (30), apellido VARCHAR (30), correo VARCHAR(50), contraseña VARCHAR(10))', []).then(()=> {
+        console.log('Tabla usuario creada con exito')
+      }).catch(error => {
+        console.error('Error al crear la tabla: ' + JSON.stringify(error));
+      });
 
+      await this.db.executeSql('CREATE TABLE IF NOT EXIST vehiculo (autoid INTEGER PRIMARY KEY AUTOINCREMENT, patente VARCHAR(6), FOREIGN KEY (userid) REFERENCES (usuario(usuarioid)),asientos NUMBER(10))').then((=>{
+        console.log('Tabla vehiculo creada con exito')
+      })).catch(error =>{
+        console.error('Error al crear la tabla: '+ JSON.stringify(error));
+      });
+
+      await this.db.executeSql('CREATE TABLE IF NOT EXIST')
         //await this.database.executeSql(this.tablarol, []);
 
       //ejecutar los insert
@@ -68,6 +64,26 @@ export class DbserviciosService {
     }
 
   }
+
+  //variables para insert iniciales
+
+  //observable para las tablas
+  
+  //observable para la disponibilidad de la BD
+  private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false)
+  //constructor
+  
+
+  async presentAlert(msj: string) {
+    const alert = await this.alertController.create({
+      header: 'Alert',
+      message: msj,
+      buttons: ['OK'],
+    });
+  }
+
+
+  
   //FUNCION DE RETORNO DEL OBSERVABLE DE LA BF
   dbState() {
     return this.isDBReady.asObservable();
@@ -79,7 +95,7 @@ export class DbserviciosService {
   }*/
 
   crearusuairo(iduser: any, rutusuario: any, nomuser: any, apelluser: any, correo:any, pass: any, rol: any, question: any, answear: any) {
-    return this.database.executeSql('INSERT OR IGNORE INTO usuario (idusuario, rut, nombre, apellido, correo, clave, rol, pregunta, respuesta) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);', [iduser, rutusuario, nomuser, apelluser,correo, pass, rol, question])
+    return this.db.executeSql('INSERT OR IGNORE INTO usuario (idusuario, rut, nombre, apellido, correo, clave, rol, pregunta, respuesta) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);', [iduser, rutusuario, nomuser, apelluser,correo, pass, rol, question])
   }
 
   //Buscar Horario por alumno o profesor segun el Rut (Ayuda estoy callendo en la locura)
@@ -116,7 +132,7 @@ export class DbserviciosService {
   //usuario default para iniciar sesion
   agregarUsuarioAdminDefault() {
     // Verificar si el usuario admin ya existe en la base de datos.
-    this.database.executeSql(
+    this.db.executeSql(
       'SELECT COUNT(*) as count FROM usuario WHERE rut = ?',
       ['admin']
     ).then((data) => {
