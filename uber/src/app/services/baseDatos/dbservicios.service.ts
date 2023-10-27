@@ -1,4 +1,3 @@
-import { JsonPipe } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
 import { AlertController, Platform } from '@ionic/angular';
@@ -44,9 +43,9 @@ export class DbserviciosService {
         console.error('Error al crear la tabla: ' + JSON.stringify(error));
       });
 
-      await this.db.executeSql('CREATE TABLE IF NOT EXIST vehiculo (autoid INTEGER PRIMARY KEY AUTOINCREMENT, patente VARCHAR(6), FOREIGN KEY (userid) REFERENCES (usuario(usuarioid)),asientos NUMBER(10))').then((=>{
+      await this.db.executeSql('CREATE TABLE IF NOT EXIST vehiculo (autoid INTEGER PRIMARY KEY AUTOINCREMENT, patente VARCHAR(6), FOREIGN KEY (userid) REFERENCES (usuario(usuarioid)),asientos NUMBER(10))').then(()=>{
         console.log('Tabla vehiculo creada con exito')
-      })).catch(error =>{
+      }).catch(error =>{
         console.error('Error al crear la tabla: '+ JSON.stringify(error));
       });
 
@@ -127,22 +126,5 @@ export class DbserviciosService {
         console.error('Error al iniciar sesión', error);
         return false;
       });
-  }
-
-  //usuario default para iniciar sesion
-  agregarUsuarioAdminDefault() {
-    // Verificar si el usuario admin ya existe en la base de datos.
-    this.db.executeSql(
-      'SELECT COUNT(*) as count FROM usuario WHERE rut = ?',
-      ['admin']
-    ).then((data) => {
-      const count = data.rows.item(0).count;
-      if (count === 0) {
-        // El usuario admin no existe, así que lo insertamos.
-        this.crearusuairo(1, 'admin', 'Admin', 'Default', 'admin', 'admin123', 1, 1, 'Respuesta secreta');
-      }
-    }).catch((error) => {
-      console.error('Error al verificar la existencia del usuario admin:', error);
-    });
   }
 }
