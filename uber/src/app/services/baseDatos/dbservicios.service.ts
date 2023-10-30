@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
 import { AlertController, Platform } from '@ionic/angular';
+import { Console } from 'console';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 
@@ -37,23 +38,31 @@ export class DbserviciosService {
   async crearT() {
     try {
       //ejecutar las variables de creacion de tablas
-      await this.db.executeSql('CREATE TABLE IF NOT EXIST usuario (usuarioid INTEGER PRIMARY KEY AUTOINCREMENR, nombre VARCHAR (30), apellido VARCHAR (30), correo VARCHAR(50), contraseña VARCHAR(10))', []).then(()=> {
+      await this.db.executeSql('CREATE TABLE IF NOT EXIST usuario (usuarioid INTEGER PRIMARY KEY AUTOINCREMENT, nombre VARCHAR (30), apellido VARCHAR (30), correo VARCHAR(50), contraseña VARCHAR(10)), FOREIGN KEY (idpreguntas) REFERENCES (tpreguntas(idpregunta), respuesta VARCHAR(50))', []).then(()=> {
         console.log('Tabla usuario creada con exito')
       }).catch(error => {
         console.error('Error al crear la tabla: ' + JSON.stringify(error));
       });
 
-      await this.db.executeSql('CREATE TABLE IF NOT EXIST vehiculo (autoid INTEGER PRIMARY KEY AUTOINCREMENT, patente VARCHAR(6), FOREIGN KEY (userid) REFERENCES (usuario(usuarioid)),asientos NUMBER(10))').then(()=>{
+      await this.db.executeSql('CREATE TABLE IF NOT EXIST tpreguntas (idpreguntas INTEGER PRIMARY KEY AUTOINCREMENT, pregunta VARCHAR(50))', [])
+
+      await this.db.executeSql('CREATE TABLE IF NOT EXIST vehiculo (autoid INTEGER PRIMARY KEY AUTOINCREMENT, patente VARCHAR(6), FOREIGN KEY (userid) REFERENCES (usuario(usuarioid)),asientos NUMBER(10))', []).then(()=>{
         console.log('Tabla vehiculo creada con exito')
       }).catch(error =>{
         console.error('Error al crear la tabla: '+ JSON.stringify(error));
       });
 
+      await this.db.executeSql('CREATE TABLE IF NOT EXIST rol_id (rolid INTEGER PRIMARY KEY AUTOINCREMENT, nomrol VARCHAR(30))', []).then(()=>{
+        console.log('Tabla rol creada con exito')
+      }).catch(error=>{
+        console.error('Error al crear la tabla: ' + JSON.stringify(error));
+      })
+
       await this.db.executeSql('CREATE TABLE IF NOT EXIST')
         //await this.database.executeSql(this.tablarol, []);
 
       //ejecutar los insert
-
+      await this.db.executeSql('INSERT INTO usuarios (nombre, correo, contrasena, rol_id) VALUES (Administrador, admin@example.com, contrasena_segura, 1)')
         //await this.database.executeSql(this.insertrol, [2, "Alumno"]);
       //manipular el observable
       this.isDBReady.next(true);
