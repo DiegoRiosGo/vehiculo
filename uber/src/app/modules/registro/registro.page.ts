@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CamaraService } from 'src/app/services/camara.service';
 
 @Component({
   selector: 'app-registro',
@@ -7,9 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RegistroPage implements OnInit {
 
-  constructor() { }
+  capturedImage: any;
+
+  constructor(private cameraService: CamaraService) {}
 
   ngOnInit() {
+  }
+
+  async takePicture() {
+    this.capturedImage = await this.cameraService.takePicture();
   }
 
 }
