@@ -34,7 +34,11 @@ const routes: Routes = [
   {
     path: 'adminvista',
     loadChildren: () => import('./modules/adminvista/adminvista.module').then( m => m.AdminvistaPageModule)
+  },  {
+    path: 'mapa',
+    loadChildren: () => import('./modules/mapa/mapa.module').then( m => m.MapaPageModule)
   },
+
   
 
 

@@ -1,0 +1,14 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>mapa</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-item>
+    <ion-label position="stacked">direccion destino</ion-label>
+    <ion-input type="text"></ion-input>
+  </ion-item>
+  <ion-button expand="full">buscar y calcular ruta</ion-button>
+  <capacitor-google-map #map class="map"></capacitor-google-map>
+</ion-content>
