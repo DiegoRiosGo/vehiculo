@@ -37,47 +37,33 @@ export class DbserviciosService {
   
   async crearT() {
     try {
-      // tabla usuario
-      await this.db.executeSql('CREATE TABLE IF NOT EXIST usuario (usuarioid INTEGER PRIMARY KEY, nombre VARCHAR (30), apellido VARCHAR (30), correo VARCHAR(50), contraseña VARCHAR(10)), FOREIGN KEY (idpreguntas) REFERENCES (tpreguntas(idpregunta), respuesta VARCHAR(50))', []).then(()=> {
+      //ejecutar las variables de creacion de tablas
+      await this.db.executeSql('CREATE TABLE IF NOT EXIST usuario (usuarioid INTEGER PRIMARY KEY AUTOINCREMENT, nombre VARCHAR (30), apellido VARCHAR (30), correo VARCHAR(50), contraseña VARCHAR(10)), FOREIGN KEY (idpreguntas) REFERENCES (tpreguntas(idpregunta), respuesta VARCHAR(50))', []).then(()=> {
         console.log('Tabla usuario creada con exito')
       }).catch(error => {
         console.error('Error al crear la tabla: ' + JSON.stringify(error));
       });
-      //tabla pregunta seguridad
-      await this.db.executeSql('CREATE TABLE IF NOT EXIST tpreguntas (idpreguntas INTEGER PRIMARY KEY, pregunta VARCHAR(50))', []).then(()=>{
-        console.log('Tabla PS creada con exito')
-      }).catch(error =>{
-        console.error('Error al crear la tabla: '+ JSON.stringify(error));
-      })
-      //tabla vehiculo
-      await this.db.executeSql('CREATE TABLE IF NOT EXIST vehiculo (autoid INTEGER PRIMARY KEY, patente VARCHAR(6), FOREIGN KEY (userid) REFERENCES (usuario(usuarioid)),asientos NUMBER(10))', []).then(()=>{
+
+      await this.db.executeSql('CREATE TABLE IF NOT EXIST tpreguntas (idpreguntas INTEGER PRIMARY KEY AUTOINCREMENT, pregunta VARCHAR(50))', [])
+
+      await this.db.executeSql('CREATE TABLE IF NOT EXIST vehiculo (autoid INTEGER PRIMARY KEY AUTOINCREMENT, patente VARCHAR(6), FOREIGN KEY (userid) REFERENCES (usuario(usuarioid)),asientos NUMBER(10))', []).then(()=>{
         console.log('Tabla vehiculo creada con exito')
       }).catch(error =>{
         console.error('Error al crear la tabla: '+ JSON.stringify(error));
       });
-      //tabla rol
-      await this.db.executeSql('CREATE TABLE IF NOT EXIST rol_id (rolid INTEGER PRIMARY KEY, nomrol VARCHAR(30))', []).then(()=>{
+
+      await this.db.executeSql('CREATE TABLE IF NOT EXIST rol_id (rolid INTEGER PRIMARY KEY AUTOINCREMENT, nomrol VARCHAR(30))', []).then(()=>{
         console.log('Tabla rol creada con exito')
       }).catch(error=>{
         console.error('Error al crear la tabla: ' + JSON.stringify(error));
       })
-      //plantilla creacion de tabla
-      /*await this.db.executeSql('CREATE TABLE IF NOT EXIST', []).then(()=>{
-        console.log('Tabla creada con exito')
-      }).catch(error =>{
-        console.error('Error al crear la tabla: '+JSON.stringify(error));
-      })*/       
+
+      await this.db.executeSql('CREATE TABLE IF NOT EXIST')
+        //await this.database.executeSql(this.tablarol, []);
 
       //ejecutar los insert
-      //insert del admin
       await this.db.executeSql('INSERT INTO usuarios (nombre, correo, contrasena, rol_id) VALUES (Administrador, admin@example.com, contrasena_segura, 1)')
-
-      await this.db.executeSql('INSERT INTO tpreguntas (pregunta) VALUES(¿[inserte pregunta]?)').then(()=>{
-        console.log('Insert ps generado con exito')
-      }).catch(error=>{
-        console.error('Error al insertar pregunta: '+ JSON.stringify(error));
-      })
-      //await this.database.executeSql(this.insertrol, [2, "Alumno"]);
+        //await this.database.executeSql(this.insertrol, [2, "Alumno"]);
       //manipular el observable
       this.isDBReady.next(true);
 
