@@ -75,13 +75,17 @@
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
 }
-
+ion-content{
+  --ion-background-color: #d8e0fb; 
+}
 @media (prefers-color-scheme: dark) {
   /*
    * Dark Colors
    * -------------------------------------------
    */
-
+   ion-content{
+    --ion-background-color: #121212; 
+  }
   body {
     --ion-color-primary: #428cff;
     --ion-color-primary-rgb: 66,140,255;
