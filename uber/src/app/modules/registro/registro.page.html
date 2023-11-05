@@ -1,16 +1,68 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="."></ion-back-button>
-    </ion-buttons>
-    <ion-title>registro</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true" class="content">
+  <div class="background-gradient"></div>
+  <br>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">registro</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="center-container">
+
+    <ion-card class="login-card">
+
+      <ion-item class="custom-item">
+
+        <ion-buttons slot="start">
+          <ion-button fill="clear" [routerLink]="['/inicio-sesion']" color="success" class="back-button">
+            <ion-icon name="arrow-back"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+
+        <h1>Crear usuario</h1>
+
+      </ion-item>
+
+      <ion-card-content>
+
+
+        <ion-item class="custom-item">
+          <ion-label position="floating" color="primary">Nombre</ion-label>
+          <ion-input type="email"></ion-input>
+        </ion-item>
+
+        <ion-item class="custom-item">
+          <ion-label position="floating" color="primary">Apellido</ion-label>
+          <ion-input type="email"></ion-input>
+        </ion-item>
+
+        <ion-item class="custom-item">
+          <ion-label position="floating" color="primary">Correo electrónico</ion-label>
+          <ion-input type="email"></ion-input>
+        </ion-item>
+
+        <ion-item class="custom-item">
+          <ion-label position="floating" color="primary">Contraseña</ion-label>
+          <ion-input type="password"></ion-input>
+        </ion-item>
+
+        <ion-item class="custom-item">
+          <ion-label position="floating" color="primary">Confirmar contraseña</ion-label>
+          <ion-input type="password"></ion-input>
+        </ion-item>
+        <br>
+        <h2>Pregunta de seguridad</h2>
+        <br>
+        <ion-item class="custom-item">
+          <ion-label position="floating" color="primary">Pregunta</ion-label>
+          <ion-input type="email"></ion-input>
+        </ion-item>
+
+        <ion-item class="custom-item">
+          <ion-label position="floating" color="primary">Respuesta</ion-label>
+          <ion-input type="email"></ion-input>
+        </ion-item>
+
+        <ion-button expand="full" [routerLink]="['/perfiluser']" color="success">Registrarse</ion-button>
+
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+
 </ion-content>

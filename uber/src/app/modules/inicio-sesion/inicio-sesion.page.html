@@ -5,23 +5,21 @@
   <div class="center-container">
 
     <ion-card class="login-card">
-      <ion-card-header>
-        <ion-label [routerLink]="['/home']" class="home-link" color="primary">
-          Volver al Inicio
-        </ion-label>
-      </ion-card-header>
+
 
       <ion-card-content>
-        <ion-item >
+        <h2>Iniciar sesión</h2>
+        <br>
+        <ion-item class="custom-item">
           <ion-label position="floating" color="primary">Correo electrónico</ion-label>
           <ion-input type="email"></ion-input>
         </ion-item>
 
-        <ion-item>
+        <ion-item class="custom-item">
           <ion-label position="floating" color="primary">Contraseña</ion-label>
           <ion-input type="password"></ion-input>
         </ion-item>
-        <ion-text [routerLink]="['/recuperarcontrasena']" class="recovery-link" color="primary">
+        <ion-text [routerLink]="['/recuperar']" class="recovery-link" color="primary">
           ¿Olvidaste tu contraseña?
         </ion-text>
         <br>

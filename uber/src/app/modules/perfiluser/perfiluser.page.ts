@@ -41,6 +41,7 @@ export class PerfiluserPage implements OnInit {
 
     await alert.present();
   }
+
   editProfile() {
     // Lógica para editar el perfil
     // Por ejemplo, redireccionar a una página de edición de perfil

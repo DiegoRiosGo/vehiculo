@@ -1,51 +1,39 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Mi Perfil</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true" class="content">
+  <div class="background-gradient"></div>
+  <br>
 
-<ion-content [fullscreen]="true">
-  <ion-card>
-    <ion-img class="profile-image" src="../../../assets/img/graduation-1345143_640.png"
-      alt="Imagen de Perfil"></ion-img>
-    <ion-card-header>
-      <ion-card-title>Nombre del Usuario</ion-card-title>
-      <ion-card-subtitle>@usuario123</ion-card-subtitle>
-    </ion-card-header>
+  <div class="center-container">
+    <ion-card class="profile-card">
+      <ion-item>
 
-    <ion-card-content>
-      <!-- Iconos interactivos -->
-      <ion-row>
-        <ion-col class="ion-text-center" (click)="editProfile()">
-          <ion-icon name="create" size="large"></ion-icon>
-          <div>Editar perfil</div>
-        </ion-col>
+        <!-- Icono de tuerca para modificar perfil -->
+        <ion-icon name="settings" slot="start" [routerLink]="['/moduser']" color="primary"
+          class="settings-icon"></ion-icon>
 
-        <ion-col class="ion-text-center">
-          <ion-icon name="book" size="large"></ion-icon>
-          <div>Asignaturas</div>
-        </ion-col>
+        <!-- Icono de cierre de sesión -->
+        <ion-icon name="log-out" slot="end" [routerLink]="['/logout']" color="primary" class="logout-icon"
+          (click)="logout()"></ion-icon>
 
-        <ion-col class="ion-text-center">
-          <ion-icon name="calendar" size="large"></ion-icon>
-          <div>Ver horario</div>
-        </ion-col>
+      </ion-item>
+      <ion-card-content>
 
-        <ion-col class="ion-text-center">
-          <ion-icon name="qr-code" size="large"></ion-icon>
-          <div>Escanear código QR</div>
-        </ion-col>
+        <!-- Foto de perfil con marco redondo -->
+        <div class="profile-image-container">
+          <!-- Foto de perfil con marco redondo -->
+          <div class="profile-image">
+            <ion-img src="assets/profile-image.jpg"></ion-img>
+          </div>
+        </div>
 
-      </ion-row>
+        <!-- Nombre de usuario -->
+        <div class="profile-name">Nombre de Usuario</div>
 
-      <ion-row>
-        <ion-col class="ion-text-center" (click)="logout()">
-          <ion-icon name="exit" size="large"></ion-icon>
-          <div>Cerrar sesión</div>
-        </ion-col>
-      </ion-row>
+        <!-- Correo con color difuminado -->
+        <div class="profile-email">correo@ejemplo.com</div>
 
-    </ion-card-content>
-  </ion-card>
-
+        <!-- Botón "Iniciar Viaje" -->
+        <ion-button expand="full" color="primary">Iniciar Viaje</ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>
