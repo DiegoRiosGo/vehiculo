@@ -9,11 +9,13 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { CamaraService } from './services/camara.service';
 
+import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
+
 
 @NgModule({
   declarations: [AppComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy, },CamaraService],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy, },CamaraService,SQLite],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

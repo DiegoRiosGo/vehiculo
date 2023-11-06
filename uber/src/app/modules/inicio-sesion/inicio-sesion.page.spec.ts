@@ -1,15 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 import { InicioSesionPage } from './inicio-sesion.page';
 
 describe('InicioSesionPage', () => {
   let component: InicioSesionPage;
   let fixture: ComponentFixture<InicioSesionPage>;
 
-  beforeEach(async(() => {
+  beforeEach(async() => {
+    await TestBed.configureTestingModule({
+      providers: [SQLite]
+    }).compileComponents();
+    
     fixture = TestBed.createComponent(InicioSesionPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  }));
+  });
 
   it('should create', () => {
     expect(component).toBeTruthy();
