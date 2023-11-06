@@ -12,7 +12,15 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class DbserviciosService {
   //variable para la coneccion a BD
   public db!: SQLiteObject;
+  public datosUsuario = new BehaviorSubject<any[]>([]);
+  public datosRol = new BehaviorSubject<any[]>([]);
+  public datosPregunta = new BehaviorSubject<any[]>([]);
+  public datosVehiculo = new BehaviorSubject<any[]>([]);
   
+  //observable para la disponibilidad de la BD
+  private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false)
+
+  //constructor
   constructor(public sqlite: SQLite, private platform: Platform, private alertController: AlertController) {
     this.crearDB()
   }
@@ -58,11 +66,14 @@ export class DbserviciosService {
         console.error('Error al crear la tabla: ' + JSON.stringify(error));
       })
 
-      await this.db.executeSql('CREATE TABLE IF NOT EXIST')
+      //await this.db.executeSql('CREATE TABLE IF NOT EXIST')
         //await this.database.executeSql(this.tablarol, []);
 
-      //ejecutar los insert
+      //ejecutar los insert iniciales
       await this.db.executeSql('INSERT INTO usuarios (nombre, correo, contrasena, rol_id) VALUES (Administrador, admin@example.com, contrasena_segura, 1)')
+      await this.db.executeSql('INSERT INTO tpreguntas (pregunta) VALUES (¿Cuál es el nombre de tu primer mascota?)')
+      await this.db.executeSql('INSERT INTO tpreguntas (pregunta) VALUES (¿En qué ciudad naciste?)')
+      await this.db.executeSql('INSERT INTO tpreguntas (pregunta) VALUES (¿Cuál es tu comida favorita?)')
         //await this.database.executeSql(this.insertrol, [2, "Alumno"]);
       //manipular el observable
       this.isDBReady.next(true);
@@ -72,14 +83,25 @@ export class DbserviciosService {
     }
 
   }
-
-  //variables para insert iniciales
-
   //observable para las tablas
+  loadData(){
+    this.db.executeSql('SELECT * FROM usuario', [])
+      .then(data => {
+        let items = [];
+        for (let i = 0; i < data.rows.length; i++) {
+          items.push(data.rows.item(i));
+        }
+        this.datosUsuario.next(items);
+      })
+      .catch(error => {
+        console.error('Error al obtener datos: ' + JSON.stringify(error));
+      });
+  }
+  getData(): Observable<any[]> {
+    return this.datosUsuario.asObservable();
+  }
   
-  //observable para la disponibilidad de la BD
-  private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false)
-  //constructor
+  
   
 
   async presentAlert(msj: string) {
@@ -92,7 +114,7 @@ export class DbserviciosService {
 
 
   
-  //FUNCION DE RETORNO DEL OBSERVABLE DE LA BF
+  //FUNCION DE RETORNO DEL OBSERVABLE DE LA BD
   dbState() {
     return this.isDBReady.asObservable();
   }
