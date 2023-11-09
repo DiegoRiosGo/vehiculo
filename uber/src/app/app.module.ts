@@ -8,14 +8,17 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
 import { CamaraService } from './services/camara.service';
+import { ClimaService } from './services/clima.service';
 
 import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
+
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy, },CamaraService,SQLite],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,HttpClientModule],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy, },CamaraService,SQLite,ClimaService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
