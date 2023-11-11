@@ -46,7 +46,7 @@ export class DbserviciosService {
   async crearT() {
     try {
       //ejecutar las variables de creacion de tablas
-      await this.db.executeSql('CREATE TABLE IF NOT EXIST usuario (usuarioid INTEGER PRIMARY KEY AUTOINCREMENT, nombre VARCHAR (30), apellido VARCHAR (30), correo VARCHAR(50), contraseña VARCHAR(10)), FOREIGN KEY (idpreguntas) REFERENCES (tpreguntas(idpregunta), respuesta VARCHAR(50))', []).then(()=> {
+      await this.db.executeSql('CREATE TABLE IF NOT EXIST usuario (usuarioid INTEGER PRIMARY KEY AUTOINCREMENT, nombre VARCHAR (30), apellido VARCHAR (30), correo VARCHAR(50), contraseña VARCHAR(10)), FOREIGN KEY (idpreguntas) REFERENCES (tpreguntas(idpregunta), respuesta VARCHAR(50), FOREIGN KEY (rolid) REFERENCES (rol(rolid))', []).then(()=> {
         console.log('Tabla usuario creada con exito')
       }).catch(error => {
         console.error('Error al crear la tabla: ' + JSON.stringify(error));
@@ -60,7 +60,7 @@ export class DbserviciosService {
         console.error('Error al crear la tabla: '+ JSON.stringify(error));
       });
 
-      await this.db.executeSql('CREATE TABLE IF NOT EXIST rol_id (rolid INTEGER PRIMARY KEY AUTOINCREMENT, nomrol VARCHAR(30))', []).then(()=>{
+      await this.db.executeSql('CREATE TABLE IF NOT EXIST rol (rolid INTEGER PRIMARY KEY, nomrol VARCHAR(30))', []).then(()=>{
         console.log('Tabla rol creada con exito')
       }).catch(error=>{
         console.error('Error al crear la tabla: ' + JSON.stringify(error));
@@ -70,6 +70,7 @@ export class DbserviciosService {
         //await this.database.executeSql(this.tablarol, []);
 
       //ejecutar los insert iniciales
+      await this.db.executeSql('INSERT INTO rol (rolid, nomrol) VALUES ()')
       await this.db.executeSql('INSERT INTO usuarios (nombre, correo, contrasena, rol_id) VALUES (Administrador, admin@example.com, contrasena_segura, 1)')
       await this.db.executeSql('INSERT INTO tpreguntas (pregunta) VALUES (¿Cuál es el nombre de tu primer mascota?)')
       await this.db.executeSql('INSERT INTO tpreguntas (pregunta) VALUES (¿En qué ciudad naciste?)')
@@ -84,7 +85,7 @@ export class DbserviciosService {
 
   }
   //observable para las tablas
-  loadData(){
+  loadDataUsuario(){
     this.db.executeSql('SELECT * FROM usuario', [])
       .then(data => {
         let items = [];
@@ -97,11 +98,13 @@ export class DbserviciosService {
         console.error('Error al obtener datos: ' + JSON.stringify(error));
       });
   }
-  getData(): Observable<any[]> {
+  getDataUsuario(): Observable<any[]> {
     return this.datosUsuario.asObservable();
   }
   
-  
+  loadDataRol(){
+    this.db.executeSql('SELECT * FROM rol')
+  }
   
 
   async presentAlert(msj: string) {
