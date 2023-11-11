@@ -67,15 +67,19 @@ export class DbserviciosService {
       })
 
       //await this.db.executeSql('CREATE TABLE IF NOT EXIST')
-        //await this.database.executeSql(this.tablarol, []);
 
       //ejecutar los insert iniciales
-      await this.db.executeSql('INSERT INTO rol (rolid, nomrol) VALUES ()')
-      await this.db.executeSql('INSERT INTO usuarios (nombre, correo, contrasena, rol_id) VALUES (Administrador, admin@example.com, contrasena_segura, 1)')
+        //inserts de rol
+      await this.db.executeSql('INSERT INTO rol (rolid, nomrol) VALUES (1, Administrador)')
+      await this.db.executeSql('INSERT INTO rol (rolid, nomrol) VALUES (2, Alumno)')
+      await this.db.executeSql('INSERT INTO rol (rolid, nomrol) VALUES (3, Conductor)')
+        //insert del usuario Administrador
+      await this.db.executeSql('INSERT INTO usuarios (nombre, correo, contrasena, 1, Firulais, rol_id) VALUES (Administrador, admin@example.com, contrasena_segura, 1)')
+        //insert de preguntas de seguridad
       await this.db.executeSql('INSERT INTO tpreguntas (pregunta) VALUES (¿Cuál es el nombre de tu primer mascota?)')
       await this.db.executeSql('INSERT INTO tpreguntas (pregunta) VALUES (¿En qué ciudad naciste?)')
       await this.db.executeSql('INSERT INTO tpreguntas (pregunta) VALUES (¿Cuál es tu comida favorita?)')
-        //await this.database.executeSql(this.insertrol, [2, "Alumno"]);
+        
       //manipular el observable
       this.isDBReady.next(true);
 
@@ -103,9 +107,19 @@ export class DbserviciosService {
   }
   
   loadDataRol(){
-    this.db.executeSql('SELECT * FROM rol')
+    this.db.executeSql('SELECT * FROM rol', []).then(data => {
+      let items = [];
+      for (let i = 0; i < data.rows.length; i++){
+        items.push(data.rows.item(i));
+      }
+      this.datosRol.next(items);
+    }).catch(error => {
+      console.error('Error al obtener datos: ' + JSON.stringify(error));
+    });
   }
-  
+  getDataRol(): Observable<any[]> {
+    return this.datosRol.asObservable();
+  }
 
   async presentAlert(msj: string) {
     const alert = await this.alertController.create({
