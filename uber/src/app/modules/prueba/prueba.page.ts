@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ClimaService } from 'src/app/services/clima.service';
+import { ClimaService } from 'src/app/services/servClima/clima.service';
 
 @Component({
   selector: 'app-prueba',

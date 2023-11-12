@@ -7,8 +7,8 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
-import { CamaraService } from './services/camara.service';
-import { ClimaService } from './services/clima.service';
+import { CamaraService } from './services/servCamara/camara.service';
+import { ClimaService } from './services/servClima/clima.service';
 
 import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 

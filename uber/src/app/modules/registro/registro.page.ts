@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { CamaraService } from 'src/app/services/camara.service';
+import { CamaraService } from 'src/app/services/servCamara/camara.service';
 
 @Component({
   selector: 'app-registro',

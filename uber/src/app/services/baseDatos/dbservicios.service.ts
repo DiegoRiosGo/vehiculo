@@ -73,13 +73,13 @@ export class DbserviciosService {
       await this.db.executeSql('INSERT INTO rol (rolid, nomrol) VALUES (1, Administrador)')
       await this.db.executeSql('INSERT INTO rol (rolid, nomrol) VALUES (2, Alumno)')
       await this.db.executeSql('INSERT INTO rol (rolid, nomrol) VALUES (3, Conductor)')
-        //insert del usuario Administrador
-      await this.db.executeSql('INSERT INTO usuarios (nombre, correo, contrasena, 1, Firulais, rol_id) VALUES (Administrador, admin@example.com, contrasena_segura, 1)')
+      
         //insert de preguntas de seguridad
       await this.db.executeSql('INSERT INTO tpreguntas (pregunta) VALUES (¿Cuál es el nombre de tu primer mascota?)')
       await this.db.executeSql('INSERT INTO tpreguntas (pregunta) VALUES (¿En qué ciudad naciste?)')
       await this.db.executeSql('INSERT INTO tpreguntas (pregunta) VALUES (¿Cuál es tu comida favorita?)')
-        
+        //insert del usuario Administrador
+      await this.db.executeSql('INSERT INTO usuarios (nombre, correo, contrasena, idpregunta, Firulais, rol_id) VALUES (Administrador, admin@example.com, contrasena_segura, 1)')  
       //manipular el observable
       this.isDBReady.next(true);
 
@@ -121,6 +121,24 @@ export class DbserviciosService {
     return this.datosRol.asObservable();
   }
 
+  loadDataPreguntasec(){
+    this.db.executeSql('SELECT * FROM tpreguntas', []).then(data =>{
+      let items = [];
+      for (let i = 0; i < data.rows.length; i++){
+        items.push(data.rows.items(i));
+      }
+      this.datosPregunta.next(items);
+    }).catch(error =>{
+      console.error('Error al obtener datos: ' + JSON.stringify(error));
+    });
+  }
+  getDataPreguntasec(): Observable<any[]> {
+    return this.datosPregunta.asObservable();
+  }
+
+
+
+
   async presentAlert(msj: string) {
     const alert = await this.alertController.create({
       header: 'Alert',
@@ -131,7 +149,7 @@ export class DbserviciosService {
 
 
   
-  //FUNCION DE RETORNO DEL OBSERVABLE DE LA BD
+  //FUNCION DE RETORNO DEL OBSERVABLE DE LA BD COMO BOOLEAN 
   dbState() {
     return this.isDBReady.asObservable();
   }
