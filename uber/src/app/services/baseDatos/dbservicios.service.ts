@@ -52,9 +52,13 @@ export class DbserviciosService {
         console.error('Error al crear la tabla: ' + JSON.stringify(error));
       });
 
-      await this.db.executeSql('CREATE TABLE IF NOT EXIST tpreguntas (idpreguntas INTEGER PRIMARY KEY AUTOINCREMENT, pregunta VARCHAR(50))', [])
+      await this.db.executeSql('CREATE TABLE IF NOT EXIST tpreguntas (idpreguntas INTEGER PRIMARY KEY AUTOINCREMENT, pregunta VARCHAR(50))', []).then(()=>{
+        console.log('Tabla vehiculo creada con exito')
+      }).catch(error =>{
+        console.error('Error al crear la tabla: '+ JSON.stringify(error));
+      });
 
-      await this.db.executeSql('CREATE TABLE IF NOT EXIST vehiculo (autoid INTEGER PRIMARY KEY AUTOINCREMENT, patente VARCHAR(6), FOREIGN KEY (userid) REFERENCES (usuario(usuarioid)),asientos NUMBER(10))', []).then(()=>{
+      await this.db.executeSql('CREATE TABLE IF NOT EXIST vehiculo (autoid INTEGER PRIMARY KEY AUTOINCREMENT, patente VARCHAR(6), FOREIGN KEY (userid) REFERENCES (usuario(usuarioid)),asientos NUMBER(7))', []).then(()=>{
         console.log('Tabla vehiculo creada con exito')
       }).catch(error =>{
         console.error('Error al crear la tabla: '+ JSON.stringify(error));
