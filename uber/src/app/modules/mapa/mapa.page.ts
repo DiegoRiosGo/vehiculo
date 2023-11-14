@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { GoogleMap } from '@capacitor/google-maps' ;
 import { Geolocation } from '@capacitor/geolocation';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-mapa',
@@ -9,12 +10,14 @@ import { Geolocation } from '@capacitor/geolocation';
 })
 export class MapaPage implements OnInit {
 
+  direccionDestino: string = ''; // Variable para almacenar el valor del input
+  
   @ViewChild('map')
   mapRef!: ElementRef<HTMLElement>;
   Map!: GoogleMap;
 
 
-  constructor() { }
+  constructor(public alertController: AlertController) { }
 
   ionViewWillEnter() {
     this.createmap().then(() => {
@@ -54,5 +57,30 @@ export class MapaPage implements OnInit {
       },
       title: 'origen',
     })
+  }
+
+
+  //calcular ruta
+
+  async calcularRuta() {
+    if (this.direccionDestino.trim() === '') {
+      // Si el campo está vacío, muestra una alerta "No se ha registrado ruta"
+      const alert = await this.alertController.create({
+        header: 'Alerta',
+        message: 'No se ha registrado ruta',
+        buttons: ['OK']
+      });
+
+      await alert.present();
+    } else {
+      // Si el campo contiene texto, muestra una alerta "Se ha registrado ruta"
+      const alert = await this.alertController.create({
+        header: 'Éxito',
+        message: 'Se ha registrado ruta',
+        buttons: ['OK']
+      });
+
+      await alert.present();
+    }
   }
 }
