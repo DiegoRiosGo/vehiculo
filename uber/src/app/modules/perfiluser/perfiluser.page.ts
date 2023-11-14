@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { ClimaService } from 'src/app/services/servClima/clima.service';
 
 
 @Component({
@@ -10,8 +11,11 @@ import { Router } from '@angular/router';
 })
 export class PerfiluserPage implements OnInit {
 
+  climaData:any;
+  
   constructor(private router: Router,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private api:ClimaService
   ) { }
 
   ngOnInit() {
@@ -46,5 +50,17 @@ export class PerfiluserPage implements OnInit {
     // Lógica para editar el perfil
     // Por ejemplo, redireccionar a una página de edición de perfil
     this.router.navigate(['/moduser']);
+  }
+
+  //api clima
+
+  obtenerclima(){
+    this.api.getclima().subscribe((data)=>{
+      this.climaData=data;
+    })
+  }
+
+  ionViewWillEnterr(){
+    this.obtenerclima();
   }
 }

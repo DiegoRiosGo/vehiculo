@@ -7,8 +7,8 @@
 <ion-content [fullscreen]="true">
   <ion-item>
     <ion-label position="stacked">direccion destino</ion-label>
-    <ion-input type="text"></ion-input>
+    <ion-input type="text" [(ngModel)]="direccionDestino"></ion-input>
   </ion-item>
-  <ion-button expand="full">calcular ruta</ion-button>
+  <ion-button expand="full" (click)="calcularRuta()">calcular ruta</ion-button>
   <capacitor-google-map #map class="map"></capacitor-google-map>
 </ion-content>
