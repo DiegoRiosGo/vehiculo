@@ -13,10 +13,11 @@
           </ion-button>
         </ion-buttons>
 
-        <div class="profile-image">
-          <!-- Dentro del ion-icon hay que colocarle la funcion para hacer el cambio de foto -->
-          <ion-icon name="camera" slot="end" color="light" class="camera-icon"></ion-icon>
+        <div class="profile-image" (click)="presentAlertConfirm()">
+          <img *ngIf="capturedImage" [src]="capturedImage" alt="Captured Image" class="camera-icon" id="profile-image">
+          <ion-icon name="camera" *ngIf="!capturedImage" slot="end" color="light" class="camera-icon"></ion-icon>
         </div>
+
         <br>
         <ion-item class="custom-item">
           <ion-label color="primary" position="floating">Nuevo nombre</ion-label>
