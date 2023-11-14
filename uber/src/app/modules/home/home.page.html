@@ -1,10 +1,43 @@
-<ion-content class="ion-text-center" id="content-container">
-  <div class="background-gradient"></div>
+<ion-content [fullscreen]="true" class="content">
+  <div class="background-gradient">
+    <div>
+      <div class="logoCont">
+        <img src="assets/img/logo-1240x1240.png" alt="Logo de la App" class="logo">
+      </div>
 
-  <div id="centered-elements">
-    <img src="assets/logo.png" alt="Logo de la App" class="logo">
+      <div class="center-container">
 
-    <ion-button [routerLink]="['/inicio-sesion']" color="primary">Iniciar Sesión</ion-button>
-    <ion-button color="success" [routerLink]="['/registro']">Registrarse</ion-button>
+        <ion-card class="login-card">
+
+          <ion-card-content>
+            <h2>Iniciar sesión</h2>
+            <br>
+            <ion-item class="custom-item">
+              <ion-label position="floating" color="primary">Correo electrónico</ion-label>
+              <ion-input type="email"></ion-input>
+            </ion-item>
+
+            <ion-item class="custom-item">
+              <ion-label position="floating" color="primary">Contraseña</ion-label>
+              <ion-input type="password"></ion-input>
+            </ion-item>
+            <ion-text [routerLink]="['/recuperar']" class="recovery-link" color="primary">
+              ¿Olvidaste tu contraseña?
+            </ion-text>
+            <br>
+            <ion-button expand="full" [routerLink]="['/perfiluser']" color="primary">Iniciar Sesión</ion-button>
+
+            <ion-button expand="full" color="success" [routerLink]="['/registro']">Registrarse</ion-button>
+            <ion-button expand="full" color="success" [routerLink]="['/mapa']">mapa</ion-button>
+            <ion-button expand="full" color="success" [routerLink]="['/prueba']">clima</ion-button>
+          </ion-card-content>
+        </ion-card>
+
+      </div>
+
+    </div>
   </div>
+
+
+
 </ion-content>

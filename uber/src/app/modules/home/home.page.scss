@@ -1,41 +1,31 @@
-#content-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+ion-card.login-card {
+  width: 80%;
+  margin: auto;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-#centered-elements {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
+.custom-item {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+
 }
 
 .logo {
-  max-width: 80%;
-  margin: 20px auto;
+  
+  max-width: 60%;
+  margin: 10px auto;
 }
 
-/* Estilos personalizados para el botón de Iniciar Sesión */
-ion-button[color="warning"] {
-  background-color: #f7b731;
-  /* Color de fondo amarillo */
-  border-color: #f7b731;
-  /* Color del borde amarillo */
-  color: #fff;
-  /* Color del texto blanco */
-}
-
-/* Estilos para los botones */
-ion-button {
-  font-weight: bold;
-  /* Texto en negrita */
-  transition: background-color 0.3s, color 0.3s;
-  /* Transiciones suaves */
+.logoCont{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 60px;
 }
 
 .background-gradient {
@@ -48,3 +38,22 @@ ion-button {
   /* Degradado de verde a azul */
   z-index: -1;
 }
+
+.center-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+ion-button {
+  margin-top: 10px;
+}
+
+.recovery-link {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+
+/* Personaliza los estilos según tu diseño y paleta de colores. */

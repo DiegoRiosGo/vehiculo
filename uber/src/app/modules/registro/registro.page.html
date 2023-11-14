@@ -9,7 +9,7 @@
       <ion-item class="custom-item">
 
         <ion-buttons slot="start">
-          <ion-button fill="clear" [routerLink]="['/inicio-sesion']" color="success" class="back-button">
+          <ion-button fill="clear" [routerLink]="['/home']" color="success" class="back-button">
             <ion-icon name="arrow-back"></ion-icon>
           </ion-button>
         </ion-buttons>
@@ -65,12 +65,12 @@
 
   </div>
 
-<ion-content>
-  
+  <ion-content>
 
-  <ion-button (click)="takePicture()">Tomar Foto</ion-button>
-  <img [src]="capturedImage" *ngIf="capturedImage">
 
-  
-  
-</ion-content>
+    <ion-button (click)="takePicture()">Tomar Foto</ion-button>
+    <img [src]="capturedImage" *ngIf="capturedImage">
+
+
+
+  </ion-content>

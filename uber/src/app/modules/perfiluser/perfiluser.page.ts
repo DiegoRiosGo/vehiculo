@@ -33,7 +33,7 @@ export class PerfiluserPage implements OnInit {
           handler: () => {
             // Lógica para cerrar sesión
             // Por ejemplo, redireccionar a la página de inicio de sesión
-            this.router.navigate(['/inicio-sesion']);
+            this.router.navigate(['/home']);
           }
         }
       ]
