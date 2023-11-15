@@ -3,6 +3,10 @@ import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
 import { AlertController, Platform } from '@ionic/angular';
 //import { Console } from 'console';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { Usuario } from '../models/usuario';
+import { Rol } from '../models/rol';
+import { Tpreguntas } from '../models/tpreguntas';
+import { Vehiculo } from '../models/vehiculo';
 
 
 // como usar SQLite https://como-programar.net/ionic/sqlite/
@@ -12,10 +16,10 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class DbserviciosService {
   //variable para la coneccion a BD
   public db!: SQLiteObject;
-  public datosUsuario = new BehaviorSubject<any[]>([]);
-  public datosRol = new BehaviorSubject<any[]>([]);
-  public datosPregunta = new BehaviorSubject<any[]>([]);
-  public datosVehiculo = new BehaviorSubject<any[]>([]);
+  public datosUsuario = new BehaviorSubject<Usuario[]>([]);
+  public datosRol = new BehaviorSubject<Rol[]>([]);
+  public datosPregunta = new BehaviorSubject<Tpreguntas[]>([]);
+  public datosVehiculo = new BehaviorSubject<Vehiculo[]>([]);
   
   //observable para la disponibilidad de la BD
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false)
@@ -46,13 +50,17 @@ export class DbserviciosService {
   async crearT() {
     try {
       //ejecutar las variables de creacion de tablas
-      await this.db.executeSql('CREATE TABLE IF NOT EXIST usuario (usuarioid INTEGER PRIMARY KEY AUTOINCREMENT, nombre VARCHAR (30), apellido VARCHAR (30), correo VARCHAR(50), contraseña VARCHAR(10)), FOREIGN KEY (idpreguntas) REFERENCES (tpreguntas(idpregunta), respuesta VARCHAR(50), FOREIGN KEY (rolid) REFERENCES (rol(rolid))', []).then(()=> {
+      await this.db.executeSql('CREATE TABLE IF NOT EXIST usuario (usuarioid INTEGER PRIMARY KEY AUTOINCREMENT, nombre VARCHAR (30), apellido VARCHAR (30), correo VARCHAR(50), contraseña VARCHAR(10)), FOREIGN KEY (idpreguntas) REFERENCES (tpreguntas(idpregunta), respuesta VARCHAR(50), FOREIGN KEY (rolid) REFERENCES (rol(rolid)), imagenperfil BLOB', []).then(()=> {
         console.log('Tabla usuario creada con exito')
       }).catch(error => {
         console.error('Error al crear la tabla: ' + JSON.stringify(error));
       });
 
-      await this.db.executeSql('CREATE TABLE IF NOT EXIST tpreguntas (idpreguntas INTEGER PRIMARY KEY AUTOINCREMENT, pregunta VARCHAR(50))', [])
+      await this.db.executeSql('CREATE TABLE IF NOT EXIST tpreguntas (idpreguntas INTEGER PRIMARY KEY AUTOINCREMENT, pregunta VARCHAR(50))', []).then(()=>{
+        console.log('Tabla tpreguntas creada con exito')
+      }).catch(error=>{
+        console.error('Error al crear la tabla: ' + JSON.stringify(error));
+      })
 
       await this.db.executeSql('CREATE TABLE IF NOT EXIST vehiculo (autoid INTEGER PRIMARY KEY AUTOINCREMENT, patente VARCHAR(6), FOREIGN KEY (userid) REFERENCES (usuario(usuarioid)),asientos NUMBER(10))', []).then(()=>{
         console.log('Tabla vehiculo creada con exito')
@@ -66,20 +74,37 @@ export class DbserviciosService {
         console.error('Error al crear la tabla: ' + JSON.stringify(error));
       })
 
-      //await this.db.executeSql('CREATE TABLE IF NOT EXIST')
+      await this.db.executeSql('CREATE TABLE IF NOT EXIST viaje (idviaje INTEGER PRIMARY KEY AUTOINCREMENT, FOREIGN KEY (usuarioid) REFERENCES(usuario(usuarioid)), FOREIGN KEY (autoid) REFERENCES(vehiculo(autoid)), ppartida VARCHAR(50), pdestino VARCHAR(50))',[]).then(()=>{
+        console.log('Tabla VIAJE creada con exito')
+      }).catch(error=>{
+        console.error('Error al crear la tabla: ' + JSON.stringify(error));
+      })
+
+      await this.db.executeSql('CREATE TABLE IF NOT EXIST sede (idsede INTEGER PRIMARY KEY AUTOINCREMENT, nomsede VARCHAR(50), locacion VARCHAR(100))',[]).then(()=>{
+        console.log('Tabla SEDE creada con exito')
+      }).catch(error=>{
+        console.error('Error al crear la tabla: ' + JSON.stringify(error));
+      })
+
+      //Plantilla para crear tablas
+      /* await this.db.executeSql('CREATE TABLE IF NOT EXIST').then(()=>{
+        console.log('Tabla [nombre de la tabla] creada con exito')
+      }).catch(error=>{
+        console.error('Error al crear la tabla: ' + JSON.stringify(error));
+      })*/
 
       //ejecutar los insert iniciales
         //inserts de rol
-      await this.db.executeSql('INSERT INTO rol (rolid, nomrol) VALUES (1, Administrador)')
-      await this.db.executeSql('INSERT INTO rol (rolid, nomrol) VALUES (2, Alumno)')
-      await this.db.executeSql('INSERT INTO rol (rolid, nomrol) VALUES (3, Conductor)')
+      await this.db.executeSql('INSERT INTO rol (rolid, nomrol) VALUES (1, \'Administrador\')')
+      await this.db.executeSql('INSERT INTO rol (rolid, nomrol) VALUES (2, \'Alumno\')')
       
         //insert de preguntas de seguridad
-      await this.db.executeSql('INSERT INTO tpreguntas (pregunta) VALUES (¿Cuál es el nombre de tu primer mascota?)')
-      await this.db.executeSql('INSERT INTO tpreguntas (pregunta) VALUES (¿En qué ciudad naciste?)')
-      await this.db.executeSql('INSERT INTO tpreguntas (pregunta) VALUES (¿Cuál es tu comida favorita?)')
+      await this.db.executeSql('INSERT INTO tpreguntas (pregunta) VALUES (\'¿Cuál es el nombre de tu primer mascota?\')')
+      await this.db.executeSql('INSERT INTO tpreguntas (pregunta) VALUES (\'¿En qué ciudad naciste?\')')
+      await this.db.executeSql('INSERT INTO tpreguntas (pregunta) VALUES (\'¿Cuál es tu comida favorita?\')')
         //insert del usuario Administrador
-      await this.db.executeSql('INSERT INTO usuarios (nombre, correo, contrasena, idpregunta, Firulais, rol_id) VALUES (Administrador, admin@example.com, contrasena_segura, 1)')  
+        await this.db.executeSql('INSERT INTO usuarios (nombre, correo, contrasena, idpregunta, Firulais, rol_id) VALUES (\'Administrador\', \'admin@example.com\', \'contrasena_segura\', 1, \'ValorFirulais\', 1)');
+ 
       //manipular el observable
       this.isDBReady.next(true);
 
