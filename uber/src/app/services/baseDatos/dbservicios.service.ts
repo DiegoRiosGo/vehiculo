@@ -8,6 +8,7 @@ import { Rol } from '../models/rol';
 import { Tpreguntas } from '../models/tpreguntas';
 import { Vehiculo } from '../models/vehiculo';
 import { Viaje } from '../models/viaje';
+import { Detalle } from '../models/detalle';
 
 // como usar SQLite https://como-programar.net/ionic/sqlite/
 @Injectable({
@@ -21,6 +22,7 @@ export class DbserviciosService {
   public datosPregunta = new BehaviorSubject<Tpreguntas[]>([]);
   public datosVehiculo = new BehaviorSubject<Vehiculo[]>([]);
   public datosViaje = new BehaviorSubject<Viaje[]>([])
+  public datosDetalle = new BehaviorSubject<Detalle[]>([])
   
   //observable para la disponibilidad de la BD
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false)
@@ -75,7 +77,7 @@ export class DbserviciosService {
         console.error('Error al crear la tabla: ' + JSON.stringify(error));
       })
 
-      await this.db.executeSql('CREATE TABLE IF NOT EXIST viaje (idviaje INTEGER PRIMARY KEY AUTOINCREMENT, FOREIGN KEY (usuarioid) REFERENCES(usuario(usuarioid)), FOREIGN KEY (autoid) REFERENCES(vehiculo(autoid)), ppartida VARCHAR(50), pdestino VARCHAR(50))',[]).then(()=>{
+      await this.db.executeSql('CREATE TABLE IF NOT EXIST viaje (idviaje INTEGER PRIMARY KEY AUTOINCREMENT, FOREIGN KEY (autoid) REFERENCES(vehiculo(autoid)), ppartida VARCHAR(50), pdestino VARCHAR(50))',[]).then(()=>{
         console.log('Tabla VIAJE creada con exito')
       }).catch(error=>{
         console.error('Error al crear la tabla: ' + JSON.stringify(error));
@@ -87,18 +89,11 @@ export class DbserviciosService {
         console.error('Error al crear la tabla: ' + JSON.stringify(error));
       })
 
-      await this.db.executeSql('CREATE TABLE IF NOT EXIST detalle (iddetalle INTEGER PRIMARY KEY AUTOINCREMENT, FOREIGN KEY (idviaje) REFERENCES(viaje(idviaje)))',[]).then(()=>{
+      await this.db.executeSql('CREATE TABLE IF NOT EXIST detalle (iddetalle INTEGER PRIMARY KEY AUTOINCREMENT, FOREIGN KEY (idviaje) REFERENCES(viaje(idviaje)), FOREIGN KEY (usuarioid) REFERENCES(usuario(usuarioid)))',[]).then(()=>{
         console.log('Tabla [nombre de la tabla] creada con exito')
       }).catch(error=>{
         console.error('Error al crear la tabla: ' + JSON.stringify(error));
       })
-      
-      //Plantilla para crear tablas
-      /* await this.db.executeSql('CREATE TABLE IF NOT EXIST').then(()=>{
-        console.log('Tabla [nombre de la tabla] creada con exito')
-      }).catch(error=>{
-        console.error('Error al crear la tabla: ' + JSON.stringify(error));
-      })*/
 
       //ejecutar los insert iniciales
         //inserts de rol
@@ -110,7 +105,7 @@ export class DbserviciosService {
       await this.db.executeSql('INSERT INTO tpreguntas (pregunta) VALUES (\'¿En qué ciudad naciste?\')')
       await this.db.executeSql('INSERT INTO tpreguntas (pregunta) VALUES (\'¿Cuál es tu comida favorita?\')')
         //insert del usuario Administrador
-        await this.db.executeSql('INSERT INTO usuarios (nombre, correo, contrasena, idpregunta, Firulais, rol_id) VALUES (\'Administrador\', \'admin@example.com\', \'contrasena_segura\', 1, \'ValorFirulais\', 1)');
+        await this.db.executeSql('INSERT INTO usuarios (nombre, correo, contrasena, idpregunta, respuesta, rol_id) VALUES (\'Administrador\', \'admin@example.com\', \'contrasena_segura\', 1, \'ValorFirulais\', 1)');
  
       //manipular el observable
       this.isDBReady.next(true);
@@ -138,6 +133,32 @@ export class DbserviciosService {
     return this.datosUsuario.asObservable();
   }
   
+  agregarUsuario(usuario: Usuario) {
+    const { nombre, apellido, correo, contraseña, preguntaS, respuesta, rol, imagen } = usuario;
+    this.db.executeSql('INSERT INTO usuario (nombre, apellido, correo, contraseña, idpreguntas, respuesta, rolid, imagenperfil) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [nombre, apellido, correo, contraseña, preguntaS, respuesta, rol, imagen])
+      .then(() => {
+        console.log('Usuario agregado con éxito');
+        this.loadDataUsuario(); // Recargar datos después de la inserción
+      })
+      .catch(error => {
+        console.error('Error al agregar usuario: ' + JSON.stringify(error));
+      });
+  }
+
+  modificarUsuario(usuario: Usuario) {
+    const { id_usuario, nombre, apellido, correo, contraseña, preguntaS, respuesta, rol, imagen } = usuario;
+    this.db.executeSql('UPDATE usuario SET nombre = ?, apellido = ?, correo = ?, contraseña = ?, idpreguntas = ?, respuesta = ?, rolid = ?, imagenperfil = ? WHERE usuarioid = ?',
+      [nombre, apellido, correo, contraseña, preguntaS, respuesta, rol, imagen, id_usuario])
+      .then(() => {
+        console.log('Usuario modificado con éxito');
+        this.loadDataUsuario(); // Recargar datos después de la modificación
+      })
+      .catch(error => {
+        console.error('Error al modificar usuario: ' + JSON.stringify(error));
+      });
+  }
+
   loadDataRol(){
     this.db.executeSql('SELECT * FROM rol', []).then(data => {
       let items = [];
