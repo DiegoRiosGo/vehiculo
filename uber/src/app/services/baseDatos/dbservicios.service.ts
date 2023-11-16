@@ -7,7 +7,7 @@ import { Usuario } from '../models/usuario';
 import { Rol } from '../models/rol';
 import { Tpreguntas } from '../models/tpreguntas';
 import { Vehiculo } from '../models/vehiculo';
-
+import { Viaje } from '../models/viaje';
 
 // como usar SQLite https://como-programar.net/ionic/sqlite/
 @Injectable({
@@ -20,6 +20,7 @@ export class DbserviciosService {
   public datosRol = new BehaviorSubject<Rol[]>([]);
   public datosPregunta = new BehaviorSubject<Tpreguntas[]>([]);
   public datosVehiculo = new BehaviorSubject<Vehiculo[]>([]);
+  public datosViaje = new BehaviorSubject<Viaje[]>([])
   
   //observable para la disponibilidad de la BD
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false)
@@ -86,6 +87,12 @@ export class DbserviciosService {
         console.error('Error al crear la tabla: ' + JSON.stringify(error));
       })
 
+      await this.db.executeSql('CREATE TABLE IF NOT EXIST detalle (iddetalle INTEGER PRIMARY KEY AUTOINCREMENT, FOREIGN KEY (idviaje) REFERENCES(viaje(idviaje)))',[]).then(()=>{
+        console.log('Tabla [nombre de la tabla] creada con exito')
+      }).catch(error=>{
+        console.error('Error al crear la tabla: ' + JSON.stringify(error));
+      })
+      
       //Plantilla para crear tablas
       /* await this.db.executeSql('CREATE TABLE IF NOT EXIST').then(()=>{
         console.log('Tabla [nombre de la tabla] creada con exito')
@@ -127,7 +134,7 @@ export class DbserviciosService {
         console.error('Error al obtener datos: ' + JSON.stringify(error));
       });
   }
-  getDataUsuario(): Observable<any[]> {
+  getDataUsuario(): Observable<Usuario[]> {
     return this.datosUsuario.asObservable();
   }
   
@@ -142,7 +149,8 @@ export class DbserviciosService {
       console.error('Error al obtener datos: ' + JSON.stringify(error));
     });
   }
-  getDataRol(): Observable<any[]> {
+
+  getDataRol(): Observable<Rol[]> {
     return this.datosRol.asObservable();
   }
 
@@ -157,11 +165,56 @@ export class DbserviciosService {
       console.error('Error al obtener datos: ' + JSON.stringify(error));
     });
   }
-  getDataPreguntasec(): Observable<any[]> {
+
+  getDataPreguntasec(): Observable<Tpreguntas[]> {
     return this.datosPregunta.asObservable();
   }
 
+loadDataVehiculo(){
+  this.db.executeSql('SELECT * FROM vehiculo', []).then(data =>{
+    let items = [];
+    for (let i = 0; i < data.rows.length; i++){
+      items.push(data.rows.items(i));
+    }
+    this.datosPregunta.next(items);
+  }).catch(error =>{
+    console.error('Error al obtener datos: ' + JSON.stringify(error));
+  });
+}
 
+getDataVehiculo(): Observable<Vehiculo[]> {
+  return this.datosVehiculo.asObservable();
+}
+
+loadDataViaje(){
+  this.db.executeSql('SELECT * FROM viaje', []).then(data =>{
+    let items = [];
+    for (let i = 0; i < data.rows.length; i++){
+      items.push(data.rows.items(i));
+    }
+    this.datosPregunta.next(items);
+  }).catch(error =>{
+    console.error('Error al obtener datos: ' + JSON.stringify(error));
+  });
+}
+
+getDataViaje(): Observable<Viaje[]>{
+  return this.datosViaje.asObservable();
+}
+
+loadDataSede(){
+  this.db.executeSql('SELECT * FROM sede', []).then(data =>{
+    let items = [];
+    for (let i = 0; i < data.rows.length; i++){
+      items.push(data.rows.items(i));
+    }
+    this.datosPregunta.next(items);
+  }).catch(error =>{
+    console.error('Error al obtener datos: ' + JSON.stringify(error));
+  });
+}
+
+getDataSede(){}
 
 
   async presentAlert(msj: string) {
