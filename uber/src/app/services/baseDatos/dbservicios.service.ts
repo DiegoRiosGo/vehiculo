@@ -53,7 +53,7 @@ export class DbserviciosService {
   async crearT() {
     try {
       //ejecutar las variables de creacion de tablas
-      await this.db.executeSql('CREATE TABLE IF NOT EXIST usuario (usuarioid INTEGER PRIMARY KEY AUTOINCREMENT, nombre VARCHAR (30), apellido VARCHAR (30), correo VARCHAR(50), contraseña VARCHAR(10)), FOREIGN KEY (idpreguntas) REFERENCES (tpreguntas(idpregunta), respuesta VARCHAR(50), FOREIGN KEY (rolid) REFERENCES (rol(rolid)), imagenperfil BLOB', []).then(()=> {
+      await this.db.executeSql('CREATE TABLE IF NOT EXIST usuario (usuarioid INTEGER PRIMARY KEY AUTOINCREMENT, nombre VARCHAR (30), apellido VARCHAR (30), correo VARCHAR(50), contrasena VARCHAR(10)), FOREIGN KEY (idpreguntas) REFERENCES (tpreguntas(idpregunta), respuesta VARCHAR(50), FOREIGN KEY (rolid) REFERENCES (rol(rolid)), imagenperfil BLOB', []).then(()=> {
         console.log('Tabla usuario creada con exito')
       }).catch(error => {
         console.error('Error al crear la tabla: ' + JSON.stringify(error));
@@ -134,9 +134,9 @@ export class DbserviciosService {
   }
   
   agregarUsuario(usuario: Usuario) {
-    const { nombre, apellido, correo, contraseña, preguntaS, respuesta, rol, imagen } = usuario;
-    this.db.executeSql('INSERT INTO usuario (nombre, apellido, correo, contraseña, idpreguntas, respuesta, rolid, imagenperfil) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [nombre, apellido, correo, contraseña, preguntaS, respuesta, rol, imagen])
+    const { nombre, apellido, correo, contrasena, preguntaS, respuesta, rol, imagen } = usuario;
+    this.db.executeSql('INSERT INTO usuario (nombre, apellido, correo, contrasena, idpreguntas, respuesta, rolid, imagenperfil) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [nombre, apellido, correo, contrasena, preguntaS, respuesta, rol, imagen])
       .then(() => {
         console.log('Usuario agregado con éxito');
         this.loadDataUsuario(); // Recargar datos después de la inserción
@@ -147,9 +147,9 @@ export class DbserviciosService {
   }
 
   modificarUsuario(usuario: Usuario) {
-    const { id_usuario, nombre, apellido, correo, contraseña, preguntaS, respuesta, rol, imagen } = usuario;
-    this.db.executeSql('UPDATE usuario SET nombre = ?, apellido = ?, correo = ?, contraseña = ?, idpreguntas = ?, respuesta = ?, rolid = ?, imagenperfil = ? WHERE usuarioid = ?',
-      [nombre, apellido, correo, contraseña, preguntaS, respuesta, rol, imagen, id_usuario])
+    const { id_usuario, nombre, apellido, correo, contrasena, preguntaS, respuesta, rol, imagen } = usuario;
+    this.db.executeSql('UPDATE usuario SET nombre = ?, apellido = ?, correo = ?, contrasena = ?, idpreguntas = ?, respuesta = ?, rolid = ?, imagenperfil = ? WHERE usuarioid = ?',
+      [nombre, apellido, correo, contrasena, preguntaS, respuesta, rol, imagen, id_usuario])
       .then(() => {
         console.log('Usuario modificado con éxito');
         this.loadDataUsuario(); // Recargar datos después de la modificación

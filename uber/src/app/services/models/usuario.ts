@@ -3,7 +3,7 @@ export class Usuario {
     nombre: string;
     apellido:string;
     correo:  string;
-    contraseña: string;
+    contrasena: string;
     preguntaS: number;
     respuesta: string;
     rol: number;
@@ -13,7 +13,7 @@ export class Usuario {
         nombre: string,
         apellido: string,
         correo:string,
-        contraseña: string,
+        contrasena: string,
         preguntaS: number,
         respuesta: string,
         rol: number,
@@ -23,7 +23,7 @@ export class Usuario {
         this.nombre = nombre;
         this.apellido = apellido;
         this.correo = correo;
-        this.contraseña = contraseña;
+        this.contrasena = contrasena;
         this.preguntaS = preguntaS
         this.respuesta = respuesta
         this.rol =  rol;

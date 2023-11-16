@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { DbserviciosService } from 'src/app/services/baseDatos/dbservicios.service';
 
 @Component({
   selector: 'app-inicio-sesion',
@@ -7,9 +9,26 @@ import { Component, OnInit } from '@angular/core';
 })
 export class InicioSesionPage implements OnInit {
 
-  constructor() { }
+  correoElectronico: string = '';
+  contrasena:string = '';
+  
+  constructor(private db: DbserviciosService, private router: Router) { }
 
   ngOnInit() {
+  }
+
+  iniciarSesion() {
+    // Validación de inicio de sesión
+    this.db.getDataUsuario().subscribe(usuarios => {
+      const usuarioEncontrado = usuarios.find(usuario => usuario.correo === this.correoElectronico && usuario.contrasena === this.contrasena);
+
+      if (usuarioEncontrado) {
+        this.router.navigate(['/perfiluser']);
+      } else {
+        //cambiar mensaje de consola por mensaje de Alert en html
+        console.error('Correo o Contraseña incorrectos');  
+      }
+    });
   }
 
 }
