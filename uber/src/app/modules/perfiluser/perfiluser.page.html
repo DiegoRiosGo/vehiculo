@@ -1,11 +1,10 @@
 <ion-content [fullscreen]="true" class="content">
   <div class="background-gradient"></div>
-  <br>
 
   <div class="center-container">
     <ion-card class="profile-card">
 
-      <ion-item>
+      <ion-item class="custom-item">
 
         <!-- Icono de tuerca para modificar perfil -->
         <ion-icon name="settings" slot="start" [routerLink]="['/moduser']" color="primary"
@@ -24,7 +23,6 @@
             <ion-label slot="end" color="primary">{{ climaData.current.temp_c }}°C</ion-label>
           </ion-item>
         </ion-list>
-
 
       </ion-card-header>
 
@@ -46,16 +44,11 @@
         <div class="profile-email">correo@ejemplo.com</div>
 
         <div class="login-buttons">
-          <ion-button expand="full" color="primary" [routerLink]="['/mapa']">Tomar
-            Viaje</ion-button>
-          <ion-button expand="full" color="primary" [routerLink]="['/mapa']" >
+          <ion-button expand="full" color="primary" [routerLink]="['/mapa']">Tomar Viaje</ion-button>
+          <ion-button expand="full" color="primary" [routerLink]="['/mapa']">
             Iniciar Viaje Como Conductor
           </ion-button>
         </div>
-
-
-        <!-- Botón "Iniciar Viaje" -->
-
       </ion-card-content>
     </ion-card>
   </div>
