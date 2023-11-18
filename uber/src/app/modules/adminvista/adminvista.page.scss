@@ -1,124 +1,98 @@
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-ion-content.admin-content {
-    .welcome-message {
-        ion-col {
-            text-align: center;
-            margin-top: 20px;
+ ion-content.admin-content {
+     .welcome-message {
+         ion-col {
+             text-align: center;
+             margin-top: 20px;
 
-            h1 {
-                font-size: 1.9em;
-                color: #3498db; // Color primario
-            }
-        }
-    }
+             h1 {
+                 font-size: 1.9em;
+                 color: #3498db; // Color primario
+             }
+         }
+     }
 
-    .admin-icons {
-        ion-col {
-            display: flex;
-            flex-direction: column;
-            font-size: 40px;
-            align-items: center;
-            margin-top: 20px;
+     .admin-icons {
+         ion-col {
+             display: flex;
+             flex-direction: column;
+             font-size: 40px;
+             align-items: center;
+             margin-top: 20px;
 
-            .admin-icon {
-                color: #2ecc71; // Color de ícono
-                margin-bottom: 5px;
-            }
+             .admin-icon {
+                 color: #2ecc71; // Color de ícono
+                 margin-bottom: 5px;
+             }
 
-            .admin-label {
-                text-align: center;
-                font-size: 0.5em; // Tamaño de etiqueta aumentado
-                color: #34495e; // Color de etiqueta
-            }
-        }
-    }
-=======
->>>>>>> Stashed changes
-ion-card.profile-card {
-    width: 80%;
-    margin: auto;
-    text-align: center;
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
+             .admin-label {
+                 text-align: center;
+                 font-size: 0.5em; // Tamaño de etiqueta aumentado
+                 color: #34495e; // Color de etiqueta
+             }
+         }
+     }
 
-ion-item {
-    color: #fff;
-    /* Establece el color del label a blanco en ambos modos */
-}
+     ion-card.profile-card {
+         width: 80%;
+         margin: auto;
+         text-align: center;
+         background-color: rgba(255, 255, 255, 0.9);
+         border-radius: 10px;
+         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+     }
 
-.profile-image {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-    background: linear-gradient(to bottom, #00b894, #0984e3);
-    /* Color de fondo para el marco redondo */
-    width: 100px;
-    /* Tamaño de la imagen de perfil */
-    height: 100px;
-    margin: 0 auto 20px;
-}
+     ion-item {
+         color: #fff;
+         /* Establece el color del label a blanco en ambos modos */
+     }
 
-.profile-email {
-    color: rgba(0, 0, 0, 0.6);
-    /* Color difuminado (gris) */
-<<<<<<< Updated upstream
-=======
->>>>>>> aded1aed2bbba215fda795a1aa1a68a5656949d7
->>>>>>> Stashed changes
-}
+     .profile-image {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         border-radius: 50%;
+         background: linear-gradient(to bottom, #00b894, #0984e3);
+         /* Color de fondo para el marco redondo */
+         width: 100px;
+         /* Tamaño de la imagen de perfil */
+         height: 100px;
+         margin: 0 auto 20px;
+     }
 
-.background-gradient {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to bottom, #00b894, #0984e3);
-    /* Degradado de verde a azul */
-    z-index: -1;
-<<<<<<< Updated upstream
-}
-=======
-<<<<<<< HEAD
-  }
-  
-=======
-}
->>>>>>> aded1aed2bbba215fda795a1aa1a68a5656949d7
->>>>>>> Stashed changes
+     .profile-email {
+         color: rgba(0, 0, 0, 0.6);
+         /* Color difuminado (gris) */
+     }
 
-.center-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-}
+     .background-gradient {
+         position: absolute;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         background: linear-gradient(to bottom, #00b894, #0984e3);
+         /* Degradado de verde a azul */
+         z-index: -1;
+     }
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-ion-card.login-card {
-    width: 80%;
-    margin: auto;
-    text-align: center;
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-=======
->>>>>>> Stashed changes
-ion-button {
-    margin-top: 10px;
-}
 
-<<<<<<< Updated upstream
-/* Personaliza los estilos según tu diseño y paleta de colores. */
-=======
-/* Personaliza los estilos según tu diseño y paleta de colores. */
->>>>>>> aded1aed2bbba215fda795a1aa1a68a5656949d7
->>>>>>> Stashed changes
+ }
+
+
+
+
+ .center-container {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     height: 100%;
+ }
+
+ ion-card.login-card {
+     width: 80%;
+     margin: auto;
+     text-align: center;
+     background-color: rgba(255, 255, 255, 0.9);
+     border-radius: 10px;
+     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+ }

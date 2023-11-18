@@ -1,17 +1,7 @@
-<<<<<<< Updated upstream
-<ion-content [fullscreen]="true" class="content">
-  <div class="background-gradient"></div>
-  <br>
-
-=======
-<<<<<<< HEAD
 <ion-content [fullscreen]="true" class="admin-content">
-
-
+  
   <div class="background-gradient">
-
     <div class="center-container">
-
       <ion-card class="login-card">
         <ion-row class="welcome-message">
           <ion-col>
@@ -20,80 +10,26 @@
         </ion-row>
 
         <ion-row class="admin-icons">
-
           <ion-col class="admin-icon">
-            <ion-icon color="secondary" name="people"></ion-icon>
-            <p class="admin-label">Pasajeros</p>
+            <ion-icon name="people" color="secondary" style="--ion-icon-size: 3em;"></ion-icon>
+            <p class="admin-label">Registro Clientes</p>
           </ion-col>
           <ion-col class="admin-icon">
-            <ion-icon color="warning" name="car"></ion-icon>
-            <p class="admin-label">Conductores</p>
+            <ion-icon name="car-sport" color="success" style="--ion-icon-size: 3em;"></ion-icon>
+            <p class="admin-label">Registro Vehículos de
+              Clientes</p>
           </ion-col>
-          <ion-col class="admin-icon">
-            <ion-icon color="success" name="car-sport"></ion-icon>
-            <p class="admin-label">Autos</p>
-          </ion-col>
-
         </ion-row>
 
         <ion-row class="admin-icons">
           <ion-col class="admin-icon">
-            <ion-icon name="log-out" [routerLink]="['/logout']" color="primary" (click)="logout()"></ion-icon>
+            <ion-icon name="log-out" [routerLink]="['/logout']" color="primary" (click)="logout()"
+              style="--ion-icon-size: 3em;"></ion-icon>
             <p class="admin-label">Salir</p>
           </ion-col>
         </ion-row>
 
       </ion-card>
-
     </div>
-
   </div>
-
-
-=======
-<ion-content [fullscreen]="true" class="content">
-  <div class="background-gradient"></div>
-  <br>
-
->>>>>>> Stashed changes
-  <div class="center-container">
-    <ion-card class="profile-card">
-      <ion-item>
-
-        <!-- Icono de tuerca para modificar perfil -->
-        <ion-icon name="settings" slot="start" [routerLink]="['/moduser']" color="primary"
-          class="settings-icon"></ion-icon>
-
- 
-        <!-- Icono de cierre de sesión -->
-        <ion-icon name="log-out" slot="end" [routerLink]="['/logout']" color="primary" class="logout-icon"
-          (click)="logout()"></ion-icon>
-
-      </ion-item>
-      <ion-card-content>
-
-        <!-- Foto de perfil con marco redondo -->
-        <div class="profile-image-container">
-          <!-- Foto de perfil con marco redondo -->
-          <div class="profile-image">
-            <ion-img src="assets/profile-image.jpg"></ion-img>
-          </div>
-        </div>
-
-        <!-- Nombre de usuario -->
-        <div class="profile-name">Nombre de Usuario</div>
-
-        <!-- Correo con color difuminado -->
-        <div class="profile-email">correo@ejemplo.com</div>
-
-        <!-- Botón "Iniciar Viaje" -->
-        <ion-button expand="full" color="primary" [routerLink]="['/mapa']">registro clientes</ion-button>
-        <ion-button expand="full" color="primary" [routerLink]="['/mapa']">registro vehiculos de clientes</ion-button>
-      </ion-card-content>
-    </ion-card>
-  </div>
-<<<<<<< Updated upstream
-=======
->>>>>>> aded1aed2bbba215fda795a1aa1a68a5656949d7
->>>>>>> Stashed changes
 </ion-content>
