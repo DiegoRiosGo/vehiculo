@@ -34,14 +34,20 @@ const routes: Routes = [
   {
     path: 'adminvista',
     loadChildren: () => import('./modules/adminvista/adminvista.module').then( m => m.AdminvistaPageModule)
-  },  {
+  },
+  {
     path: 'mapa',
     loadChildren: () => import('./modules/mapa/mapa.module').then( m => m.MapaPageModule)
   },
   {
     path: 'prueba',
     loadChildren: () => import('./modules/prueba/prueba.module').then( m => m.PruebaPageModule)
+  },  {
+    path: 'registroadmin',
+    loadChildren: () => import('./modules/registroadmin/registroadmin.module').then( m => m.RegistroadminPageModule)
   },
+
+  
 
   
 

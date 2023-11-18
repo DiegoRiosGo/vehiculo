@@ -1,0 +1,55 @@
+ion-card.profile-card {
+    width: 80%;
+    margin: auto;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+ion-item {
+    color: #fff;
+    /* Establece el color del label a blanco en ambos modos */
+}
+
+.profile-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background: linear-gradient(to bottom, #00b894, #0984e3);
+    /* Color de fondo para el marco redondo */
+    width: 100px;
+    /* Tamaño de la imagen de perfil */
+    height: 100px;
+    margin: 0 auto 20px;
+}
+
+.profile-email {
+    color: rgba(0, 0, 0, 0.6);
+    /* Color difuminado (gris) */
+}
+
+.background-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, #00b894, #0984e3);
+    /* Degradado de verde a azul */
+    z-index: -1;
+}
+
+.center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+ion-button {
+    margin-top: 10px;
+}
+
+/* Personaliza los estilos según tu diseño y paleta de colores. */
