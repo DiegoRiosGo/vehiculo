@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { ClimaService } from 'src/app/services/servClima/clima.service';
+import { ChangeDetectorRef } from '@angular/core';
 
 
 @Component({
@@ -15,7 +16,7 @@ export class PerfiluserPage implements OnInit {
   
   constructor(private router: Router,
     private alertController: AlertController,
-    private api:ClimaService
+    private api:ClimaService,private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -54,13 +55,14 @@ export class PerfiluserPage implements OnInit {
 
   //api clima
 
-  obtenerclima(){
-    this.api.getclima().subscribe((data)=>{
-      this.climaData=data;
-    })
+  obtenerclima() {
+    this.api.getclima().subscribe((data) => {
+      this.climaData = data;
+      this.cdr.detectChanges(); // Forzar la actualización de la vista
+    });
   }
-
-  ionViewWillEnterr(){
+  
+  ionViewWillEnter() {
     this.obtenerclima();
   }
 }
