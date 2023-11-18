@@ -1,3 +1,41 @@
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+ion-content.admin-content {
+    .welcome-message {
+        ion-col {
+            text-align: center;
+            margin-top: 20px;
+
+            h1 {
+                font-size: 1.9em;
+                color: #3498db; // Color primario
+            }
+        }
+    }
+
+    .admin-icons {
+        ion-col {
+            display: flex;
+            flex-direction: column;
+            font-size: 40px;
+            align-items: center;
+            margin-top: 20px;
+
+            .admin-icon {
+                color: #2ecc71; // Color de ícono
+                margin-bottom: 5px;
+            }
+
+            .admin-label {
+                text-align: center;
+                font-size: 0.5em; // Tamaño de etiqueta aumentado
+                color: #34495e; // Color de etiqueta
+            }
+        }
+    }
+=======
+>>>>>>> Stashed changes
 ion-card.profile-card {
     width: 80%;
     margin: auto;
@@ -28,6 +66,10 @@ ion-item {
 .profile-email {
     color: rgba(0, 0, 0, 0.6);
     /* Color difuminado (gris) */
+<<<<<<< Updated upstream
+=======
+>>>>>>> aded1aed2bbba215fda795a1aa1a68a5656949d7
+>>>>>>> Stashed changes
 }
 
 .background-gradient {
@@ -39,7 +81,16 @@ ion-item {
     background: linear-gradient(to bottom, #00b894, #0984e3);
     /* Degradado de verde a azul */
     z-index: -1;
+<<<<<<< Updated upstream
 }
+=======
+<<<<<<< HEAD
+  }
+  
+=======
+}
+>>>>>>> aded1aed2bbba215fda795a1aa1a68a5656949d7
+>>>>>>> Stashed changes
 
 .center-container {
     display: flex;
@@ -48,8 +99,26 @@ ion-item {
     height: 100%;
 }
 
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+ion-card.login-card {
+    width: 80%;
+    margin: auto;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+=======
+>>>>>>> Stashed changes
 ion-button {
     margin-top: 10px;
 }
 
+<<<<<<< Updated upstream
 /* Personaliza los estilos según tu diseño y paleta de colores. */
+=======
+/* Personaliza los estilos según tu diseño y paleta de colores. */
+>>>>>>> aded1aed2bbba215fda795a1aa1a68a5656949d7
+>>>>>>> Stashed changes

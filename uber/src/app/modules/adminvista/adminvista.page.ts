@@ -8,12 +8,24 @@ import { AlertController } from '@ionic/angular';
   styleUrls: ['./adminvista.page.scss'],
 })
 export class AdminvistaPage implements OnInit {
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+
+  constructor(private router: Router,
+    private alertController: AlertController) { }
+=======
+>>>>>>> Stashed changes
   
   
   
   constructor(private router: Router,
     private alertController: AlertController,
   ) { }
+<<<<<<< Updated upstream
+=======
+>>>>>>> aded1aed2bbba215fda795a1aa1a68a5656949d7
+>>>>>>> Stashed changes
 
   ngOnInit() {
   }
@@ -42,10 +54,19 @@ export class AdminvistaPage implements OnInit {
 
     await alert.present();
   }
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
 
   editProfile() {
     // Lógica para editar el perfil
     // Por ejemplo, redireccionar a una página de edición de perfil
     this.router.navigate(['/moduser']);
   }
+<<<<<<< Updated upstream
+=======
+>>>>>>> aded1aed2bbba215fda795a1aa1a68a5656949d7
+>>>>>>> Stashed changes
 }
