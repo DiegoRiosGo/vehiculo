@@ -15,275 +15,362 @@ import { Detalle } from '../models/detalle';
   providedIn: 'root'
 })
 export class DbserviciosService {
-  //variable para la coneccion a BD
-  public db!: SQLiteObject;
-  public datosUsuario = new BehaviorSubject<Usuario[]>([]);
-  public datosRol = new BehaviorSubject([]);
-  public datosPregunta = new BehaviorSubject<Tpreguntas[]>([]);
-  public datosVehiculo = new BehaviorSubject<Vehiculo[]>([]);
-  public datosViaje = new BehaviorSubject<Viaje[]>([])
-  public datosDetalle = new BehaviorSubject<Detalle[]>([])
-  
-
-  //variables creacion de tablas prueba rol
-
-  //tabla creada
-  tablarol: string = "CREATE TABLE IF NOT EXIST rol (id INTEGER PRIMARY KEY autoincrement, nomrol VARCHAR(30) NOT NULL);";
-
-  //ingreso a tabla
-  registrorol: string = "INSERT or IGNORE INTO rol (id, nomrol) VALUES (1, 'Administrador');";
-  /*
-  await this.db.executeSql('CREATE TABLE IF NOT EXIST rol (rolid INTEGER PRIMARY KEY autoincrement, nomrol VARCHAR(30))', []).then(()=>{
-        console.log('Tabla rol creada con exito')
-      }).catch(error=>{
-        console.error('Error al crear la tabla: ' + JSON.stringify(error));
-      }) 
-
-  //inserts de rol
-      //revisar si fallla
-      await this.db.executeSql('INSERT or IGNORE INTO rol (rolid, nomrol) VALUES (1, \'Administrador\');',[]);
-      await this.db.executeSql('INSERT or IGNORE INTO rol (rolid, nomrol) VALUES (2, \'Alumno\');',[]);
-  */
-
-  //variable para manipulación del estatus de la BD
-  private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   //constructor
-  constructor(public sqlite: SQLite, private platform: Platform, private alertController: AlertController) {
-    this.crearDB()
+  constructor(public sqlite: SQLite, private platform: Platform, private alertController: AlertController) {}
+
+  //crear la base de datos
+  crearDB() {
+    return this.sqlite.create({
+      name: 'data.db',
+      location: 'default',
+    }) 
   }
 
-  //funciones para subscribirme al observable
-  dbState(){
-    return this.isDBReady.asObservable();
+  createTable() {
+    return this.crearDB().then((db: SQLiteObject) => {
+      // Crea la tabla 'rol'
+      db.executeSql("CREATE TABLE IF NOT EXISTS rol (id INTEGER PRIMARY KEY AUTOINCREMENT, nomrol VARCHAR(30) NOT NULL);", [])
+        .then(() => console.log('Tabla rol creada'))
+        .catch(error => console.error('Error al crear la tabla rol', error));
+
+      // Crea la tabla 'sede'
+      db.executeSql("CREATE TABLE IF NOT EXISTS sede (idsede INTEGER PRIMARY KEY AUTOINCREMENT, nomsede VARCHAR(50), locacion VARCHAR(100));", [])
+      .then(() => console.log('Tabla sede creada'))
+      .catch(error => console.error('Error al crear la tabla sede', error));
+
+      // Crea la tabla 'tpreguntas'
+      db.executeSql("CREATE TABLE IF NOT EXISTS tpreguntas (idpreguntas INTEGER PRIMARY KEY AUTOINCREMENT, pregunta VARCHAR(50));", [])
+        .then(() => console.log('Tabla tpreguntas creada'))
+        .catch(error => console.error('Error al crear la tabla tpreguntas', error));
+
+      // Crea la tabla 'usuario' clave
+      db.executeSql("CREATE TABLE IF NOT EXISTS usuario (usuarioid INTEGER PRIMARY KEY AUTOINCREMENT, nombre VARCHAR (30), apellido VARCHAR (30), correo VARCHAR(50), contrasena VARCHAR(10), idpreguntas INTEGER, respuesta VARCHAR(50), rolid INTEGER, imagenperfil BLOB, FOREIGN KEY (idpreguntas) REFERENCES tpreguntas(idpregunta), FOREIGN KEY (rolid) REFERENCES rol(rolid));", [])
+        .then(() => console.log('Tabla usuario creada'))
+        .catch(error => console.error('Error al crear la tabla usuario', error));
+
+      // Crea la tabla 'vehiculo' clave
+      db.executeSql("CREATE TABLE IF NOT EXISTS vehiculo (autoid INTEGER PRIMARY KEY AUTOINCREMENT, patente VARCHAR(6), userid INTEGER, asientos INTEGER, FOREIGN KEY (userid) REFERENCES usuario(usuarioid));", [])
+        .then(() => console.log('Tabla vehiculo creada'))
+        .catch(error => console.error('Error al crear la tabla vehiculo', error));
+
+      // Crea la tabla 'viaje' clave de clave
+      db.executeSql("CREATE TABLE IF NOT EXISTS viaje (idviaje INTEGER PRIMARY KEY AUTOINCREMENT, autoid INTEGER, ppartida VARCHAR(50), pdestino VARCHAR(50), FOREIGN KEY (autoid) REFERENCES vehiculo(autoid));", [])
+        .then(() => console.log('Tabla viaje creada'))
+        .catch(error => console.error('Error al crear la tabla viaje', error));
+
+      // Crea la tabla 'detalle' ultima clave
+      db.executeSql("CREATE TABLE IF NOT EXISTS detalle (iddetalle INTEGER PRIMARY KEY AUTOINCREMENT, idviaje INTEGER, usuarioid INTEGER, FOREIGN KEY (idviaje) REFERENCES viaje(idviaje), FOREIGN KEY (usuarioid) REFERENCES usuario(usuarioid));", [])
+        .then(() => console.log('Tabla detalle creada'))
+        .catch(error => console.error('Error al crear la tabla detalle', error));
+    });
   }
+
+  insertData() {
+    return this.crearDB().then((db: SQLiteObject) => {
+      // Inserta datos en la tabla 'rol'
+      db.executeSql("INSERT OR IGNORE INTO rol (id, nomrol) VALUES (1, 'Administrador');", [])
+        .then(() => console.log('Datos insertados en la tabla rol'))
+        .catch(error => console.error('Error al insertar datos en la tabla rol', error));
+
+      db.executeSql("INSERT OR IGNORE INTO rol (id, nomrol) VALUES (2, 'Alumno');", [])
+        .then(() => console.log('Datos insertados en la tabla rol'))
+        .catch(error => console.error('Error al insertar datos en la tabla rol', error));
+
+      // Inserta datos en la tabla 'tpreguntas'
+      db.executeSql("INSERT OR IGNORE INTO tpreguntas (pregunta) VALUES ('¿Cuál es el nombre de tu primer mascota?');", [])
+        .then(() => console.log('Datos insertados en la tabla tpreguntas'))
+        .catch(error => console.error('Error al insertar datos en la tabla tpreguntas', error));
+      
+      db.executeSql("INSERT OR IGNORE INTO tpreguntas (pregunta) VALUES ('¿En qué ciudad naciste?');", [])
+        .then(() => console.log('Datos insertados en la tabla tpreguntas'))
+        .catch(error => console.error('Error al insertar datos en la tabla tpreguntas', error));
+        
+      db.executeSql("INSERT OR IGNORE INTO tpreguntas (pregunta) VALUES ('¿Cuál es tu comida favorita?');", [])
+        .then(() => console.log('Datos insertados en la tabla tpreguntas'))
+        .catch(error => console.error('Error al insertar datos en la tabla tpreguntas', error));
+
+      // Inserta datos en la tabla 'usuarios'
+      db.executeSql("INSERT OR IGNORE INTO usuario (nombre, correo, contrasena, idpreguntas, respuesta, rolid) VALUES ('Administrador','admin@example.com','contrasena_segura',1,'ValorFirulais',1);", [])
+        .then(() => console.log('Datos insertados en la tabla usuarios'))
+        .catch(error => console.error('Error al insertar datos en la tabla usuarios', error));
+
+      // Inserta datos en la tabla 'vehiculo'
+      db.executeSql("INSERT OR IGNORE INTO vehiculo (patente, userid, asientos) VALUES ('ABC123',(SELECT usuarioid FROM usuario WHERE nombre = 'Administrador'),4);", [])
+        .then(() => console.log('Datos insertados en la tabla vehiculo'))
+        .catch(error => console.error('Error al insertar datos en la tabla vehiculo', error));
+
+      db.executeSql("INSERT OR IGNORE INTO vehiculo (patente, userid, asientos) VALUES ('XYZ789',2,2);", [])
+        .then(() => console.log('Datos insertados en la tabla vehiculo'))
+        .catch(error => console.error('Error al insertar datos en la tabla vehiculo', error));
+    });
+  }
+
 
   //observable para las tablas
-  loadDataUsuario(){
-    this.db.executeSql('SELECT * FROM usuario', [])
-      .then(data => {
-        let items = [];
-        for (let i = 0; i < data.rows.length; i++) {
-          items.push(data.rows.item(i));
-        }
-        this.datosUsuario.next(items);
-      })
-      .catch(error => {
-        console.error('Error al obtener datos: ' + JSON.stringify(error));
-      });
-  }
-  getDataUsuario(): Observable<Usuario[]> {
-    return this.datosUsuario.asObservable();
-  }
-  
-  agregarUsuario(usuario: Usuario) {
-    const { nombre, apellido, correo, contrasena, preguntaS, respuesta, rol, imagen } = usuario;
-    this.db.executeSql('INSERT INTO usuario (nombre, apellido, correo, contrasena, idpreguntas, respuesta, rolid, imagenperfil) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [nombre, apellido, correo, contrasena, preguntaS, respuesta, rol, imagen])
-      .then(() => {
-        console.log('Usuario agregado con éxito');
-        this.loadDataUsuario(); // Recargar datos después de la inserción
-      })
-      .catch(error => {
-        console.error('Error al agregar usuario: ' + JSON.stringify(error));
-      });
-  }
-
-  modificarUsuario(usuario: Usuario) {
-    const { id_usuario, nombre, apellido, correo, contrasena, preguntaS, respuesta, rol, imagen } = usuario;
-    this.db.executeSql('UPDATE usuario SET nombre = ?, apellido = ?, correo = ?, contrasena = ?, idpreguntas = ?, respuesta = ?, rolid = ?, imagenperfil = ? WHERE usuarioid = ?',
-      [nombre, apellido, correo, contrasena, preguntaS, respuesta, rol, imagen, id_usuario])
-      .then(() => {
-        console.log('Usuario modificado con éxito');
-        this.loadDataUsuario(); // Recargar datos después de la modificación
-      })
-      .catch(error => {
-        console.error('Error al modificar usuario: ' + JSON.stringify(error));
-      });
-  }
-
 
 //-------------------------------------------------------------
 
 // Función para cargar datos de la tabla "rol"
-
-getDataRol(): Observable<Rol[]> {
-  return this.datosRol.asObservable();
+// Insertar un rol
+insertarRol(nomrol: string) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("INSERT INTO rol (nomrol) VALUES (?)", [nomrol]);
+  });
 }
 
-
-//revisar si fallla
-  loadDataRol(){
-    return this.db.executeSql('SELECT * FROM rol',[]).then(res=>{
-      //variable para almacenar la consulta
-      let items: Rol[] = [];
-      //validar si existen registros
-      if(res.rows.length > 0){
-        //procedo a recorrer y guardar
-        for(var i=0; i<res.rows.length; i++){
-          //agrego los datos a mi variable
-          items.push({
-            id: res.rows.item(i).id,
-            nom_rol: res.rows.item(i).nom_rol,
-          })
-        }
+// Obtener todos los roles
+obtenerRoles() {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("SELECT * FROM rol", []).then(data => {
+      let roles = [];
+      for (let i = 0; i < data.rows.length; i++) {
+        roles.push(data.rows.item(i));
       }
-      //actualizar mi observable
-      this.datosRol.next(items as any);
-    }).catch(e=>{
-      this.presentAlert("Error en cargar Rol: " + e);
-    })
-  }
-  // Función para agregar un vehículo a la tabla "vehiculo"
-agregarRol(Rol: Rol) {
-  const { id, nom_rol } = Rol;
-  this.db.executeSql('INSERT INTO Rol (id, nom_rol) VALUES (?, ?)',
-    [id, nom_rol])
-    .then(() => {
-      console.log('Rol agregado con éxito');
-      this.loadDataRol(); // Recargar datos después de la inserción
-    })
-    .catch(error => {
-      console.error('Error al agregar Rol: ' + JSON.stringify(error));
+      return roles;
     });
+  });
 }
 
-// Función para modificar un vehículo en la tabla "vehiculo"
-modificarRol(Rol: Rol) {
-  const { id, nom_rol } = Rol;
-  this.db.executeSql('UPDATE vehiculo SET Rol = ?, id = ?, nom_rol = ? WHERE id = ?',
-    [id, nom_rol])
-    .then(() => {
-      console.log('Rol modificado con éxito');
-      this.loadDataRol(); // Recargar datos después de la modificación
-    })
-    .catch(error => {
-      console.error('Error al modificar Rol: ' + JSON.stringify(error));
+// Actualizar un rol
+actualizarRol(id: number, nuevoNomrol: string) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("UPDATE rol SET nomrol = ? WHERE id = ?", [nuevoNomrol, id]);
+  });
+}
+
+// Eliminar un rol
+eliminarRol(id: number) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("DELETE FROM rol WHERE id = ?", [id]);
+  });
+}
+
+//-------------------------------------------------------------
+
+// Función para cargar datos de la tabla "Preguntas"
+// Insertar una pregunta
+insertarPregunta(pregunta: string) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("INSERT INTO tpreguntas (pregunta) VALUES (?)", [pregunta]);
+  });
+}
+
+// Obtener todas las preguntas
+obtenerPreguntas() {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("SELECT * FROM tpreguntas", []).then(data => {
+      let preguntas = [];
+      for (let i = 0; i < data.rows.length; i++) {
+        preguntas.push(data.rows.item(i));
+      }
+      return preguntas;
     });
+  });
+}
+
+// Actualizar una pregunta
+actualizarPregunta(idpreguntas: number, nuevaPregunta: string) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("UPDATE tpreguntas SET pregunta = ? WHERE idpreguntas = ?", [nuevaPregunta, idpreguntas]);
+  });
+}
+
+// Eliminar una pregunta
+eliminarPregunta(idpreguntas: number) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("DELETE FROM tpreguntas WHERE idpreguntas = ?", [idpreguntas]);
+  });
+}
+//-------------------------------------------------------------
+// Función para cargar datos de la tabla "sede"
+// Insertar una sede
+insertarSede(nomsede: string, locacion: string) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("INSERT INTO sede (nomsede, locacion) VALUES (?, ?)", [nomsede, locacion]);
+  });
+}
+
+// Obtener todas las sedes
+obtenerSedes() {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("SELECT * FROM sede", []).then(data => {
+      let sedes = [];
+      for (let i = 0; i < data.rows.length; i++) {
+        sedes.push(data.rows.item(i));
+      }
+      return sedes;
+    });
+  });
+}
+
+// Actualizar una sede
+actualizarSede(idsede: number, nuevoNomsede: string, nuevaLocacion: string) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("UPDATE sede SET nomsede = ?, locacion = ? WHERE idsede = ?", [nuevoNomsede, nuevaLocacion, idsede]);
+  });
+}
+
+// Eliminar una sede
+eliminarSede(idsede: number) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("DELETE FROM sede WHERE idsede = ?", [idsede]);
+  });
 }
 
 //--------------------------------------------------
 
-  loadDataPreguntasec(){
-    this.db.executeSql('SELECT * FROM tpreguntas', []).then(data =>{
-      let items = [];
-      for (let i = 0; i < data.rows.length; i++){
-        items.push(data.rows.items(i));
+//tabla usuarios
+// Insertar un usuario
+insertarUsuario(nombre: string, apellido: string, correo: string, contrasena: string, idpreguntas: number, respuesta: string, rolid: number, imagenperfil: Blob) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("INSERT INTO usuario (nombre, apellido, correo, contrasena, idpreguntas, respuesta, rolid, imagenperfil) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", [nombre, apellido, correo, contrasena, idpreguntas, respuesta, rolid, imagenperfil]);
+  });
+}
+
+// Obtener todos los usuarios
+obtenerUsuarios() {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("SELECT * FROM usuario", []).then(data => {
+      let usuarios = [];
+      for (let i = 0; i < data.rows.length; i++) {
+        usuarios.push(data.rows.item(i));
       }
-      this.datosPregunta.next(items);
-    }).catch(error =>{
-      console.error('Error al obtener datos: ' + JSON.stringify(error));
+      return usuarios;
     });
-  }
+  });
+}
 
-  getDataPreguntasec(): Observable<Tpreguntas[]> {
-    return this.datosPregunta.asObservable();
-  }
+// Actualizar un usuario
+actualizarUsuario(usuarioid: number, nuevoNombre: string, nuevoApellido: string, nuevoCorreo: string, nuevaContrasena: string, nuevoIdPreguntas: number, nuevaRespuesta: string, nuevoRolId: number, nuevaImagenPerfil: Blob) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("UPDATE usuario SET nombre = ?, apellido = ?, correo = ?, contrasena = ?, idpreguntas = ?, respuesta = ?, rolid = ?, imagenperfil = ? WHERE usuarioid = ?", [nuevoNombre, nuevoApellido, nuevoCorreo, nuevaContrasena, nuevoIdPreguntas, nuevaRespuesta, nuevoRolId, nuevaImagenPerfil, usuarioid]);
+  });
+}
+
+// Eliminar un usuario
+eliminarUsuario(usuarioid: number) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("DELETE FROM usuario WHERE usuarioid = ?", [usuarioid]);
+  });
+}
 
 
 //-------------------------------------------------------------
-
 // Función para cargar datos de la tabla "vehiculo"
-loadDataVehiculo() {
-  this.db.executeSql('SELECT * FROM vehiculo', []).then(data => {
-    let items = [];
-    for (let i = 0; i < data.rows.length; i++) {
-      items.push(data.rows.item(i));
-    }
-    this.datosVehiculo.next(items);
-  }).catch(error => {
-    console.error('Error al obtener datos de vehiculo: ' + JSON.stringify(error));
+// Insertar un vehículo
+insertarVehiculo(patente: string, userid: number, asientos: number) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("INSERT INTO vehiculo (patente, userid, asientos) VALUES (?, ?, ?)", [patente, userid, asientos]);
   });
 }
 
-// Función para obtener datos de la tabla "vehiculo" como Observable
-getDataVehiculo(): Observable<Vehiculo[]> {
-  return this.datosVehiculo.asObservable();
+// Obtener todos los vehículos
+obtenerVehiculos() {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("SELECT * FROM vehiculo", []).then(data => {
+      let vehiculos = [];
+      for (let i = 0; i < data.rows.length; i++) {
+        vehiculos.push(data.rows.item(i));
+      }
+      return vehiculos;
+    });
+  });
 }
 
-// Función para agregar un vehículo a la tabla "vehiculo"
-agregarVehiculo(vehiculo: Vehiculo) {
-  const { patente, usuario, asientos } = vehiculo;
-  this.db.executeSql('INSERT INTO vehiculo (patente, usuario, asientos) VALUES (?, ?, ?)',
-    [patente, usuario, asientos])
-    .then(() => {
-      console.log('Vehículo agregado con éxito');
-      this.loadDataVehiculo(); // Recargar datos después de la inserción
-    })
-    .catch(error => {
-      console.error('Error al agregar vehículo: ' + JSON.stringify(error));
-    });
+// Actualizar un vehículo
+actualizarVehiculo(autoid: number, nuevaPatente: string, nuevoUserid: number, nuevosAsientos: number) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("UPDATE vehiculo SET patente = ?, userid = ?, asientos = ? WHERE autoid = ?", [nuevaPatente, nuevoUserid, nuevosAsientos, autoid]);
+  });
 }
 
-// Función para modificar un vehículo en la tabla "vehiculo"
-modificarVehiculo(vehiculo: Vehiculo) {
-  const { idvehiculo, patente, usuario, asientos } = vehiculo;
-  this.db.executeSql('UPDATE vehiculo SET patente = ?, usuario = ?, asientos = ? WHERE idvehiculo = ?',
-    [patente, usuario, asientos, idvehiculo])
-    .then(() => {
-      console.log('Vehículo modificado con éxito');
-      this.loadDataVehiculo(); // Recargar datos después de la modificación
-    })
-    .catch(error => {
-      console.error('Error al modificar vehículo: ' + JSON.stringify(error));
-    });
+// Eliminar un vehículo
+eliminarVehiculo(autoid: number) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("DELETE FROM vehiculo WHERE autoid = ?", [autoid]);
+  });
 }
 
 
 //-------------------------------------------------------------
-loadDataViaje(){
-  this.db.executeSql('SELECT * FROM viaje', []).then(data =>{
-    let items = [];
-    for (let i = 0; i < data.rows.length; i++){
-      items.push(data.rows.items(i));
-    }
-    this.datosPregunta.next(items);
-  }).catch(error =>{
-    console.error('Error al obtener datos: ' + JSON.stringify(error));
+
+
+// Función para cargar datos de la tabla "viaje"
+// Insertar un viaje
+insertarViaje(autoid: number, ppartida: string, pdestino: string) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("INSERT INTO viaje (autoid, ppartida, pdestino) VALUES (?, ?, ?)", [autoid, ppartida, pdestino]);
   });
 }
 
-getDataViaje(): Observable<Viaje[]>{
-  return this.datosViaje.asObservable();
-}
-
-loadDataSede(){
-  this.db.executeSql('SELECT * FROM sede', []).then(data =>{
-    let items = [];
-    for (let i = 0; i < data.rows.length; i++){
-      items.push(data.rows.items(i));
-    }
-    this.datosPregunta.next(items);
-  }).catch(error =>{
-    console.error('Error al obtener datos: ' + JSON.stringify(error));
-  });
-}
-
-getDataSede(){}
-
-
-  async presentAlert(msj: string) {
-    const alert = await this.alertController.create({
-      header: 'Alert',
-      message: msj,
-      buttons: ['OK'],
+// Obtener todos los viajes
+obtenerViajes() {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("SELECT * FROM viaje", []).then(data => {
+      let viajes = [];
+      for (let i = 0; i < data.rows.length; i++) {
+        viajes.push(data.rows.item(i));
+      }
+      return viajes;
     });
-  }
+  });
+}
+
+// Actualizar un viaje
+actualizarViaje(idviaje: number, nuevoAutoid: number, nuevaPpartida: string, nuevaPdestino: string) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("UPDATE viaje SET autoid = ?, ppartida = ?, pdestino = ? WHERE idviaje = ?", [nuevoAutoid, nuevaPpartida, nuevaPdestino, idviaje]);
+  });
+}
+
+// Eliminar un viaje
+eliminarViaje(idviaje: number) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("DELETE FROM viaje WHERE idviaje = ?", [idviaje]);
+  });
+}
 
 
-  
- 
-  //FUNCIONES PARA RETORNAR LOS OBSERVABLES DE LAS TABLAS
+//-------------------------------------------------------------
+// Función para cargar datos de la tabla "detalle"
+// Insertar un detalle
+insertarDetalle(idviaje: number, usuarioid: number) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("INSERT INTO detalle (idviaje, usuarioid) VALUES (?, ?)", [idviaje, usuarioid]);
+  });
+}
 
-  /*fetchHorario(): Observable<Horario[]> {
-    return this.listhorarios.asObservable();
-  }*/
+// Obtener todos los detalles
+obtenerDetalles() {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("SELECT * FROM detalle", []).then(data => {
+      let detalles = [];
+      for (let i = 0; i < data.rows.length; i++) {
+        detalles.push(data.rows.item(i));
+      }
+      return detalles;
+    });
+  });
+}
 
-  crearusuairo(iduser: any, rutusuario: any, nomuser: any, apelluser: any, correo:any, pass: any, rol: any, question: any, answear: any) {
-    return this.db.executeSql('INSERT OR IGNORE INTO usuario (idusuario, rut, nombre, apellido, correo, clave, rol, pregunta, respuesta) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);', [iduser, rutusuario, nomuser, apelluser,correo, pass, rol, question])
-  }
+// Actualizar un detalle
+actualizarDetalle(iddetalle: number, nuevoIdviaje: number, nuevoUsuarioid: number) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("UPDATE detalle SET idviaje = ?, usuarioid = ? WHERE iddetalle = ?", [nuevoIdviaje, nuevoUsuarioid, iddetalle]);
+  });
+}
 
-  //Buscar Horario por alumno o profesor segun el Rut (Ayuda estoy callendo en la locura)
+// Eliminar un detalle
+eliminarDetalle(iddetalle: number) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("DELETE FROM detalle WHERE iddetalle = ?", [iddetalle]);
+  });
+}
+
+//-------------------------------------------------------------
+
+
 
   //login de usuario
 
@@ -316,93 +403,5 @@ getDataSede(){}
 
 
 
-  //crear la base de datos
-  crearDB() {
-    //verificar que la plataforma este lista
-      this.platform.ready().then(() => {
-        //crear la BD
-        this.sqlite.create({
-          name: 'dbUber.db',
-          location: 'default'
-        }).then((db: SQLiteObject) => {
-          this.db = db;
-          alert('database created/opened')
-          //llamo la funcion para crear tablas
-          this.crearT();
-        }).catch(e => {
-          this.presentAlert("Error al Crear la BD: " + e);
-        })
-      })
-  }
-
-    async crearT() {
-      try {
   
-        //ejecutar la creación de tablas
-        await this.db.executeSql(this.tablarol,[]);
-        //ejecuto los registros
-        await this.db.executeSql(this.registrorol,[]);
-  
-        //ejecutar las variables de creacion de tablas
-        await this.db.executeSql('CREATE TABLE IF NOT EXISTS usuario (usuarioid INTEGER PRIMARY KEY AUTOINCREMENT, nombre VARCHAR (30), apellido VARCHAR (30), correo VARCHAR(50), contrasena VARCHAR(10), idpreguntas INTEGER, respuesta VARCHAR(50), rolid INTEGER, imagenperfil BLOB, FOREIGN KEY (idpreguntas) REFERENCES tpreguntas(idpregunta), FOREIGN KEY (rolid) REFERENCES rol(rolid))', []).then(() => {
-          console.log('Tabla usuario creada con éxito')
-        }).catch(error => {
-          console.error('Error al crear la tabla: ' + JSON.stringify(error));
-        });
-  
-        await this.db.executeSql('CREATE TABLE IF NOT EXIST tpreguntas (idpreguntas INTEGER PRIMARY KEY AUTOINCREMENT, pregunta VARCHAR(50))', []).then(()=>{
-          console.log('Tabla tpreguntas creada con exito')
-        }).catch(error=>{
-          console.error('Error al crear la tabla: ' + JSON.stringify(error));
-        })
-  
-        await this.db.executeSql('CREATE TABLE IF NOT EXIST vehiculo (autoid INTEGER PRIMARY KEY AUTOINCREMENT, patente VARCHAR(6), FOREIGN KEY (userid) REFERENCES (usuario(usuarioid)),asientos NUMBER(10))', []).then(()=>{
-          console.log('Tabla vehiculo creada con exito')
-        }).catch(error =>{
-          console.error('Error al crear la tabla: '+ JSON.stringify(error));
-        }); 
-  
-        await this.db.executeSql('CREATE TABLE IF NOT EXIST viaje (idviaje INTEGER PRIMARY KEY AUTOINCREMENT, FOREIGN KEY (autoid) REFERENCES(vehiculo(autoid)), ppartida VARCHAR(50), pdestino VARCHAR(50))',[]).then(()=>{
-          console.log('Tabla VIAJE creada con exito')
-        }).catch(error=>{
-          console.error('Error al crear la tabla: ' + JSON.stringify(error));
-        })
-  
-        await this.db.executeSql('CREATE TABLE IF NOT EXIST sede (idsede INTEGER PRIMARY KEY AUTOINCREMENT, nomsede VARCHAR(50), locacion VARCHAR(100))',[]).then(()=>{
-          console.log('Tabla SEDE creada con exito')
-        }).catch(error=>{
-          console.error('Error al crear la tabla: ' + JSON.stringify(error));
-        })
-  
-        await this.db.executeSql('CREATE TABLE IF NOT EXIST detalle (iddetalle INTEGER PRIMARY KEY AUTOINCREMENT, FOREIGN KEY (idviaje) REFERENCES(viaje(idviaje)), FOREIGN KEY (usuarioid) REFERENCES(usuario(usuarioid)))',[]).then(()=>{
-          console.log('Tabla [nombre de la tabla] creada con exito')
-        }).catch(error=>{
-          console.error('Error al crear la tabla: ' + JSON.stringify(error));
-        })
-  
-        //ejecutar los insert iniciales
-          
-        
-          //insert de preguntas de seguridad
-        await this.db.executeSql('INSERT INTO tpreguntas (pregunta) VALUES (\'¿Cuál es el nombre de tu primer mascota?\')')
-        await this.db.executeSql('INSERT INTO tpreguntas (pregunta) VALUES (\'¿En qué ciudad naciste?\')')
-        await this.db.executeSql('INSERT INTO tpreguntas (pregunta) VALUES (\'¿Cuál es tu comida favorita?\')')
-          //insert del usuario Administrador
-          await this.db.executeSql('INSERT INTO usuarios (nombre, correo, contrasena, idpregunta, respuesta, rol_id) VALUES (\'Administrador\', \'admin@example.com\', \'contrasena_segura\', 1, \'ValorFirulais\', 1)');
-        
-        
-  
-            // Insertar datos pre-registrados en la tabla de vehículos
-            await this.db.executeSql('INSERT INTO vehiculo (patente, userid, asientos) VALUES (?, ?, ?)', ['ABC123', 1, 4]);
-            await this.db.executeSql('INSERT INTO vehiculo (patente, userid, asientos) VALUES (?, ?, ?)', ['XYZ789', 2, 2]);
-            // Agrega más inserciones según sea necesario
-          
-        //manipular el observable
-        this.isDBReady.next(true);
-        this.loadDataRol();
-  
-      }catch(e) {
-        this.presentAlert("ERROR AL CREAR TABLA" + e);
-      }
-    }
 }

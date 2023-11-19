@@ -25,16 +25,20 @@ export class HomePage {
   }
 
   iniciarSesion() {
-    // Validación de inicio de sesión
+    this.router.navigate(['/perfiluser']);
+  }
+}
+
+/*
+// Validación de inicio de sesión
     this.db.getDataUsuario().subscribe(usuarios => {
       const usuarioEncontrado = usuarios.find(usuario => usuario.correo === this.correoElectronico && usuario.contrasena === this.contrasena);
 
       if (usuarioEncontrado) {
-        this.router.navigate(['/perfiluser']);
-      } else {
+        } else {
         //cambiar mensaje de consola por mensaje de Alert en html
         console.error(this.ErrorAlert);
       }
     });
   }
-}
+  */

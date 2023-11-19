@@ -42,13 +42,11 @@ const routes: Routes = [
   {
     path: 'prueba',
     loadChildren: () => import('./modules/prueba/prueba.module').then( m => m.PruebaPageModule)
-  },  {
+  },
+  {
     path: 'registroadmin',
     loadChildren: () => import('./modules/registroadmin/registroadmin.module').then( m => m.RegistroadminPageModule)
   },
-
-  
-
   
 
 
