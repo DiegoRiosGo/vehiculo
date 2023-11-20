@@ -7,8 +7,8 @@
       <ion-item class="custom-item">
 
         <!-- Icono de tuerca para modificar perfil -->
-        <ion-icon name="settings" slot="start" [routerLink]="['/moduser']" color="primary"
-          class="settings-icon"></ion-icon>
+        <ion-icon name="settings" slot="start"color="primary"
+          class="settings-icon" (click)="editProfile()"></ion-icon>
 
         <!-- Icono de cierre de sesión -->
         <ion-icon name="log-out" slot="end" [routerLink]="['/logout']" color="primary" class="logout-icon"
