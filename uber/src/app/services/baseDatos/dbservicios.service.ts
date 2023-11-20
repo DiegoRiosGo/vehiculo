@@ -1,13 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
 import { AlertController, Platform } from '@ionic/angular';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { Usuario } from '../models/usuario';
-import { Rol } from '../models/rol';
-import { Tpreguntas } from '../models/tpreguntas';
-import { Vehiculo } from '../models/vehiculo';
-import { Viaje } from '../models/viaje';
-import { Detalle } from '../models/detalle';
+
 
 
 @Injectable({

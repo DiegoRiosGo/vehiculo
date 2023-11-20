@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DbserviciosService } from 'src/app/services/baseDatos/dbservicios.service';
-import { Rol } from 'src/app/services/models/rol';
+
 
 
 @Component({
@@ -11,8 +11,12 @@ import { Rol } from 'src/app/services/models/rol';
 export class RegistroadminPage implements OnInit {
 
   usuarios: any[] = [];
+
   vehiculos: any[] = [];
+
   pregunta3: any[] = [];
+  nuevaPregunta: string = ''; // Variable para almacenar la nueva pregunta
+
   roles: any[] = [];
 
   constructor(private servicioDB: DbserviciosService) {
@@ -59,7 +63,53 @@ export class RegistroadminPage implements OnInit {
     });
   }
  
-  
+  async eliminarUsuario(usuarioid: number) {
+    try {
+      await this.servicioDB.eliminarUsuario(usuarioid);
+      // Recargar la lista de usuarios después de eliminar
+      this.cargarUsuarios();
+    } catch (error) {
+      console.error('Error al eliminar usuario:', error);
+    }
+  }
+
+  async eliminarVehiculo(autoid: number) {
+    try {
+      await this.servicioDB.eliminarVehiculo(autoid);
+      // Recargar la lista de vehículos después de eliminar
+      console.log('Datos de vehiculos borrados:');
+      this.cargarVehiculos();
+    } catch (error) {
+      console.error('Error al eliminar vehículo:', error);
+    }
+  }
+
+  async eliminarPregunta(autoid: number) {
+    try {
+      await this.servicioDB.eliminarPregunta(autoid);
+      // Recargar la lista de preguntas después de eliminar
+      console.log('Datos de preguntas borrados:');
+      this.cargarPreguntas();
+    } catch (error) {
+      console.error('Error al eliminar pregunta:', error);
+    }
+  }
+
+  async agregarPregunta() {
+    try {
+      // Validar que la nueva pregunta no esté vacía
+      if (this.nuevaPregunta.trim() !== '') {
+        await this.servicioDB.insertarPregunta(this.nuevaPregunta);
+        // Recargar la lista de preguntas después de insertar
+        this.cargarPreguntas();
+        // Limpiar el campo de nueva pregunta
+        this.nuevaPregunta = '';
+      }
+    } catch (error) {
+      console.error('Error al agregar pregunta:', error);
+    }
+  }
+
   ngOnInit() {
   }
 }

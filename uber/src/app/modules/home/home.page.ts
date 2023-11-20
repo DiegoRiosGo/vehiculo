@@ -25,20 +25,36 @@ export class HomePage {
   }
 
   iniciarSesion() {
-    this.router.navigate(['/perfiluser']);
+    if (!this.correoElectronico || !this.contrasena) {
+      console.error('Por favor, proporciona correo electrónico y contraseña.');
+      return;
+    }
+
+    if (!this.validarFormatoCorreo(this.correoElectronico)) {
+      console.error('Formato de correo electrónico no válido.');
+      return;
+    }
+
+    this.db.loginUsuario(this.correoElectronico, this.contrasena)
+      .then((usuarioEncontrado: { usuarioid: any; }) => {
+        if (usuarioEncontrado) {
+          this.router.navigate(['/perfiluser'], { queryParams: { idUsuario: usuarioEncontrado.usuarioid } });
+        } else {
+          console.error('Correo o contraseña incorrectos');
+
+        }
+      })
+      .catch(error => {
+        console.error('Error al iniciar sesión:', error);
+      });
   }
+
+  private validarFormatoCorreo(correo: string): boolean {
+    return true;
+  }
+
+  private mostrarMensajeError(mensaje: string) {
+  }
+
 }
 
-/*
-// Validación de inicio de sesión
-    this.db.getDataUsuario().subscribe(usuarios => {
-      const usuarioEncontrado = usuarios.find(usuario => usuario.correo === this.correoElectronico && usuario.contrasena === this.contrasena);
-
-      if (usuarioEncontrado) {
-        } else {
-        //cambiar mensaje de consola por mensaje de Alert en html
-        console.error(this.ErrorAlert);
-      }
-    });
-  }
-  */
