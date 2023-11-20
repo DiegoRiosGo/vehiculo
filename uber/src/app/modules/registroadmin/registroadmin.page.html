@@ -1,5 +1,8 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/adminvista"></ion-back-button>
+    </ion-buttons>
     <ion-title>
       Lista de Registros
     </ion-title>
@@ -11,48 +14,49 @@
     <ion-item-divider color="primary">
       Usuarios
     </ion-item-divider>
-    <ion-item *ngFor="let usuario of usuarios">
-      <!-- Información del usuario -->
-      <ion-label>
-        <h2>{{ usuario.nombre }} {{ usuario.apellido }}</h2>
-        <p>Correo: {{ usuario.correo }}</p>
-        <p>Rol: {{ usuario.rolid }}</p>
-      </ion-label>
 
-      <!-- Botones de acciones -->
-      <ion-buttons slot="end">
-        <ion-row>
+    <ion-list>
+      <ion-item *ngFor="let usuario of usuarios" lines="full">
+
+        <!-- Información del usuario -->
+        <ion-label>
+          <h2>{{ usuario.nombre }} {{ usuario.apellido }}</h2>
+          <p>Correo: {{ usuario.correo }}</p>
+          <p>Rol: {{ usuario.rolid }}</p>
+        </ion-label>
+
+        <!-- Botones de acciones -->
+        <ion-buttons slot="end">
+
+          <!-- Selector de nuevo rol -->
           <ion-item>
             <ion-label>Rol:</ion-label>
             <ion-select [(ngModel)]="nuevoRolId">
               <ion-select-option *ngFor="let rol of roles" [value]="rol.id">{{ rol.nomrol }}</ion-select-option>
             </ion-select>
           </ion-item>
-        </ion-row>
 
-        <!-- Botón para seleccionar el nuevo rol -->
-
-        <ion-row>
+          <!-- Botón para actualizar el rol -->
           <ion-item>
             <ion-button color="primary" fill="clear" (click)="actualizarRolUsuario(usuario.usuarioid, nuevoRolId)">
               <ion-icon name="refresh"></ion-icon>
               Actualizar Rol
             </ion-button>
           </ion-item>
-        </ion-row>
 
-        <!-- Botón para actualizar el rol -->
+          <!-- Botón para eliminar el usuario -->
+          <ion-item>
+            <ion-button color="danger" fill="clear" (click)="eliminarUsuario(usuario.usuarioid)">
+              <ion-icon name="trash"></ion-icon>
+              Eliminar Usuario
+            </ion-button>
+          </ion-item>
 
+        </ion-buttons>
 
-        <!-- Botón para eliminar el usuario -->
-        <ion-item>
-          <ion-button color="danger" fill="clear" (click)="eliminarUsuario(usuario.usuarioid)">
-            <ion-icon name="trash"></ion-icon>
-            Eliminar Usuario
-          </ion-button>
-        </ion-item>
-      </ion-buttons>
-    </ion-item>
+      </ion-item>
+    </ion-list>
+
 
     <!--modificar usuario para el tipo de rol-->
 
