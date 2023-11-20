@@ -30,6 +30,10 @@ export class PerfiluserPage implements OnInit {
   ) { }
 
   ngOnInit() {
+
+    this.nombreUsuario = 'nombre random';
+    this.correoUsuario = 'correo random';
+
     this.aroute.params.subscribe(params => {
       this.idUsuario = params['idUsuario'];
 
