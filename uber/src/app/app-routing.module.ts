@@ -12,7 +12,7 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'moduser',
+    path: 'moduser/:id',
     loadChildren: () => import('./modules/moduser/moduser.module').then( m => m.ModuserPageModule)
   },
   {

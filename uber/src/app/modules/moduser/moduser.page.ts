@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { CamaraService } from 'src/app/services/servCamara/camara.service';
 
@@ -10,11 +11,16 @@ import { CamaraService } from 'src/app/services/servCamara/camara.service';
 export class ModuserPage implements OnInit {
 
   capturedImage: any;
+  idUsuario: number;
 
-
-  constructor(private cameraService: CamaraService, private alertController: AlertController) { }
+  constructor(
+    private cameraService: CamaraService,
+    private alertController: AlertController,
+    private aroute: ActivatedRoute) { }
 
   ngOnInit() {
+    this.aroute.params.subscribe(params => {
+      this.idUsuario = params['idUsuario'];})
   }
 
   async takePicture() {

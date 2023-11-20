@@ -74,7 +74,7 @@ export class PerfiluserPage implements OnInit {
   editProfile() {
     // Lógica para editar el perfil
     // Por ejemplo, redireccionar a una página de edición de perfil
-    this.router.navigate(['/moduser']);
+    this.router.navigate(['/moduser', this.idUsuario]);
   }
 
   //api clima
