@@ -15,7 +15,7 @@ export class HomePage {
   mensajes: string[] = [];
 
 
-  constructor(private db: DbserviciosService, private router: Router, private alertController: AlertController,private valCorr: ValidarEmailService) { }
+  constructor(private db: DbserviciosService, private router: Router, private alertController: AlertController, private valCorr: ValidarEmailService) { }
 
 
   iniciarSesion() {
@@ -25,7 +25,7 @@ export class HomePage {
     if (!this.correoElectronico || !this.contrasena) {
       this.mensajes.push('Por favor, proporciona correo electrónico y contraseña.');
       return;
-    }else if (!this.validarFormatoCorreo(this.correoElectronico)) {
+    } else if (!this.validarFormatoCorreo(this.correoElectronico)) {
       this.mensajes.push('Formato de correo electrónico no válido.');
       return;
     }
@@ -45,8 +45,7 @@ export class HomePage {
   }
 
   private validarFormatoCorreo(correo: string): boolean {
-    return this.valCorr.validaremail(correo); 
+    return this.valCorr.validaremail(correo);
   }
 
 }
-

@@ -12,10 +12,6 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'inicio-sesion',
-    loadChildren: () => import('./modules/inicio-sesion/inicio-sesion.module').then( m => m.InicioSesionPageModule)
-  },
-  {
     path: 'moduser',
     loadChildren: () => import('./modules/moduser/moduser.module').then( m => m.ModuserPageModule)
   },

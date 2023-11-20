@@ -1,8 +1,8 @@
-:root{
+:root {
     --ion-background-color: transparent
 }
 
-body{
+body {
     --ion-background-color: transparent
 }
 
@@ -15,4 +15,12 @@ ion-content {
     display: block;
     width: 100%;
     height: 100%;
-  }
+}
+
+.custom-toolbar {
+    --background: #0984e3; // Cambia el color de fondo al deseado
+}
+
+.custom-back-button {
+    --color: #00b894; // Cambia el color del botón de retroceso al deseado
+}
