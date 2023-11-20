@@ -17,7 +17,8 @@ export class DbserviciosService {
     return this.sqlite.create({
       name: 'data.db',
       location: 'default',
-    }) 
+    })
+    
   }
 
   createTable() {
@@ -38,7 +39,7 @@ export class DbserviciosService {
         .catch(error => console.error('Error al crear la tabla tpreguntas', error));
 
       // Crea la tabla 'usuario' clave
-      db.executeSql("CREATE TABLE IF NOT EXISTS usuario (usuarioid INTEGER PRIMARY KEY AUTOINCREMENT, nombre VARCHAR (30), apellido VARCHAR (30), correo VARCHAR(50), contrasena VARCHAR(10), idpreguntas INTEGER, respuesta VARCHAR(50), rolid INTEGER, imagenperfil BLOB, FOREIGN KEY (idpreguntas) REFERENCES tpreguntas(idpregunta), FOREIGN KEY (rolid) REFERENCES rol(rolid));", [])
+      db.executeSql("CREATE TABLE IF NOT EXISTS usuario (usuarioid INTEGER PRIMARY KEY AUTOINCREMENT, nombre VARCHAR (30), apellido VARCHAR (30), correo VARCHAR(50), contrasena VARCHAR(10), idpreguntas INTEGER, respuesta VARCHAR(50), rolid INTEGER, FOREIGN KEY (idpreguntas) REFERENCES tpreguntas(idpregunta), FOREIGN KEY (rolid) REFERENCES rol(rolid));", [])
         .then(() => console.log('Tabla usuario creada'))
         .catch(error => console.error('Error al crear la tabla usuario', error));
 
@@ -215,9 +216,9 @@ eliminarSede(idsede: number) {
 
 //tabla usuarios
 // Insertar un usuario
-insertarUsuario(nombre: string, apellido: string, correo: string, contrasena: string, idpreguntas: number, respuesta: string, rolid: number, imagenperfil: Blob) {
+insertarUsuario(nombre: string, apellido: string, correo: string, contrasena: string, idpreguntas: number, respuesta: string, rolid: number) {
   return this.crearDB().then((db: SQLiteObject) => {
-    return db.executeSql("INSERT INTO usuario (nombre, apellido, correo, contrasena, idpreguntas, respuesta, rolid, imagenperfil) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", [nombre, apellido, correo, contrasena, idpreguntas, respuesta, rolid, imagenperfil]);
+    return db.executeSql("INSERT INTO usuario (nombre, apellido, correo, contrasena, idpreguntas, respuesta, rolid) VALUES (?, ?, ?, ?, ?, ?, ?)", [nombre, apellido, correo, contrasena, idpreguntas, respuesta, rolid]);
   });
 }
 
@@ -237,7 +238,7 @@ obtenerUsuarios() {
 // Actualizar un usuario
 actualizarUsuario(usuarioid: number, nuevoNombre: string, nuevoApellido: string, nuevoCorreo: string, nuevaContrasena: string, nuevoIdPreguntas: number, nuevaRespuesta: string, nuevoRolId: number, nuevaImagenPerfil: Blob) {
   return this.crearDB().then((db: SQLiteObject) => {
-    return db.executeSql("UPDATE usuario SET nombre = ?, apellido = ?, correo = ?, contrasena = ?, idpreguntas = ?, respuesta = ?, rolid = ?, imagenperfil = ? WHERE usuarioid = ?", [nuevoNombre, nuevoApellido, nuevoCorreo, nuevaContrasena, nuevoIdPreguntas, nuevaRespuesta, nuevoRolId, nuevaImagenPerfil, usuarioid]);
+    return db.executeSql("UPDATE usuario SET nombre = ?, apellido = ?, correo = ?, contrasena = ?, idpreguntas = ?, respuesta = ?, rolid = ? WHERE usuarioid = ?", [nuevoNombre, nuevoApellido, nuevoCorreo, nuevaContrasena, nuevoIdPreguntas, nuevaRespuesta, nuevoRolId, usuarioid]);
   });
 }
 
