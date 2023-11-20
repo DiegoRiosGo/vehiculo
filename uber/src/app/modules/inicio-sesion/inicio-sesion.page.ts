@@ -8,7 +8,6 @@ import { DbserviciosService } from 'src/app/services/baseDatos/dbservicios.servi
   styleUrls: ['./inicio-sesion.page.scss'],
 })
 export class InicioSesionPage implements OnInit {
-
   correoElectronico: string = '';
   contrasena:string = '';
   
@@ -18,22 +17,20 @@ export class InicioSesionPage implements OnInit {
   }
 
   iniciarSesion() {
-    this.router.navigate(['/perfiluser']);
+    this.db.loginUsuario(this.correoElectronico, this.contrasena)
+      .then(usuarioEncontrado => {
+        if (usuarioEncontrado) {
+          // Usuario válido, redirige a la página de perfil, envia id para uso en la imagen
+          this.router.navigate(['/perfiluser'], { queryParams: { idUsuario: usuarioEncontrado.usuarioid } });
+        } else {
+          
+          console.error('Correo o contraseña incorrectos');
+        }
+      })
+      .catch(error => {
+        console.error('Error al iniciar sesión:', error);
+        // Manejo de errores, muestra mensaje de error o realiza alguna acción adecuada
+      });
   }
 
 }
-
-
-/*
- // Validación de inicio de sesión
-    this.db.getDataUsuario().subscribe(usuarios => {
-      const usuarioEncontrado = usuarios.find(usuario => usuario.correo === this.correoElectronico && usuario.contrasena === this.contrasena);
-
-      if (usuarioEncontrado) {
-
-} else {
-        //cambiar mensaje de consola por mensaje de Alert en html
-        console.error('Correo o Contraseña incorrectos');  
-      }
-    });
-*/

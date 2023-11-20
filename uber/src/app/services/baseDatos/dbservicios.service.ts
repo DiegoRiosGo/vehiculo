@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
 import { AlertController, Platform } from '@ionic/angular';
-//import { Console } from 'console';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Usuario } from '../models/usuario';
 import { Rol } from '../models/rol';
@@ -10,7 +9,7 @@ import { Vehiculo } from '../models/vehiculo';
 import { Viaje } from '../models/viaje';
 import { Detalle } from '../models/detalle';
 
-// como usar SQLite https://como-programar.net/ionic/sqlite/
+
 @Injectable({
   providedIn: 'root'
 })
@@ -374,34 +373,22 @@ eliminarDetalle(iddetalle: number) {
 
   //login de usuario
 
-  loginVal(correo: string, clave: string): Promise<boolean> {
-    return this.platform.ready()
-      .then(() => {
-        return this.sqlite.create({
-          name: 'bdRapp.db',
-          location: 'default'
-        });
-      })
-      .then((db) => {
-        return db.executeSql(
-          `SELECT COUNT(*) as count FROM usuario WHERE correo = ? AND clave = ?`,
-          [correo, clave]
-        )
-        .then((data) => {
-          if (data.rows.item(0).count > 0) {
-            return true; // Las credenciales son válidas
+  loginUsuario(correo: string, contrasena: string): Promise<any> {
+    return this.crearDB().then((db: SQLiteObject) => {
+      return db.executeSql("SELECT * FROM usuario WHERE correo = ? AND contrasena = ?", [correo, contrasena])
+        .then(data => {
+          if (data.rows.length > 0) {
+            return data.rows.item(0); // Devuelve el primer usuario encontrado
           } else {
-            return false; // Las credenciales no son válidas
+            return null; // Devuelve nulo si no se encuentra ningún usuario con esas credenciales
           }
+        })
+        .catch(error => {
+          console.error('Error al obtener usuario por credenciales:', error);
+          return null;
         });
-      })
-      .catch((error) => {
-        console.error('Error al iniciar sesión', error);
-        return false;
-      });
+    });
   }
 
 
-
-  
 }
