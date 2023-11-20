@@ -18,25 +18,32 @@
         <p>Correo: {{ usuario.correo }}</p>
         <p>Rol: {{ usuario.rolid }}</p>
       </ion-label>
-  
+
       <!-- Botones de acciones -->
       <ion-buttons slot="end">
+        <ion-row>
+          <ion-item>
+            <ion-label>Rol:</ion-label>
+            <ion-select [(ngModel)]="nuevoRolId">
+              <ion-select-option *ngFor="let rol of roles" [value]="rol.id">{{ rol.nomrol }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-row>
+
         <!-- Botón para seleccionar el nuevo rol -->
-        <ion-item>
-          <ion-label>Rol:</ion-label>
-          <ion-select [(ngModel)]="nuevoRolId">
-            <ion-select-option *ngFor="let rol of roles" [value]="rol.id">{{ rol.nomrol }}</ion-select-option>
-          </ion-select>
-        </ion-item>
-  
+
+        <ion-row>
+          <ion-item>
+            <ion-button color="primary" fill="clear" (click)="actualizarRolUsuario(usuario.usuarioid, nuevoRolId)">
+              <ion-icon name="refresh"></ion-icon>
+              Actualizar Rol
+            </ion-button>
+          </ion-item>
+        </ion-row>
+
         <!-- Botón para actualizar el rol -->
-        <ion-item>
-          <ion-button color="primary" fill="clear" (click)="actualizarRolUsuario(usuario.usuarioid, nuevoRolId)">
-            <ion-icon name="refresh"></ion-icon>
-            Actualizar Rol
-          </ion-button>
-        </ion-item>
-  
+
+
         <!-- Botón para eliminar el usuario -->
         <ion-item>
           <ion-button color="danger" fill="clear" (click)="eliminarUsuario(usuario.usuarioid)">
