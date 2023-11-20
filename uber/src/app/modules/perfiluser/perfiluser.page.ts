@@ -3,6 +3,7 @@ import { AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { ClimaService } from 'src/app/services/servClima/clima.service';
 import { ChangeDetectorRef } from '@angular/core';
+import { DbserviciosService } from 'src/app/services/baseDatos/dbservicios.service';
 
 
 @Component({
@@ -16,7 +17,8 @@ export class PerfiluserPage implements OnInit {
   
   constructor(private router: Router,
     private alertController: AlertController,
-    private api:ClimaService,private cdr: ChangeDetectorRef
+    private api:ClimaService,private cdr: ChangeDetectorRef,
+    private dbService: DbserviciosService
   ) { }
 
   ngOnInit() {
@@ -64,5 +66,49 @@ export class PerfiluserPage implements OnInit {
   
   ionViewWillEnter() {
     this.obtenerclima();
+  }
+
+  async openRegistrarVehiculoAlert() {
+    const alert = await this.alertController.create({
+      header: 'Registrar Vehículo',
+      inputs: [
+        {
+          name: 'patente',
+          type: 'text',
+          placeholder: 'Patente del vehículo',
+        },
+        {
+          name: 'asientos',
+          type: 'number',
+          placeholder: 'Número de asientos',
+        },
+      ],
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: 'Registrar',
+          handler: (data) => {
+            // Lógica para insertar el vehículo en la base de datos
+            this.insertarVehiculoEnBD(data.patente, data.asientos);
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
+  private insertarVehiculoEnBD(patente: string, asientos: number) {
+    this.dbService
+      .insertarVehiculo(patente, 1, asientos) // Aquí 1 es un ejemplo de un ID de usuario, debes obtener el ID del usuario actual según tu lógica.
+      .then(() => {
+        console.log('Vehículo registrado con éxito.');
+      })
+      .catch((error) => {
+        console.error('Error al registrar el vehículo:', error);
+      });
   }
 }

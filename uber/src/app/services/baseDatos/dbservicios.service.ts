@@ -48,7 +48,7 @@ export class DbserviciosService {
         .then(() => console.log('Tabla vehiculo creada'))
         .catch(error => console.error('Error al crear la tabla vehiculo', error));
 
-      // Crea la tabla 'viaje' clave de clave
+      // Crea la tabla 'viaje' clave de clave 
       db.executeSql("CREATE TABLE IF NOT EXISTS viaje (idviaje INTEGER PRIMARY KEY AUTOINCREMENT, autoid INTEGER, ppartida VARCHAR(50), pdestino VARCHAR(50), FOREIGN KEY (autoid) REFERENCES vehiculo(autoid));", [])
         .then(() => console.log('Tabla viaje creada'))
         .catch(error => console.error('Error al crear la tabla viaje', error));
