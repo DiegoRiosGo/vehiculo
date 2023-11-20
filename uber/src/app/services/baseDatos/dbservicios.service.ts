@@ -61,6 +61,10 @@ export class DbserviciosService {
       db.executeSql("CREATE TABLE IF NOT EXISTS detalle (iddetalle INTEGER PRIMARY KEY AUTOINCREMENT, idviaje INTEGER, usuarioid INTEGER, FOREIGN KEY (idviaje) REFERENCES viaje(idviaje), FOREIGN KEY (usuarioid) REFERENCES usuario(usuarioid));", [])
         .then(() => console.log('Tabla detalle creada'))
         .catch(error => console.error('Error al crear la tabla detalle', error));
+      // Crea la tabla 'imagenes'
+      db.executeSql("CREATE TABLE IF NOT EXIST imagenes (idimagen INTEGER PRIMARY KEY AUTOINCREMENT, imagen BLOB, usuarioid INTEGER, FOREIGN KEY (usuarioid) REFERENCES usuario(usuarioid))")
+      .then(() => console.log('Tabla detalle creada'))
+      .catch(error => console.error('Error al crear la tabla detalle', error));
     });
   }
 
