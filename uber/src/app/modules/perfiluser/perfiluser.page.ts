@@ -13,6 +13,8 @@ import { DbserviciosService } from 'src/app/services/baseDatos/dbservicios.servi
 })
 export class PerfiluserPage implements OnInit {
 
+  registrarVehiculoBloqueado: boolean = false;
+
   climaData: any;
   idUsuario: number | null = null;
   nombreUsuario: string | null = null;
@@ -114,7 +116,7 @@ export class PerfiluserPage implements OnInit {
           text: 'Registrar',
           handler: (data) => {
             const patenteValida = this.validarPatente(data.patente);
-            const asientosValidos = this.validarAsientos(data.asientos);
+            const asientosValidos = this.validarAsientos(data.asientos);     
 
             if (!patenteValida && !asientosValidos) {
               this.presentAlert('Error', 'Por favor, ingrese valores válidos para la patente y el número de asientos.');
@@ -124,6 +126,7 @@ export class PerfiluserPage implements OnInit {
               this.presentAlert('Error', 'Ingrese un número de asientos válido (entre 2 y 20).');
             } else {
               this.insertarVehiculoEnBD(data.patente, data.asientos);
+              this.registrarVehiculoBloqueado = true; // Deshabilitar el botón
             }
           },
         },
@@ -132,7 +135,6 @@ export class PerfiluserPage implements OnInit {
 
     await alert.present();
   }
-
   validarPatente(patente: string): boolean {
     // Expresión regular para validar una patente con 4 letras y 2 números
     const patenteRegex = /^[a-zA-Z]{4}\d{2}$/;
@@ -163,12 +165,16 @@ export class PerfiluserPage implements OnInit {
 
   private insertarVehiculoEnBD(patente: string, asientos: number) {
     this.db
-      .insertarVehiculo(patente, 1, asientos) // Aquí 1 es un ejemplo de un ID de usuario, debes obtener el ID del usuario actual según tu lógica.
+      .insertarVehiculo(patente, 1, asientos)
       .then(() => {
         console.log('Vehículo registrado con éxito.');
       })
       .catch((error) => {
         console.error('Error al registrar el vehículo:', error);
+      })
+      .finally(() => {
+        // Habilitar el botón nuevamente después de finalizar el registro
+        this.registrarVehiculoBloqueado = false;
       });
   }
 }
