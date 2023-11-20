@@ -89,7 +89,7 @@ export class DbserviciosService {
         .catch(error => console.error('Error al insertar datos en la tabla tpreguntas', error));
 
       // Inserta datos en la tabla 'usuarios'
-      db.executeSql("INSERT OR IGNORE INTO usuario (nombre, correo, contrasena, idpreguntas, respuesta, rolid) VALUES ('Administrador','admin@example.com','contrasena_segura',1,'ValorFirulais',1);", [])
+      db.executeSql("INSERT OR IGNORE INTO usuario (nombre, correo, contrasena, idpreguntas, respuesta, rolid) VALUES ('Administrador','admin@admin.com','1234',1,'ValorFirulais',1);", [])
         .then(() => console.log('Datos insertados en la tabla usuarios'))
         .catch(error => console.error('Error al insertar datos en la tabla usuarios', error));
 
