@@ -21,27 +21,27 @@
 
         <ion-item class="custom-item">
           <ion-label position="floating" color="primary">Nombre</ion-label>
-          <ion-input type="text"></ion-input>
+          <ion-input type="text" [(ngModel)]="nombre"></ion-input>
         </ion-item>
 
         <ion-item class="custom-item">
           <ion-label position="floating" color="primary">Apellido</ion-label>
-          <ion-input type="text"></ion-input>
+          <ion-input type="text" [(ngModel)]="apellido"></ion-input>
         </ion-item>
 
         <ion-item class="custom-item">
           <ion-label position="floating" color="primary">Correo electrónico</ion-label>
-          <ion-input type="email"></ion-input>
+          <ion-input type="email" [(ngModel)]="correo"></ion-input>
         </ion-item>
 
         <ion-item class="custom-item">
           <ion-label position="floating" color="primary">Contraseña</ion-label>
-          <ion-input type="password"></ion-input>
+          <ion-input type="password" [(ngModel)]="contrasena"></ion-input>
         </ion-item>
 
         <ion-item class="custom-item">
           <ion-label position="floating" color="primary">Confirmar contraseña</ion-label>
-          <ion-input type="password"></ion-input>
+          <ion-input type="password" [(ngModel)]="con_contrasena"></ion-input>
         </ion-item>
         <br>
         <h2>Pregunta de seguridad</h2>
@@ -52,7 +52,7 @@
 
         <ion-item class="custom-item">
           <ion-label position="floating" color="primary">Respuesta</ion-label>
-          <ion-input type="text"></ion-input>
+          <ion-input type="text" [(ngModel)]="respuesta"></ion-input>
         </ion-item>
 
         <ion-button expand="full" [routerLink]="['/perfiluser']" color="success">Registrarse</ion-button>
