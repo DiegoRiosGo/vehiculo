@@ -24,7 +24,6 @@ export class PerfiluserPage implements OnInit {
     private alertController: AlertController,
     private api:ClimaService,
     private cdr: ChangeDetectorRef,
-    private dbService: DbserviciosService,
     private db: DbserviciosService
   ) { }
 
