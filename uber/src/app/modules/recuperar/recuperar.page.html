@@ -1,7 +1,5 @@
 <ion-content [fullscreen]="true" class="content">
   <div class="background-gradient"></div>
-  <br>
-
   <div class="center-container">
 
     <ion-card class="login-card">
@@ -9,17 +7,22 @@
 
       <ion-card-content>
         <ion-buttons slot="start">
-          <ion-button fill="clear" [routerLink]="['/home']" color="success" class="back-button">
+          <ion-button fill="clear" (click)="goBack()" color="success" class="back-button">
             <ion-icon name="arrow-back"></ion-icon>
           </ion-button>
         </ion-buttons>
-<br>
+
+        <br>
         <h1>Pregunta de seguridad</h1>
-<br>
-        
+        <br>
+
         <ion-item class="custom-item">
-          <ion-label position="floating" color="primary">Pregunta</ion-label>
-          <ion-input type="email"></ion-input>
+          <ion-label position="floating" color="primary">Pregunta de seguridad</ion-label>
+          <ion-select>
+            <ion-select-option value="1">¿Cuál es el nombre de tu primer mascota?</ion-select-option>
+            <ion-select-option value="2">¿En qué ciudad naciste?</ion-select-option>
+            <ion-select-option value="3">¿Cuál es tu comida favorita?</ion-select-option>
+          </ion-select>
         </ion-item>
 
         <ion-item class="custom-item">
@@ -27,12 +30,12 @@
           <ion-input type="password"></ion-input>
         </ion-item>
 
-        <br>
-        <ion-button expand="full" [routerLink]="['/perfiluser']" color="success">Aceptar</ion-button>
+        <div class="login-buttons"> 
+          <ion-button expand="full" [routerLink]="['/perfiluser']" color="success">Aceptar</ion-button>
+        </div>
 
       </ion-card-content>
     </ion-card>
-
   </div>
 
 </ion-content>

@@ -5,7 +5,7 @@
 
     <ion-card class="login-card">
 
-      <ion-item class="custom-item">
+      <ion-item class="custom-item-head">
 
         <ion-buttons slot="start">
           <ion-button fill="clear" [routerLink]="['/home']" color="success" class="back-button">
@@ -23,7 +23,7 @@
           <ion-label position="floating" color="primary">Nombre</ion-label>
           <ion-input type="text" [(ngModel)]="nombre"></ion-input>
         </ion-item>
-
+        
         <ion-item class="custom-item">
           <ion-label position="floating" color="primary">Apellido</ion-label>
           <ion-input type="text" [(ngModel)]="apellido"></ion-input>
@@ -58,6 +58,10 @@
           <ion-label position="floating" color="primary">Respuesta</ion-label>
           <ion-input type="text" [(ngModel)]="respuesta"></ion-input>
         </ion-item>
+
+        <div *ngFor="let mensaje of mensajes" class="mensaje-error">
+          {{ mensaje }}
+        </div>
 
         <ion-button expand="full" (click)="registrarUsuario()" color="success">Registrarse</ion-button>
       </ion-card-content>

@@ -5,19 +5,20 @@ ion-card.login-card {
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  
+
     .custom-item {
       width: 100%;
       background-color: rgba(255, 255, 255, 0.9);
       border-radius: 10px;
       box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
-  
+      margin-top: 10px;
+      
       ion-input {
         font-size: 14px; /* Tamaño de la fuente del input */
       }
   
       ion-label {
-        font-size: 12px; /* Tamaño de la fuente del label */
+        font-size: 14px; /* Tamaño de la fuente del label */
       }
     }
   }
@@ -55,5 +56,10 @@ ion-card.login-card {
   .container {
     width: 100%;
     height: 100%;
+  }
+  
+  .mensaje-error {
+    color: red;
+    margin-top: 10px;
   }
   

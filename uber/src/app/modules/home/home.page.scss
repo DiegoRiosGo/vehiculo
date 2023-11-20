@@ -7,12 +7,22 @@ ion-card.login-card {
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
+  .custom-item-head {
+    width: 90%;
+    margin: auto;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+    margin-top: 20px;
+  }
+
   .custom-item {
     width: 90%;
     margin: auto;
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+    margin-top: 20px;
 
     ion-input {
       font-size: 14px;
@@ -71,4 +81,9 @@ ion-card.login-card {
 .recovery-link {
   text-decoration: underline;
   cursor: pointer;
+}
+
+.mensaje-error {
+  color: red;
+  margin-top: 10px;
 }

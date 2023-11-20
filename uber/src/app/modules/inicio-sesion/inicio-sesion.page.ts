@@ -10,13 +10,26 @@ import { DbserviciosService } from 'src/app/services/baseDatos/dbservicios.servi
 export class InicioSesionPage implements OnInit {
   correoElectronico: string = '';
   contrasena:string = '';
-  
+  mensajes: string[] = [];
+
   constructor(private db: DbserviciosService, private router: Router) { }
 
   ngOnInit() {
   }
 
   iniciarSesion() {
+
+    this.mensajes = [];
+
+
+    if (!this.correoElectronico) {
+      this.mensajes.push('Campo \'Correo\' es obligatorio');
+      return;
+    } else if (!this.contrasena) {
+      this.mensajes.push('Campo \'Contraseña\' es obligatorio');
+      return;
+    }
+
     this.db.loginUsuario(this.correoElectronico, this.contrasena)
       .then(usuarioEncontrado => {
         if (usuarioEncontrado) {

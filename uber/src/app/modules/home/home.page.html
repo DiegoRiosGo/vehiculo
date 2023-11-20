@@ -25,6 +25,10 @@
             ¿Olvidaste tu contraseña?
           </ion-text>
 
+          <div *ngFor="let mensaje of mensajes" class="mensaje-error">
+            {{ mensaje }}
+          </div>
+          
           <div class="login-buttons">
             <ion-button expand="full" color="primary" (click)="iniciarSesion()">Iniciar Sesión</ion-button>
             <ion-button expand="full" color="success" [routerLink]="['/registro']">Registrarse</ion-button>

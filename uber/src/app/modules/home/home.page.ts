@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { DbserviciosService } from 'src/app/services/baseDatos/dbservicios.service';
 import { AlertController } from '@ionic/angular';
+import { ValidarEmailService } from 'src/app/services/valEmail/validar-email.service';
 
 @Component({
   selector: 'app-home',
@@ -11,27 +12,21 @@ import { AlertController } from '@ionic/angular';
 export class HomePage {
   correoElectronico: string = '';
   contrasena: string = '';
+  mensajes: string[] = [];
 
-  constructor(private db: DbserviciosService, private router: Router, private alertController: AlertController) { }
 
-  async ErrorAlert() {
-    const alert = await this.alertController.create({
-      header: 'No se pudo iniciar sesion',
-      message: 'Ingrese nuevamente su correo y contraseña',
-      buttons: ['Aceptar'],
-    });
+  constructor(private db: DbserviciosService, private router: Router, private alertController: AlertController,private valCorr: ValidarEmailService) { }
 
-    await alert.present();
-  }
 
   iniciarSesion() {
-    if (!this.correoElectronico || !this.contrasena) {
-      console.error('Por favor, proporciona correo electrónico y contraseña.');
-      return;
-    }
 
-    if (!this.validarFormatoCorreo(this.correoElectronico)) {
-      console.error('Formato de correo electrónico no válido.');
+    this.mensajes = [];
+
+    if (!this.correoElectronico || !this.contrasena) {
+      this.mensajes.push('Por favor, proporciona correo electrónico y contraseña.');
+      return;
+    }else if (!this.validarFormatoCorreo(this.correoElectronico)) {
+      this.mensajes.push('Formato de correo electrónico no válido.');
       return;
     }
 
@@ -40,20 +35,17 @@ export class HomePage {
         if (usuarioEncontrado) {
           this.router.navigate(['/perfiluser'], { queryParams: { idUsuario: usuarioEncontrado.usuarioid } });
         } else {
-          console.error('Correo o contraseña incorrectos');
+          this.mensajes.push('Correo o contraseña incorrectos');
 
         }
       })
       .catch(error => {
-        console.error('Error al iniciar sesión:', error);
+        this.mensajes.push('Error al iniciar sesión:', error);
       });
   }
 
   private validarFormatoCorreo(correo: string): boolean {
-    return true;
-  }
-
-  private mostrarMensajeError(mensaje: string) {
+    return this.valCorr.validaremail(correo); 
   }
 
 }
