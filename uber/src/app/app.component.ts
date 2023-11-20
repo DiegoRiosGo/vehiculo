@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { DbserviciosService } from './services/baseDatos/dbservicios.service';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,14 @@ import { Component } from '@angular/core';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  constructor() {}
+  constructor(private dbService: DbserviciosService) {}
+  
+  ngOnInit() {
+    // Initialize the database when the app starts
+    this.dbService.initDatabase().then(() => {
+      console.log('Database initialized successfully');
+    }).catch(error => {
+      console.error('Error initializing database:', error);
+    });
+  }
 }

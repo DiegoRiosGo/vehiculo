@@ -1,0 +1,21 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>adminvehiculo</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <ion-item-divider color="primary" sticky>
+    Vehículos
+  </ion-item-divider>
+  <ion-item *ngFor="let vehiculo of vehiculos">
+    <ion-label>Patente: {{ vehiculo.patente }}</ion-label>
+    <ion-label>Cantidad Asientos: {{ vehiculo.asientos  }}</ion-label>
+    <ion-button color="danger" fill="clear" (click)="eliminarVehiculo(vehiculo.autoid)">
+      <ion-icon name="trash"></ion-icon>
+    </ion-button>
+  </ion-item>
+
+  <ion-note *ngIf="vehiculos.length === 0">No hay vehículos registrados.</ion-note>
+</ion-content>

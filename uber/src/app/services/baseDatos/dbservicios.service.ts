@@ -9,6 +9,8 @@ import { AlertController, Platform } from '@ionic/angular';
 })
 export class DbserviciosService {
 
+  private isDatabaseInitialized: boolean = false;
+  
   //constructor
   constructor(public sqlite: SQLite, private platform: Platform, private alertController: AlertController) {}
 
@@ -20,6 +22,8 @@ export class DbserviciosService {
     })
     
   }
+
+  
 
   createTable() {
     return this.crearDB().then((db: SQLiteObject) => {
@@ -100,6 +104,23 @@ export class DbserviciosService {
     });
   }
 
+  // Método para inicializar la base de datos (llama a createTable e insertData en secuencia)
+  initDatabase() {
+    if (this.isDatabaseInitialized) {
+      console.log('Database already initialized. Skipping initialization.');
+      return Promise.resolve();
+    }
+
+    return this.createTable().then(() => {
+      console.log('Tables created successfully.');
+      return this.insertData();
+    }).then(() => {
+      console.log('Data inserted successfully.');
+      this.isDatabaseInitialized = true;
+    }).catch(error => {
+      console.error('Error during database initialization:', error);
+    });
+  }
 
   //observable para las tablas
 
@@ -385,6 +406,7 @@ eliminarDetalle(iddetalle: number) {
     });
   }
 
+<<<<<<< Updated upstream
   buscarUsuarioPorId(iduser: number): Promise<string>{
     return this.crearDB().then((db: SQLiteObject)=>{
       return db.executeSql("SELECT * FROM usuario WHERE usuarioid = ?", [iduser])
@@ -401,3 +423,11 @@ eliminarDetalle(iddetalle: number) {
     })
   }
 }
+=======
+
+}
+
+/*
+
+*/
+>>>>>>> Stashed changes

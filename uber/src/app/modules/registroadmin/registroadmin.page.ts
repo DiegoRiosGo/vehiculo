@@ -12,29 +12,19 @@ export class RegistroadminPage implements OnInit {
 
   usuarios: any[] = [];
 
-  vehiculos: any[] = [];
-
   pregunta3: any[] = [];
   nuevaPregunta: string = ''; // Variable para almacenar la nueva pregunta
 
   roles: any[] = [];
 
   constructor(private servicioDB: DbserviciosService) {
-    this.initializeDatabase();
+
   }
 
-  initializeDatabase() {
-    this.servicioDB.createTable().then(() => {
-      console.log('Tabla creada con éxito');
-      this.servicioDB.insertData().then(() => {
-        console.log('Datos insertados con éxito');
-        this.loadRoles();
-        this.cargarUsuarios();
-        this.cargarVehiculos();
-        this.cargarPreguntas();
-
-      });
-    });
+  ionViewDidEnter() {
+    this.loadRoles();
+    this.cargarUsuarios();
+    this.cargarPreguntas();
   }
 
   loadRoles() {
@@ -56,12 +46,7 @@ export class RegistroadminPage implements OnInit {
     });
   }
 
-  cargarVehiculos() {
-    this.servicioDB.obtenerVehiculos().then((data) => {
-      console.log('Datos de vehiculos obtenidos:', data);
-      this.vehiculos = data;
-    });
-  }
+  
  
   async eliminarUsuario(usuarioid: number) {
     try {
@@ -70,17 +55,6 @@ export class RegistroadminPage implements OnInit {
       this.cargarUsuarios();
     } catch (error) {
       console.error('Error al eliminar usuario:', error);
-    }
-  }
-
-  async eliminarVehiculo(autoid: number) {
-    try {
-      await this.servicioDB.eliminarVehiculo(autoid);
-      // Recargar la lista de vehículos después de eliminar
-      console.log('Datos de vehiculos borrados:');
-      this.cargarVehiculos();
-    } catch (error) {
-      console.error('Error al eliminar vehículo:', error);
     }
   }
 

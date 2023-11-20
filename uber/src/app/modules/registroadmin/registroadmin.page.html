@@ -19,16 +19,6 @@
     </ion-item>
 
     <!--modificar usuario para el tipo de rol-->
-    
-    <ion-item-divider color="primary" sticky>
-      Vehículos
-    </ion-item-divider>
-    <ion-item *ngFor="let vehiculo of vehiculos">
-      <ion-label>{{ vehiculo.patente }}</ion-label>
-      <ion-button color="danger" fill="clear" (click)="eliminarVehiculo(vehiculo.autoid)">
-        <ion-icon name="trash"></ion-icon>
-      </ion-button>
-    </ion-item>
 
     <ion-item-divider color="primary">
       Roles
