@@ -13,16 +13,16 @@ import { DbserviciosService } from 'src/app/services/baseDatos/dbservicios.servi
 })
 export class PerfiluserPage implements OnInit {
 
-  climaData:any;
+  climaData: any;
   idUsuario: number | null = null;
   nombreUsuario: string | null = null;
   correoUsuario: string | null = null;
-  
+
   constructor(
     private router: Router,
     private aroute: ActivatedRoute,
     private alertController: AlertController,
-    private api:ClimaService,
+    private api: ClimaService,
     private cdr: ChangeDetectorRef,
     private db: DbserviciosService
   ) { }
@@ -85,7 +85,7 @@ export class PerfiluserPage implements OnInit {
       this.cdr.detectChanges(); // Forzar la actualización de la vista
     });
   }
-  
+
   ionViewWillEnter() {
     this.obtenerclima();
   }
@@ -113,8 +113,18 @@ export class PerfiluserPage implements OnInit {
         {
           text: 'Registrar',
           handler: (data) => {
-            // Lógica para insertar el vehículo en la base de datos
-            this.insertarVehiculoEnBD(data.patente, data.asientos);
+            const patenteValida = this.validarPatente(data.patente);
+            const asientosValidos = this.validarAsientos(data.asientos);
+
+            if (!patenteValida && !asientosValidos) {
+              this.presentAlert('Error', 'Por favor, ingrese valores válidos para la patente y el número de asientos.');
+            } else if (!patenteValida) {
+              this.presentAlert('Error', 'La patente ingresada no es válida.');
+            } else if (!asientosValidos) {
+              this.presentAlert('Error', 'Ingrese un número de asientos válido (entre 2 y 20).');
+            } else {
+              this.insertarVehiculoEnBD(data.patente, data.asientos);
+            }
           },
         },
       ],
@@ -122,6 +132,34 @@ export class PerfiluserPage implements OnInit {
 
     await alert.present();
   }
+
+  validarPatente(patente: string): boolean {
+    // Expresión regular para validar una patente con 4 letras y 2 números
+    const patenteRegex = /^[a-zA-Z]{4}\d{2}$/;
+    return patenteRegex.test(patente);
+  }
+
+  validarAsientos(asientos: number): boolean {
+    // Validar que los asientos estén en el rango de 2 a 20
+    return asientos >= 2 && asientos <= 15;
+  }
+
+  async presentAlert(header: string, message: string) {
+    const alert = await this.alertController.create({
+      header,
+      message,
+      buttons: [
+        {
+          text: 'OK',
+          handler: () => {
+            this.openRegistrarVehiculoAlert();
+          },
+        },
+      ],
+    });
+    await alert.present();
+  }
+
 
   private insertarVehiculoEnBD(patente: string, asientos: number) {
     this.db
