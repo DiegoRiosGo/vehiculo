@@ -16,7 +16,7 @@ const routes: Routes = [
     loadChildren: () => import('./modules/moduser/moduser.module').then( m => m.ModuserPageModule)
   },
   {
-    path: 'perfiluser',
+    path: 'perfiluser/:id',
     loadChildren: () => import('./modules/perfiluser/perfiluser.module').then( m => m.PerfiluserPageModule)
   },
   {
@@ -42,7 +42,8 @@ const routes: Routes = [
   {
     path: 'registroadmin',
     loadChildren: () => import('./modules/registroadmin/registroadmin.module').then( m => m.RegistroadminPageModule)
-  },  {
+  },
+  {
     path: 'adminvehiculo',
     loadChildren: () => import('./modules/adminvehiculo/adminvehiculo.module').then( m => m.AdminvehiculoPageModule)
   },
