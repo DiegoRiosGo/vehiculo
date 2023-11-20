@@ -385,5 +385,19 @@ eliminarDetalle(iddetalle: number) {
     });
   }
 
-
+  buscarUsuarioPorId(iduser: number): Promise<string>{
+    return this.crearDB().then((db: SQLiteObject)=>{
+      return db.executeSql("SELECT * FROM usuario WHERE usuarioid = ?", [iduser])
+      .then(data => {
+        if (data.rows.length > 0) {
+          return data.rows.item(0); // Devuelve el primer usuario encontrado
+        } else {
+          return null; 
+        }
+      }).catch(error => {
+        console.error('Error al obtener usuario por credenciales:', error);
+        return null;
+      });
+    })
+  }
 }

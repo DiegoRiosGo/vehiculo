@@ -38,20 +38,17 @@
         </div>
 
         <!-- Nombre de usuario -->
-        <div class="profile-name">Nombre de Usuario</div>
+        <div class="profile-name">{{nombreUsuario}}</div>
 
         <!-- Correo con color difuminado -->
-        <div class="profile-email">correo@ejemplo.com</div>
+        <div class="profile-email">{{correoUsuario}}</div>
 
         <div class="login-buttons">
           <ion-button expand="full" color="primary" [routerLink]="['/mapa']">Tomar Viaje</ion-button>
           <ion-button expand="full" color="primary" [routerLink]="['/mapa']">
             Iniciar Viaje Como Conductor
           </ion-button>
-          <ion-button expand="full" color="primary" (click)="openRegistrarVehiculoAlert()">Registrar vehiculo</ion-button>
         </div>
-
-       
       </ion-card-content>
     </ion-card>
   </div>

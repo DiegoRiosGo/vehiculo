@@ -15,7 +15,12 @@ export class HomePage {
   mensajes: string[] = [];
 
 
-  constructor(private db: DbserviciosService, private router: Router, private alertController: AlertController, private valCorr: ValidarEmailService) { }
+  constructor(
+    private db: DbserviciosService,
+    private router: Router,
+    private alertController: AlertController,
+    private valCorr: ValidarEmailService
+    ){}
 
 
   iniciarSesion() {
@@ -33,7 +38,7 @@ export class HomePage {
     this.db.loginUsuario(this.correoElectronico, this.contrasena)
       .then((usuarioEncontrado: { usuarioid: any; }) => {
         if (usuarioEncontrado) {
-          this.router.navigate(['/perfiluser'], { queryParams: { idUsuario: usuarioEncontrado.usuarioid } });
+          this.router.navigate(['/perfiluser', usuarioEncontrado.usuarioid]);
         } else {
           this.mensajes.push('Correo o contraseña incorrectos');
 

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ClimaService } from 'src/app/services/servClima/clima.service';
 import { ChangeDetectorRef } from '@angular/core';
 import { DbserviciosService } from 'src/app/services/baseDatos/dbservicios.service';
@@ -14,14 +14,37 @@ import { DbserviciosService } from 'src/app/services/baseDatos/dbservicios.servi
 export class PerfiluserPage implements OnInit {
 
   climaData:any;
+  idUsuario: number | null = null;
+  nombreUsuario: string | null = null;
+  correoUsuario: string | null = null;
   
-  constructor(private router: Router,
+  constructor(
+    private router: Router,
+    private aroute: ActivatedRoute,
     private alertController: AlertController,
-    private api:ClimaService,private cdr: ChangeDetectorRef,
-    private dbService: DbserviciosService
+    private api:ClimaService,
+    private cdr: ChangeDetectorRef,
+    private dbService: DbserviciosService,
+    private db: DbserviciosService
   ) { }
 
   ngOnInit() {
+    this.aroute.params.subscribe(params => {
+      this.idUsuario = params['idUsuario'];
+
+      if (this.idUsuario) {
+        this.db.buscarUsuarioPorId(this.idUsuario).then((usuario: any) => {
+          if (usuario) {
+            this.nombreUsuario = usuario.nombre; // Asigna el nombre del usuario obtenido
+            this.correoUsuario = usuario.correo; // Asigna el correo del usuario obtenido
+          } else {
+            // Manejo si el usuario no se encuentra
+          }
+        }).catch(error => {
+          // Manejo de errores
+        });
+      }
+    });
   }
   async logout() {
     const alert = await this.alertController.create({
@@ -102,7 +125,7 @@ export class PerfiluserPage implements OnInit {
   }
 
   private insertarVehiculoEnBD(patente: string, asientos: number) {
-    this.dbService
+    this.db
       .insertarVehiculo(patente, 1, asientos) // Aquí 1 es un ejemplo de un ID de usuario, debes obtener el ID del usuario actual según tu lógica.
       .then(() => {
         console.log('Vehículo registrado con éxito.');
