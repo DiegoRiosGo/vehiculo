@@ -12,6 +12,8 @@ export class RegistroadminPage implements OnInit {
 
   usuarios: any[] = [];
 
+  nuevoRolId: any;
+
   pregunta3: any[] = [];
   nuevaPregunta: string = ''; // Variable para almacenar la nueva pregunta
 
@@ -82,6 +84,21 @@ export class RegistroadminPage implements OnInit {
     } catch (error) {
       console.error('Error al agregar pregunta:', error);
     }
+  }
+
+  actualizarRolUsuario(usuarioid: number, nuevoRolId: number) {
+    this.servicioDB.actualizarRolUsuario(usuarioid, nuevoRolId)
+      .then(() => {
+        console.log('Rol actualizado con éxito.');
+        // Actualiza la variable local de usuarios con los datos actualizados
+        this.servicioDB.obtenerUsuarios().then(usuarios => {
+        this.usuarios = usuarios;
+      });
+      })
+      .catch(error => {
+        console.error('Error al actualizar el rol:', error);
+        // Maneja el error de acuerdo a tus necesidades.
+      });
   }
 
   ngOnInit() {

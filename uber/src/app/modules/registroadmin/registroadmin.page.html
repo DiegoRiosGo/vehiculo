@@ -8,14 +8,43 @@
 
 <ion-content>
   <ion-list>
-    <ion-item-divider color="primary" sticky>
+    <ion-item-divider color="primary">
       Usuarios
     </ion-item-divider>
     <ion-item *ngFor="let usuario of usuarios">
-      <ion-label>{{ usuario.nombre }} {{ usuario.apellido }}</ion-label>
-      <ion-button color="danger" fill="clear" (click)="eliminarUsuario(usuario.usuarioid)">
-        <ion-icon name="trash"></ion-icon>
-      </ion-button>
+      <!-- Información del usuario -->
+      <ion-label>
+        <h2>{{ usuario.nombre }} {{ usuario.apellido }}</h2>
+        <p>Correo: {{ usuario.correo }}</p>
+        <p>Rol: {{ usuario.rolid }}</p>
+      </ion-label>
+  
+      <!-- Botones de acciones -->
+      <ion-buttons slot="end">
+        <!-- Botón para seleccionar el nuevo rol -->
+        <ion-item>
+          <ion-label>Rol:</ion-label>
+          <ion-select [(ngModel)]="nuevoRolId">
+            <ion-select-option *ngFor="let rol of roles" [value]="rol.id">{{ rol.nomrol }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+  
+        <!-- Botón para actualizar el rol -->
+        <ion-item>
+          <ion-button color="primary" fill="clear" (click)="actualizarRolUsuario(usuario.usuarioid, nuevoRolId)">
+            <ion-icon name="refresh"></ion-icon>
+            Actualizar Rol
+          </ion-button>
+        </ion-item>
+  
+        <!-- Botón para eliminar el usuario -->
+        <ion-item>
+          <ion-button color="danger" fill="clear" (click)="eliminarUsuario(usuario.usuarioid)">
+            <ion-icon name="trash"></ion-icon>
+            Eliminar Usuario
+          </ion-button>
+        </ion-item>
+      </ion-buttons>
     </ion-item>
 
     <!--modificar usuario para el tipo de rol-->
@@ -24,7 +53,7 @@
       Roles
     </ion-item-divider>
     <ion-item *ngFor="let rol of roles">
-      <ion-label>{{ rol.nomrol }}</ion-label>
+      <ion-label>Numero Rol: {{ rol.nomrol }} Nombre Rol: {{ rol.nomrol }}</ion-label>
     </ion-item>
 
     <ion-item-divider color="primary" sticky>

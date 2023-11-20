@@ -263,6 +263,13 @@ actualizarUsuario(usuarioid: number, nuevoNombre: string, nuevoApellido: string,
   });
 }
 
+actualizarRolUsuario(usuarioid: number, nuevoRolId: number) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("UPDATE usuario SET rolid = ? WHERE usuarioid = ?", [nuevoRolId, usuarioid]);
+    
+  });
+}
+
 // Eliminar un usuario
 eliminarUsuario(usuarioid: number) {
   return this.crearDB().then((db: SQLiteObject) => {
