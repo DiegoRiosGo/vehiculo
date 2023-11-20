@@ -38,6 +38,7 @@ export class HomePage {
     this.db.loginUsuario(this.correoElectronico, this.contrasena)
       .then((usuarioEncontrado: { usuarioid: any; }) => {
         if (usuarioEncontrado) {
+          console.log('ID de Usuario:', usuarioEncontrado.usuarioid);
           this.router.navigate(['/perfiluser', usuarioEncontrado.usuarioid]);
         } else {
           this.mensajes.push('Correo o contraseña incorrectos');

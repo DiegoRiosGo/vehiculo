@@ -80,6 +80,7 @@ export class PerfiluserPage implements OnInit {
   editProfile() {
     // Lógica para editar el perfil
     // Por ejemplo, redireccionar a una página de edición de perfil
+    console.log('ID de Usuario:', this.idUsuario);
     this.router.navigate(['/moduser', this.idUsuario]);
   }
 
