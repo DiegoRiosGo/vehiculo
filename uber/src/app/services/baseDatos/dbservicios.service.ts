@@ -406,7 +406,7 @@ eliminarDetalle(iddetalle: number) {
     });
   }
 
-<<<<<<< Updated upstream
+
   buscarUsuarioPorId(iduser: number): Promise<string>{
     return this.crearDB().then((db: SQLiteObject)=>{
       return db.executeSql("SELECT * FROM usuario WHERE usuarioid = ?", [iduser])
@@ -423,11 +423,3 @@ eliminarDetalle(iddetalle: number) {
     })
   }
 }
-=======
-
-}
-
-/*
-
-*/
->>>>>>> Stashed changes
