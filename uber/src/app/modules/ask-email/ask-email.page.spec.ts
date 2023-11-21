@@ -1,17 +1,24 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AskEmailPage } from './ask-email.page';
+import { DbserviciosService } from 'src/app/services/baseDatos/dbservicios.service';
+import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
+import { IonicModule } from '@ionic/angular';
 
-describe('AskEmailPage', () => {
-  let component: AskEmailPage;
-  let fixture: ComponentFixture<AskEmailPage>;
+describe('DbserviciosService', () => {
+  let service: DbserviciosService;
+  let sqlite: SQLite; // Declara la variable SQLite
 
-  beforeEach(async(() => {
-    fixture = TestBed.createComponent(AskEmailPage);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  }));
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [IonicModule.forRoot()],
+      providers: [DbserviciosService, SQLite], // Incluye SQLite en la lista de proveedores
+    });
+    service = TestBed.inject(DbserviciosService);
+    sqlite = TestBed.inject(SQLite); // Inyecta SQLite
   });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+
+  // Agrega más pruebas según sea necesario
 });

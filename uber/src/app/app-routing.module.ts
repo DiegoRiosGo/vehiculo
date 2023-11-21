@@ -20,7 +20,7 @@ const routes: Routes = [
     loadChildren: () => import('./modules/perfiluser/perfiluser.module').then( m => m.PerfiluserPageModule)
   },
   {
-    path: 'recuperar',
+    path: 'recuperar/:usuarioid',
     loadChildren: () => import('./modules/recuperar/recuperar.module').then( m => m.RecuperarPageModule)
   },
   {
@@ -28,16 +28,12 @@ const routes: Routes = [
     loadChildren: () => import('./modules/registro/registro.module').then( m => m.RegistroPageModule)
   },
   {
-    path: 'adminvista',
+    path: 'adminvista/:usuarioid',
     loadChildren: () => import('./modules/adminvista/adminvista.module').then( m => m.AdminvistaPageModule)
   },
   {
     path: 'mapa',
     loadChildren: () => import('./modules/mapa/mapa.module').then( m => m.MapaPageModule)
-  },
-  {
-    path: 'prueba',
-    loadChildren: () => import('./modules/prueba/prueba.module').then( m => m.PruebaPageModule)
   },
   {
     path: 'registroadmin',

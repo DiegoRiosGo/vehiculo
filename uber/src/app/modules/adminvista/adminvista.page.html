@@ -1,8 +1,24 @@
 <ion-content [fullscreen]="true" class="admin-content">
   
   <div class="background-gradient">
-    <div class="center-container">
+    <div class="center-container">  
       <ion-card class="login-card">
+
+        <ion-item class="custom-item">
+
+          <!-- Icono de tuerca para modificar perfil -->
+          <ion-icon name="settings" slot="start"color="primary"
+            class="settings-icon" (click)="editProfile()">Edit Perfil</ion-icon>
+  
+          <!-- Nombre de usuario -->
+          <div class="profile-name">   {{  nombreUsuario }}</div>
+  
+          <!-- Icono de cierre de sesión -->
+          <ion-icon name="log-out" slot="end" [routerLink]="['/logout']" color="primary" class="logout-icon"
+            (click)="logout()"></ion-icon>
+  
+        </ion-item>
+
         <ion-row class="welcome-message">
           <ion-col>
             <h1>Bienvenido admin</h1>
@@ -10,6 +26,7 @@
         </ion-row>
 
         <ion-row class="admin-icons">
+
           <ion-col class="admin-icon">
             <ion-icon name="people" color="secondary" style="--ion-icon-size: 3em;" [routerLink]="['/registroadmin']"></ion-icon>
             <p class="admin-label">Registro Clientes</p>
@@ -20,13 +37,7 @@
           </ion-col>
         </ion-row>
 
-        <ion-row class="admin-icons">
-          <ion-col class="admin-icon">
-            <ion-icon name="log-out" [routerLink]="['/logout']" color="primary" (click)="logout()"
-              style="--ion-icon-size: 3em;"></ion-icon>
-            <p class="admin-label">Salir</p>
-          </ion-col>
-        </ion-row>
+
 
       </ion-card>
     </div>
