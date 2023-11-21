@@ -12,11 +12,11 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'moduser/:id',
+    path: 'moduser/:usuarioid',
     loadChildren: () => import('./modules/moduser/moduser.module').then( m => m.ModuserPageModule)
   },
   {
-    path: 'perfiluser/:id',
+    path: 'perfiluser/:usuarioid',
     loadChildren: () => import('./modules/perfiluser/perfiluser.module').then( m => m.PerfiluserPageModule)
   },
   {

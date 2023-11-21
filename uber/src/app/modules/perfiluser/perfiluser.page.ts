@@ -16,9 +16,9 @@ export class PerfiluserPage implements OnInit {
   registrarVehiculoBloqueado: boolean = false;
 
   climaData: any;
-  idUsuario: number
-  nombreUsuario: string 
-  correoUsuario: string 
+  idUsuario: number;
+  nombreUsuario: string;
+  correoUsuario: string;
 
   constructor(
     private router: Router,
@@ -31,12 +31,17 @@ export class PerfiluserPage implements OnInit {
 
   ngOnInit() {
 
+    
+
     this.nombreUsuario = 'nombre random';
     this.correoUsuario = 'correo random';
+    
+    this.aroute.paramMap.subscribe(params => {
+      // Obtén el valor de usuarioid desde los parámetros de la ruta
+      const usuarioid = params.get('usuarioid');
+      console.log('Usuarioid en PerfilUsuarioPage:', usuarioid);
 
-    this.aroute.params.subscribe(params => {
-      this.idUsuario = params['idUsuario'];
-
+    
       if (this.idUsuario) {
         this.db.buscarUsuarioPorId(this.idUsuario).then((usuario: any) => {
           if (usuario) {
@@ -80,8 +85,11 @@ export class PerfiluserPage implements OnInit {
   editProfile() {
     // Lógica para editar el perfil
     // Por ejemplo, redireccionar a una página de edición de perfil
+
     console.log('ID de Usuario:', this.idUsuario);
+    console.log('si toy antes .');
     this.router.navigate(['/moduser', this.idUsuario]);
+    console.log('si toy.');
   }
 
   //api clima
@@ -96,7 +104,7 @@ export class PerfiluserPage implements OnInit {
   ionViewWillEnter() {
     this.obtenerclima();
   }
-
+  
   async openRegistrarVehiculoAlert() {
     const alert = await this.alertController.create({
       header: 'Registrar Vehículo',
