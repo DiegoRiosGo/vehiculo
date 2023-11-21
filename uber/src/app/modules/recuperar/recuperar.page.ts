@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DbserviciosService } from 'src/app/services/baseDatos/dbservicios.service';
 
 @Component({
@@ -13,6 +13,7 @@ export class RecuperarPage implements OnInit {
   constructor(
     private location: Location,
     private aroute: ActivatedRoute,
+    private router: Router,
     private db: DbserviciosService) { }
 
   usuarioid: number;
@@ -32,7 +33,7 @@ export class RecuperarPage implements OnInit {
             console.log('Pregunta de seguridad obtenida:', this.preguntaS);
             if (this.respuestaUsuario && this.preguntaS === this.respuestaUsuario) {
               console.log('¡La respuesta es correcta!');
-              //redirigir al cambio de contraseña
+              this.router.navigate(['/nuevacontraena', this.usuarioid]);
             } else {
               console.log('La respuesta es incorrecta.');
             }

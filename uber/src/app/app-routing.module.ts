@@ -51,6 +51,11 @@ const routes: Routes = [
     path: 'ask-email/:usuarioid',
     loadChildren: () => import('./modules/ask-email/ask-email.module').then( m => m.AskEmailPageModule)
   },
+  {
+    path: 'nuevacontrasena',
+    loadChildren: () => import('./modules/nuevacontraena/nuevacontraena.module').then( m => m.NuevacontraenaPageModule)
+
+  }
 
 
   
