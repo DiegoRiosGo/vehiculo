@@ -18,11 +18,8 @@
 
         <ion-item class="custom-item">
           <ion-label position="floating" color="primary">Pregunta de seguridad</ion-label>
-          <ion-select>
-            <ion-select-option value="1">¿Cuál es el nombre de tu primer mascota?</ion-select-option>
-            <ion-select-option value="2">¿En qué ciudad naciste?</ion-select-option>
-            <ion-select-option value="3">¿Cuál es tu comida favorita?</ion-select-option>
-          </ion-select>
+          <ion-input type="password" [(ngModel)]="preguntaS">{{preguntaS}}</ion-input>
+         
         </ion-item>
 
         <ion-item class="custom-item">

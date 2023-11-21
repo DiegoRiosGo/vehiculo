@@ -433,4 +433,34 @@ eliminarDetalle(iddetalle: number) {
       });
     })
   }
+  buscarusuarioPorCorreo(correo: string): Promise<string>{
+    return this.crearDB().then((db: SQLiteObject)=>{
+      return db.executeSql("SELECT * FROM usuario WHERE correo = ?", [correo])
+      .then(usr =>{
+        if(usr.rows.length > 0){
+          return usr.rows.item(0);
+        } else {
+          return null;
+        }
+      }).catch(error => {
+        console.error('Error al obtener usuario por correo:', error);
+        return null;
+      });
+    });
+  }
+  buscarPregunta(id: number): Promise<string> {
+    return this.crearDB().then((db: SQLiteObject) => {
+      return db.executeSql("SELECT * FROM tpreguntas WHERE idpreguntas = ?", [id])
+        .then(data => {
+          if (data.rows.length > 0) {
+            return data.rows.item(0).pregunta; // Devuelve solo el texto de la pregunta
+          } else {
+            return null;
+          }
+        }).catch(error => {
+          console.error('Error al obtener la pregunta de seguridad por id:', error);
+          return null;
+        });
+    });
+  }
 }

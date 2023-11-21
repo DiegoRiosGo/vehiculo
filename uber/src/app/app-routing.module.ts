@@ -46,9 +46,10 @@ const routes: Routes = [
   {
     path: 'adminvehiculo',
     loadChildren: () => import('./modules/adminvehiculo/adminvehiculo.module').then( m => m.AdminvehiculoPageModule)
-  },  {
-    path: 'ask-email',
-    loadChildren: () => import('./askEmail/ask-email/ask-email.module').then( m => m.AskEmailPageModule)
+  },
+  {
+    path: 'ask-email/:usuarioid',
+    loadChildren: () => import('./modules/ask-email/ask-email.module').then( m => m.AskEmailPageModule)
   },
 
 

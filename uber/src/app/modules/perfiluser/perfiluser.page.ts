@@ -32,8 +32,6 @@ export class PerfiluserPage implements OnInit {
 
   ngOnInit() {
 
-    
-
     this.nombreUsuario = 'nombre random';
     this.correoUsuario = 'correo random';
     
