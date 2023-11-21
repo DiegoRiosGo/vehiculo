@@ -16,9 +16,9 @@ export class PerfiluserPage implements OnInit {
   registrarVehiculoBloqueado: boolean = false;
 
   climaData: any;
-  idUsuario: number | null = null;
-  nombreUsuario: string | null = null;
-  correoUsuario: string | null = null;
+  idUsuario: number
+  nombreUsuario: string 
+  correoUsuario: string 
 
   constructor(
     private router: Router,
