@@ -15,8 +15,9 @@ export class PerfiluserPage implements OnInit {
 
   registrarVehiculoBloqueado: boolean = false;
 
+  usuarioid: number;
+
   climaData: any;
-  idUsuario: number;
   nombreUsuario: string;
   correoUsuario: string;
 
@@ -38,12 +39,13 @@ export class PerfiluserPage implements OnInit {
     
     this.aroute.paramMap.subscribe(params => {
       // Obtén el valor de usuarioid desde los parámetros de la ruta
-      const usuarioid = params.get('usuarioid');
-      console.log('Usuarioid en PerfilUsuarioPage:', usuarioid);
+      const usuarioidString = params.get('usuarioid') ?? ''; // Asigna '' si params.get('usuarioid') es null
+      this.usuarioid = parseInt(usuarioidString, 10) || 0; // Convierte a number, asigna 0 si la conversión falla
+      console.log('Usuarioid en PerfilUsuarioPage:', this.usuarioid);
 
     
-      if (this.idUsuario) {
-        this.db.buscarUsuarioPorId(this.idUsuario).then((usuario: any) => {
+      if (this.usuarioid) {
+        this.db.buscarUsuarioPorId(this.usuarioid).then((usuario: any) => {
           if (usuario) {
             this.nombreUsuario = usuario.nombre; // Asigna el nombre del usuario obtenido
             this.correoUsuario = usuario.correo; // Asigna el correo del usuario obtenido
@@ -87,8 +89,9 @@ export class PerfiluserPage implements OnInit {
     // Por ejemplo, redireccionar a una página de edición de perfil
 
     console.log('si toy antes .');
-    console.log('ID de Usuario P user:', this.idUsuario);
-    this.router.navigate(['/moduser', this.idUsuario]);
+    console.log('ID de Usuario P user:', this.usuarioid);
+    console.log('ID de Usuario P user:', this.usuarioid);
+    this.router.navigate(['/moduser', this.usuarioid]);
     console.log('si toy.');
   }
 
