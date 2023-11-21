@@ -17,8 +17,8 @@ export class NuevacontraenaPage implements OnInit {
     private valcontraseña: ValcontraseñaService) {}
 
     usuarioid: number;
-    contraseña: string;
-    rcontraseña: string;
+    contrasena: string;
+    rcontrasena: string;
     usuario: any;
 
   ngOnInit() {
@@ -30,7 +30,7 @@ export class NuevacontraenaPage implements OnInit {
   }
 
   validarYCambiarContraseña() {
-    if (this.contraseña === this.rcontraseña && this.valcontraseña.validarcontraseña(this.contraseña, 'correo', 'nombre')) {
+    if (this.contrasena === this.rcontrasena && this.valcontraseña.validarcontraseña(this.contrasena, 'correo', 'nombre')) {
       this.db.buscarUsuarioPorId(this.usuarioid).then((usuario: any) => {
         if (usuario) {
           this.usuario = usuario;
@@ -40,16 +40,16 @@ export class NuevacontraenaPage implements OnInit {
             this.usuario.nombre,
             this.usuario.apellido,
             this.usuario.correo,
-            this.contraseña, // Actualizar la contraseña
+            this.contrasena, // Actualizar la contraseña
             this.usuario.idpreguntas,
             this.usuario.respuesta,
             this.usuario.rolid,
             this.usuario.imagenperfil
           ).then(() => {
-            console.log('Contraseña actualizada correctamente.');
+            console.log('Contrasena actualizada correctamente.');
             this.router.navigate(['/home']);
           }).catch(error => {
-            console.error('Error al actualizar la contraseña:', error);
+            console.error('Error al actualizar la contrasena:', error);
             // Manejo de errores
           });
         } else {
@@ -61,7 +61,7 @@ export class NuevacontraenaPage implements OnInit {
         // Manejo de errores
       });
     } else {
-      console.log('Las contraseñas no coinciden o no cumplen con los criterios de validación.');
+      console.log('Las contrasenas no coinciden o no cumplen con los criterios de validación.');
       // Manejar cuando las contraseñas no coinciden o no cumplen los criterios
     }
   }
