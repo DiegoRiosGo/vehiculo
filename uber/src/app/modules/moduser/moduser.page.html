@@ -17,13 +17,16 @@
           <ion-icon name="camera" *ngIf="!capturedImage" slot="end" color="light" class="camera-icon"></ion-icon>
         </div>
 
+        <!-- Nombre de usuario -->
+        <div class="profile-name">{{ nombreUsuario }}</div>
+
         <ion-item class="custom-item">
           <ion-label color="primary" position="floating">Nuevo nombre</ion-label>
-          <ion-input type="text"></ion-input>
+          <ion-input type="text" [(ngModel)]="nuevoNombre"></ion-input>
         </ion-item>
         <ion-button expand="full" color="primary" [routerLink]="['/recuperar']">Cambiar contraseña</ion-button>
 
-        <ion-button expand="full" color="success" [routerLink]="['/perfiluser']">Guardar Cambios</ion-button>
+        <ion-button expand="full" color="success" (click)="guardarCambios(nuevoNombre)">Guardar Cambios</ion-button>
       </ion-card-content>
     </ion-card>
   </div>
