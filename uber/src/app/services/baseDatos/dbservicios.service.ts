@@ -63,8 +63,8 @@ export class DbserviciosService {
         .catch(error => console.error('Error al crear la tabla detalle', error));
       // Crea la tabla 'imagenes'
       db.executeSql("CREATE TABLE IF NOT EXIST imagenes (idimagen INTEGER PRIMARY KEY AUTOINCREMENT, imagen BLOB, usuarioid INTEGER, FOREIGN KEY (usuarioid) REFERENCES usuario(usuarioid))")
-      .then(() => console.log('Tabla detalle creada'))
-      .catch(error => console.error('Error al crear la tabla detalle', error));
+      .then(() => console.log('Tabla detalle imagen'))
+      .catch(error => console.error('Error al crear la tabla imagen', error));
     });
   }
 
@@ -274,6 +274,19 @@ actualizarRolUsuario(usuarioid: number, nuevoRolId: number) {
   });
 }
 
+actualizarNombreUsuario(usuarioid: number, nuevoNombre: string){
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("UPDATE usuario SET nombre = ? WHERE usuarioid = ?", [nuevoNombre, usuarioid])
+      .then(() => {
+        console.log('cambiooo :D');
+      })
+      .catch(error => {
+        console.error('Error al actualizar el nombre del usuario:', error);
+        throw error;
+      });
+  });
+}
+
 // Eliminar un usuario
 eliminarUsuario(usuarioid: number) {
   return this.crearDB().then((db: SQLiteObject) => {
@@ -395,8 +408,48 @@ eliminarDetalle(iddetalle: number) {
 }
 
 //-------------------------------------------------------------
+// Función para cargar datos de la tabla "imagenes"
+// Insertar una imagen
+insertarImagen2(imagen: Blob, usuarioid: number) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("INSERT INTO imagenes (imagen, usuarioid) VALUES (?, ?)", [imagen, usuarioid]);
+  });
+}
 
+insertarImagen(usuarioId: number, imagen: Blob) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("INSERT INTO imagenes (usuarioid, imagen) VALUES (?, ?)", [usuarioId, imagen]);
+  });
+}
 
+// Obtener todas las imágenes para un usuario específico
+obtenerImagenesPorUsuario(usuarioid: number) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("SELECT * FROM imagenes WHERE usuarioid = ?", [usuarioid]).then(data => {
+      let imagenes = [];
+      for (let i = 0; i < data.rows.length; i++) {
+        imagenes.push(data.rows.item(i));
+      }
+      return imagenes;
+    });
+  });
+}
+
+// Actualizar una imagen
+actualizarImagen(idimagen: number, nuevaImagen: Blob) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("UPDATE imagenes SET imagen = ? WHERE idimagen = ?", [nuevaImagen, idimagen]);
+  });
+}
+
+// Eliminar una imagen
+eliminarImagen(idimagen: number) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("DELETE FROM imagenes WHERE idimagen = ?", [idimagen]);
+  });
+}
+
+//-------------------------------------------------------------
 
   //login de usuario
 
