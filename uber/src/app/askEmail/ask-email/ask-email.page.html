@@ -1,0 +1,31 @@
+<ion-content [fullscreen]="true" class="content">
+  <div class="background-gradient"></div>
+
+  <div class="center-container">
+
+    <ion-card class="login-card">
+
+      <ion-item class="custom-item-head">
+
+        <ion-buttons slot="start">
+          <ion-button fill="clear" (click)="goBack()" color="success" class="back-button">
+            <ion-icon name="arrow-back"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+
+        <p>Recuperar contraseña</p>
+
+      </ion-item>
+
+      <ion-card-content>
+
+        <ion-item class="custom-item">
+          <ion-label position="floating" color="primary">Correo electrónico</ion-label>
+          <ion-input type="email"></ion-input>
+        </ion-item>
+
+        <ion-button expand="full" color="success">Seguir</ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
