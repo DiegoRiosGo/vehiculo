@@ -79,6 +79,11 @@ export class DbserviciosService {
         .then(() => console.log('Datos insertados en la tabla rol'))
         .catch(error => console.error('Error al insertar datos en la tabla rol', error));
 
+      db.executeSql("INSERT OR IGNORE INTO rol (id, nomrol) VALUES (3, 'Conductor');", [])
+        .then(() => console.log('Datos insertados en la tabla rol'))
+        .catch(error => console.error('Error al insertar datos en la tabla rol', error));
+
+
       // Inserta datos en la tabla 'tpreguntas'
       db.executeSql("INSERT OR IGNORE INTO tpreguntas (pregunta) VALUES ('¿Cuál es el nombre de tu primer mascota?');", [])
         .then(() => console.log('Datos insertados en la tabla tpreguntas'))

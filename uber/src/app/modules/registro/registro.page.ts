@@ -71,7 +71,7 @@ export class RegistroPage implements OnInit {
       this.contrasena,
       +this.selectedSecurityQuestion, // Convierte el ID de pregunta a número
       this.respuesta,
-      1 // Supongamos que el rol por defecto es 1 para un usuario común 
+      2 // Supongamos que el rol por defecto es 2 para un usuario cliente 
     ).then(() => {
       // Éxito al insertar el usuario
       console.log('Usuario registrado exitosamente');

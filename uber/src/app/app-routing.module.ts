@@ -51,7 +51,9 @@ const routes: Routes = [
     path: 'nuevacontrasena',
     loadChildren: () => import('./modules/nuevacontraena/nuevacontraena.module').then( m => m.NuevacontraenaPageModule)
 
-  }
+  },
+ 
+
 
 
   

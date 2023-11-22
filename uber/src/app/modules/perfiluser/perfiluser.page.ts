@@ -85,9 +85,6 @@ export class PerfiluserPage implements OnInit {
   editProfile() {
     // Lógica para editar el perfil
     // Por ejemplo, redireccionar a una página de edición de perfil
-
-    console.log('si toy antes .');
-    console.log('ID de Usuario P user:', this.usuarioid);
     console.log('ID de Usuario P user:', this.usuarioid);
     this.router.navigate(['/moduser', this.usuarioid]);
     console.log('si toy.');
@@ -98,14 +95,18 @@ export class PerfiluserPage implements OnInit {
   obtenerclima() {
     this.api.getclima().subscribe((data) => {
       this.climaData = data;
-      this.cdr.detectChanges(); // Forzar la actualización de la vista
+      
+      console.log('si toy.',this.climaData);
+      console.log('si toy.',this.climaData.current.temp_f);
+
+      //this.cdr.detectChanges(); // Forzar la actualización de la vista
     });
   }
 
   ionViewWillEnter() {
     this.obtenerclima();
   }
-  
+   
   async openRegistrarVehiculoAlert() {
     const alert = await this.alertController.create({
       header: 'Registrar Vehículo',

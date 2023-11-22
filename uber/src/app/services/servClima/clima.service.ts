@@ -7,7 +7,8 @@ import { Observable, retry } from 'rxjs';
 })
 export class ClimaService {
 
-  apiurl="http://api.weatherapi.com/v1/current.json?key=d098dbd03632419a9f3201430230811&q=Santiago&aqi=no";
+  
+  apiurl="https://api.weatherapi.com/v1/current.json?key=d098dbd03632419a9f3201430230811&q&q=santiago&aqi=no";
   
   constructor(private http:HttpClient) { }
 
@@ -17,3 +18,6 @@ export class ClimaService {
     );
   }
 }
+
+
+//http://api.weatherapi.com/v1/current.json?key=d098dbd03632419a9f3201430230811&q=Santiago&aqi=no
