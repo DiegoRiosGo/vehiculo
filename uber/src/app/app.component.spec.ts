@@ -2,7 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { ActivatedRoute } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { DbserviciosService } from 'src/app/services/baseDatos/dbservicios.service';
+import { DbserviciosService } from 
+
+
+'src/app/services/baseDatos/dbservicios.service';
 
 describe('AppComponent', () => {
   let component: AppComponent;

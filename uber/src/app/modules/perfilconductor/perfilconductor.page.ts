@@ -13,10 +13,9 @@ import { DbserviciosService } from 'src/app/services/baseDatos/dbservicios.servi
 export class PerfilconductorPage implements OnInit {
 
   registrarVehiculoBloqueado: boolean = false;
-
-  usuarioid: number;
-
   climaData: any;
+  
+  usuarioid: number;
   nombreUsuario: string;
   correoUsuario: string;
 
@@ -55,6 +54,7 @@ export class PerfilconductorPage implements OnInit {
       }
     });
   }
+
   async logout() {
     const alert = await this.alertController.create({
       header: 'Cerrar sesión',
@@ -149,6 +149,7 @@ export class PerfilconductorPage implements OnInit {
 
     await alert.present();
   }
+
   validarPatente(patente: string): boolean {
     // Expresión regular para validar una patente con 4 letras y 2 números
     const patenteRegex = /^[a-zA-Z]{4}\d{2}$/;
@@ -176,7 +177,6 @@ export class PerfilconductorPage implements OnInit {
     await alert.present();
   }
 
-
   private insertarVehiculoEnBD(patente: string, asientos: number) {
     this.db
       .insertarVehiculo(patente, 1, asientos)
@@ -191,4 +191,6 @@ export class PerfilconductorPage implements OnInit {
         this.registrarVehiculoBloqueado = false;
       });
   }
+
+  
 }

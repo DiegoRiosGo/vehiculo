@@ -13,9 +13,9 @@ import { DbserviciosService } from 'src/app/services/baseDatos/dbservicios.servi
 })
 export class PerfiluserPage implements OnInit {
 
-  usuarioid: number;
-
   climaData: any;
+
+  usuarioid: number;
   nombreUsuario: string;
   correoUsuario: string;
 

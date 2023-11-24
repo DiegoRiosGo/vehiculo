@@ -91,10 +91,6 @@ export class MapaPage implements OnInit {
     await alert.present();
   }
 
-
-
-
-
   async calcularRuta() {
     if (this.direccionDestino.trim() === '') {
       // Si el campo está vacío, muestra una alerta "No se ha registrado ruta"
