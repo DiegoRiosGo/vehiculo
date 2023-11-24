@@ -13,8 +13,6 @@ import { DbserviciosService } from 'src/app/services/baseDatos/dbservicios.servi
 })
 export class PerfiluserPage implements OnInit {
 
-  registrarVehiculoBloqueado: boolean = false;
-
   usuarioid: number;
 
   climaData: any;
@@ -106,90 +104,5 @@ export class PerfiluserPage implements OnInit {
   ionViewWillEnter() {
     this.obtenerclima();
   }
-   
-  async openRegistrarVehiculoAlert() {
-    const alert = await this.alertController.create({
-      header: 'Registrar Vehículo',
-      inputs: [
-        {
-          name: 'patente',
-          type: 'text',
-          placeholder: 'Patente del vehículo',
-        },
-        {
-          name: 'asientos',
-          type: 'number',
-          placeholder: 'Número de asientos',
-        },
-      ],
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-        },
-        {
-          text: 'Registrar',
-          handler: (data) => {
-            const patenteValida = this.validarPatente(data.patente);
-            const asientosValidos = this.validarAsientos(data.asientos);     
 
-            if (!patenteValida && !asientosValidos) {
-              this.presentAlert('Error', 'Por favor, ingrese valores válidos para la patente y el número de asientos.');
-            } else if (!patenteValida) {
-              this.presentAlert('Error', 'La patente ingresada no es válida.');
-            } else if (!asientosValidos) {
-              this.presentAlert('Error', 'Ingrese un número de asientos válido (entre 2 y 20).');
-            } else {
-              this.insertarVehiculoEnBD(data.patente, data.asientos);
-              this.registrarVehiculoBloqueado = true; // Deshabilitar el botón
-            }
-          },
-        },
-      ],
-    });
-
-    await alert.present();
-  }
-  validarPatente(patente: string): boolean {
-    // Expresión regular para validar una patente con 4 letras y 2 números
-    const patenteRegex = /^[a-zA-Z]{4}\d{2}$/;
-    return patenteRegex.test(patente);
-  }
-
-  validarAsientos(asientos: number): boolean {
-    // Validar que los asientos estén en el rango de 2 a 20
-    return asientos >= 2 && asientos <= 15;
-  }
-
-  async presentAlert(header: string, message: string) {
-    const alert = await this.alertController.create({
-      header,
-      message,
-      buttons: [
-        {
-          text: 'OK',
-          handler: () => {
-            this.openRegistrarVehiculoAlert();
-          },
-        },
-      ],
-    });
-    await alert.present();
-  }
-
-
-  private insertarVehiculoEnBD(patente: string, asientos: number) {
-    this.db
-      .insertarVehiculo(patente, 1, asientos)
-      .then(() => {
-        console.log('Vehículo registrado con éxito.');
-      })
-      .catch((error) => {
-        console.error('Error al registrar el vehículo:', error);
-      })
-      .finally(() => {
-        // Habilitar el botón nuevamente después de finalizar el registro
-        this.registrarVehiculoBloqueado = false;
-      });
-  }
 }

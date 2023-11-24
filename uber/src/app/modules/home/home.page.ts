@@ -47,9 +47,13 @@ export class HomePage {
               // Realizar acciones específicas para un administrador si es necesario
             } else if (usuarioEncontrado.rolid === 2) {
               // Rol de alumno
-              console.log('Usuario es un alumno.');
+              console.log('Usuario es un cliente.');
               this.router.navigate(['/perfiluser', usuarioEncontrado.usuarioid]);
-            } else {
+            } else if (usuarioEncontrado.rolid === 3) {
+              // Rol de conductor
+              console.log('Usuario es un conductor.');
+              this.router.navigate(['/perfilconductor', usuarioEncontrado.usuarioid]);
+            }else {
               // Otro rol no manejado
               console.error('Rol no manejado:', usuarioEncontrado.rolid);
             }

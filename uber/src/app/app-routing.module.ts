@@ -52,6 +52,11 @@ const routes: Routes = [
     loadChildren: () => import('./modules/nuevacontraena/nuevacontraena.module').then( m => m.NuevacontraenaPageModule)
 
   },
+  {
+    path: 'perfilconductor/:usuarioid',
+    loadChildren: () => import('./modules/perfilconductor/perfilconductor.module').then( m => m.PerfilconductorPageModule)
+  },
+
  
 
 

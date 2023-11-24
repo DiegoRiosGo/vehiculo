@@ -7,13 +7,13 @@
       <ion-card-content>
         <h2>Editar perfil</h2>
         <ion-buttons slot="start">
-          <ion-button fill="clear" [routerLink]="['/perfiluser']" color="success" class="back-button">
+          <ion-button fill="clear" expand="full" color="success" class="back-button" (click)="volver()">
             <ion-icon name="arrow-back"></ion-icon>
           </ion-button>
         </ion-buttons>
 
         <div class="profile-image" (click)="presentAlertConfirm()">
-          <img *ngIf="capturedImage" [src]="capturedImage" alt="Captured Image" class="camera-icon" id="profile-image">
+          <img *ngIf="capturedImage || imagePath" [src]="capturedImage || imagePath" alt="Imagen Capturada">
           <ion-icon name="camera" *ngIf="!capturedImage" slot="end" color="light" class="camera-icon"></ion-icon>
         </div>
 

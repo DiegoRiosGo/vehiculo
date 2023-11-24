@@ -1,0 +1,55 @@
+<ion-content [fullscreen]="true" class="content">
+  <div class="background-gradient"></div>
+
+  <div class="center-container">
+    <ion-card class="profile-card">
+
+      <ion-item class="custom-item">
+
+        <!-- Icono de tuerca para modificar perfil -->
+        <ion-icon name="settings" slot="start"color="primary"
+          class="settings-icon" (click)="editProfile()">Edit Perfil</ion-icon>
+
+        <!-- Icono de cierre de sesión -->
+        <ion-icon name="log-out" slot="end" color="primary" class="logout-icon"
+          (click)="logout()"></ion-icon>
+
+      </ion-item>
+
+      <ion-card-header>
+
+        <ion-list *ngIf="climaData" class="clima-container">
+          <ion-item class="clima-item">
+            <img slot="start" src="{{ climaData.current.condition.icon }}" alt="Clima Icon" class="clima-icon">
+            <ion-label slot="end" color="primary">{{ climaData.current.temp_c }}°C</ion-label>
+          </ion-item>
+        </ion-list>
+
+      </ion-card-header>
+
+      <ion-card-content>
+
+        <!-- Foto de perfil con marco redondo -->
+        <div class="profile-image-container">
+          <!-- Foto de perfil con marco redondo -->
+          <div class="profile-image">
+            <ion-img src="assets/profile-image.jpg"></ion-img>
+          </div>
+        </div>
+
+        <!-- Nombre de usuario -->
+        <div class="profile-name">{{ nombreUsuario }}</div>
+
+        <!-- Correo con color difuminado -->
+        <div class="profile-email">{{ correoUsuario }}</div>
+
+        <div class="login-buttons">
+          <ion-button expand="full" color="primary" [routerLink]="['/mapa']">
+            Iniciar Viaje Como Conductor
+          </ion-button>
+          <ion-button expand="full" color="primary" (click)="openRegistrarVehiculoAlert()" [disabled]="registrarVehiculoBloqueado">Registrar vehiculo</ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

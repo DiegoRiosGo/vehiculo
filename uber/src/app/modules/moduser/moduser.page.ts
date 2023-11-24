@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { DbserviciosService } from 'src/app/services/baseDatos/dbservicios.service';
 import { CamaraService } from 'src/app/services/servCamara/camara.service';
@@ -14,8 +14,10 @@ import { NgModel } from '@angular/forms';
 export class ModuserPage implements OnInit {
 
   capturedImage: any;
+  imagePath: string; // Agrega una propiedad para almacenar la ruta de la imagen en la página
 
   usuarioid: number;
+  rolid: number;
 
   nombreUsuario: string;
   nuevoNombre: string; // Nuevo nombre del usuario
@@ -24,7 +26,8 @@ export class ModuserPage implements OnInit {
     private cameraService: CamaraService,
     private alertController: AlertController,
     private aroute: ActivatedRoute,
-    private db: DbserviciosService
+    private db: DbserviciosService,
+    private router: Router,
     ) { }
 
     ngOnInit() {
@@ -37,7 +40,9 @@ export class ModuserPage implements OnInit {
         if (this.usuarioid) {
           this.db.buscarUsuarioPorId(this.usuarioid).then((usuario: any) => {
             if (usuario) {
-              this.nombreUsuario = usuario.nombre; // Asigna el nombre del usuario obtenido
+              this.nombreUsuario = usuario.nombre; 
+              this.rolid= usuario.rolid
+              // Asigna el nombre del usuario obtenido
               console.log('Usuarioid en PerfilUsuarioPage:', this.nombreUsuario);
             } else {
               // Manejo si el usuario no se encuentra
@@ -49,59 +54,10 @@ export class ModuserPage implements OnInit {
       });
     }
 
-    async takePicture2() {
-      this.capturedImage = await this.cameraService.takePicture();
-    }
     async takePicture() {
-      try {
-        // Capturar la imagen (asegúrate de que esta función devuelva una URL base64)
-        const imagenBase64 = await this.cameraService.takePicture();
-    
-        // Verifica si hay una imagen capturada antes de intentar guardarla
-        if (imagenBase64) {
-          // Convierte la URL base64 en un Blob
-          const imagenBlob = await this.base64ToBlob(imagenBase64);
-    
-          // Llama al servicio para insertar la imagen en la base de datos
-          await this.db.insertarImagen(this.usuarioid, imagenBlob);
-          console.log('Imagen guardada en la base de datos.');
-          
-          // Actualiza la propiedad capturedImage si es necesario
-          this.capturedImage = URL.createObjectURL(imagenBlob);
-        }
-      } catch (error) {
-        console.error('Otras propiedades del error:', error);
-      }
+      this.capturedImage = await this.cameraService.takePicture();
+      this.imagePath = this.capturedImage; // Asigna la ruta de la imagen para mostrarla en la página
     }
-
-    // Función para convertir una URL base64 en un Blob
-base64ToBlob(base64: string): Promise<Blob> {
-  return new Promise((resolve, reject) => {
-    const byteCharacters = atob(base64);
-    const byteArrays = [];
-
-    for (let offset = 0; offset < byteCharacters.length; offset += 512) {
-      const slice = byteCharacters.slice(offset, offset + 512);
-
-      const byteNumbers = new Array(slice.length);
-      for (let i = 0; i < slice.length; i++) {
-        byteNumbers[i] = slice.charCodeAt(i);
-      }
-
-      const byteArray = new Uint8Array(byteNumbers);
-      byteArrays.push(byteArray);
-    }
-
-    const blob = new Blob(byteArrays, { type: 'image/jpeg' }); // Ajusta el tipo según sea necesario
-
-    resolve(blob);
-  });
-}
-  // Agrega esta función para convertir la imagen a Blob
-convertirImagenABlob(imagenDataUrl: string){
-  return fetch(imagenDataUrl)
-    .then(response => response.blob());
-}
 
   async presentAlertConfirm() {
     const alert = await this.alertController.create({
@@ -118,31 +74,13 @@ convertirImagenABlob(imagenDataUrl: string){
         {
           text: 'Sí',
           handler: () => {
-            this.takePicture2();
+            this.takePicture();
           }
         }
       ]
     });
 
     await alert.present();
-  }
-
-  
-
-  guardarCambios2(usuarioid: number, nuevoNombre: string) {
-    this.db.actualizarNombreUsuario(usuarioid, nuevoNombre)
-      .then(() => {
-        console.log('nombre actualizado con éxito.');
-        // Actualiza la variable local de usuarios con los datos actualizados
-        this.db.obtenerUsuarios().then(usuarios => {
-        this.nombreUsuario = nuevoNombre ;
-      });
-      })
-      .catch(error => {
-        console.error('Error al actualizar el rol:', error);
-        // Maneja el error de acuerdo a tus necesidades.
-      });
-  
   }
 
   guardarCambios(nuevoNombre: string) {
@@ -162,5 +100,28 @@ convertirImagenABlob(imagenDataUrl: string){
         console.error('Error al actualizar el nombre:', error);
         // Maneja el error de acuerdo a tus necesidades.
       });
+  }
+
+  //this.db.actualizarImagenUsuario(this.usuarioid, this.capturedImage);
+
+  volver() {
+    // Consultar el rolid y tomar acciones según el rol
+    if (this.rolid === 1) {
+      // Rol de administrador
+      console.log('Usuario es un administrador.');
+      this.router.navigate(['/adminvista', this.rolid]);
+      // Realizar acciones específicas para un administrador si es necesario
+    } else if (this.rolid === 2) {
+      // Rol de alumno
+      console.log('Usuario es un cliente.');
+      this.router.navigate(['/perfiluser', this.rolid]);
+    } else if (this.rolid === 3) {
+      // Rol de conductor
+      console.log('Usuario es un conductor.');
+      this.router.navigate(['/perfilconductor', this.rolid]);
+    }else {
+      // Otro rol no manejado
+      console.error('Rol no manejado:', this.rolid);
+    }
   }
 }

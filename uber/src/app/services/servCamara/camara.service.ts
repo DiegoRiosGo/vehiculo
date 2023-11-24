@@ -15,5 +15,6 @@ export class CamaraService {
       source: CameraSource.Camera,
     });
     return image.webPath;
+    
   }
 }
