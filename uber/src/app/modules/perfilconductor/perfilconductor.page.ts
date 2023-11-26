@@ -12,12 +12,13 @@ import { DbserviciosService } from 'src/app/services/baseDatos/dbservicios.servi
 })
 export class PerfilconductorPage implements OnInit {
 
-  registrarVehiculoBloqueado: boolean = false;
   climaData: any;
   
   usuarioid: number;
   nombreUsuario: string;
   correoUsuario: string;
+
+  vehiculoRegistrado: boolean = false;
 
   constructor(
     private router: Router,
@@ -53,6 +54,19 @@ export class PerfilconductorPage implements OnInit {
         });
       }
     });
+
+    // Verificar si hay un vehículo registrado para este usuario
+    if (this.usuarioid) {
+      this.db.verificarVehiculoRegistrado(this.usuarioid).then((existeVehiculo: boolean) => {
+        this.vehiculoRegistrado = existeVehiculo;
+        console.log('pasé por acá', this.usuarioid);
+
+        // Deshabilitar o ocultar los botones según la existencia del vehículo
+        this.actualizarBotones();
+      }).catch(error => {
+        // Manejo de errores al verificar el vehículo
+      });
+    }
   }
 
   async logout() {
@@ -105,7 +119,117 @@ export class PerfilconductorPage implements OnInit {
   ionViewWillEnter() {
     this.obtenerclima();
   }
-   
+ 
+
+  //vehiculoooooooooo
+  // Método para deshabilitar o habilitar los botones según la existencia del vehículo
+  private actualizarBotones() {
+    const registrarVehiculoButton = document.getElementById('registrarVehiculoButton') as HTMLIonButtonElement;
+    const iniciarViajeButton = document.getElementById('iniciarViajeButton') as HTMLIonButtonElement;
+    const eliminarVehiculoButton = document.getElementById('eliminarVehiculoButton') as HTMLButtonElement;
+    
+    if (registrarVehiculoButton && iniciarViajeButton) {
+      if (this.vehiculoRegistrado) {
+        // Si hay un vehículo registrado, ocultar el botón de registrar vehículo
+        console.log('hay vehiculo', this.usuarioid);
+        registrarVehiculoButton.style.display = 'none';
+      } else {
+        // Si no hay un vehículo registrado, deshabilitar el botón de iniciar viaje
+        console.log('no hay vehiculo', this.usuarioid);
+        iniciarViajeButton.disabled = true;
+        eliminarVehiculoButton.style.display = 'none';
+        //si no funciona la idea crear alerta que recuerde registrar vehiculo
+      }
+    }
+  }
+
+
+  // Método modificado para mostrar un mensaje si el botón está deshabilitado
+  async iniciarViajeComoConductor() {
+    if (this.vehiculoRegistrado) {
+      // Lógica para iniciar el viaje como conductor
+      // Por ejemplo, redireccionar a la página de inicio de viaje
+      console.log('inicie el viaje ', this.usuarioid);
+      this.router.navigate(['/mapa']);
+    } else {
+      const alert = await this.alertController.create({
+        header: 'Advertencia',
+        message: 'Debes registrar un vehículo primero!!',
+        buttons: ['OK']
+      });
+
+      //entra en conflicto porque el botón no se puede presionar
+      console.log('no inicie el viaje ', this.usuarioid); 
+      await alert.present();
+      
+      //no funciona ya que el botón se deshabilita, ver otra forma de informar
+    }
+  }
+
+
+   //--------------------------------------------------------------
+  // para borrar auto
+  ionViewDidEnter() {
+    this.cargarVehiculos();
+  }
+
+  cargarVehiculos() {
+    this.db.obtenerVehiculos().then((data) => {
+      console.log('Datos de vehiculos obtenidos:', data);
+    });
+  }
+
+  async eliminarVehiculo() {
+    try {
+      await this.db.eliminarVehiculoporuserid(this.usuarioid);
+      // Recargar la lista de vehículos después de eliminar
+      console.log('Datos de vehiculos borrados:');
+      this.cargarVehiculos();
+      this.actualizarBotones();
+    } catch (error) {
+      console.error('Error al eliminar vehículo:', error);
+    }
+  }
+ //--------------------------------------------------------------
+
+
+  //mientras 
+  async registrarVehiculo() {
+    try {
+      const vehiculoRegistrado = await this.db.verificarVehiculoRegistrado(this.usuarioid);
+
+      if (vehiculoRegistrado) {
+        // Si ya hay un vehículo registrado, puedes mostrar un mensaje o tomar otras acciones
+        // Por ejemplo, mostrar una alerta
+        const alert = await this.alertController.create({
+          header: 'Registro de Vehículo',
+          message: 'Ya tienes un vehículo registrado.',
+          buttons: ['OK']
+        });
+        await alert.present();
+        console.log('registro bloqueado vehiculo ya creado ', this.usuarioid); 
+        //funciona pero no aparece porque se deshabilita el botón
+      } else {
+        // Si no hay un vehículo registrado, puedes redirigir a la página de registro de vehículo
+        console.log('registro abierto ', this.usuarioid); 
+        //aqui hacer la vista de registro
+        //funciona
+      }
+    } catch (error) {
+      console.error('Error al verificar vehículo registrado:', error);
+    }
+  }
+
+
+
+  // actualizar pagina cuando se actualizan los botones
+  // arreglar el aviso de debe registrar primero el vehiculo en el botón inicio viaje
+}
+
+
+
+/*
+//funcion registro vehiculo. 
   async openRegistrarVehiculoAlert() {
     const alert = await this.alertController.create({
       header: 'Registrar Vehículo',
@@ -140,7 +264,6 @@ export class PerfilconductorPage implements OnInit {
               this.presentAlert('Error', 'Ingrese un número de asientos válido (entre 2 y 20).');
             } else {
               this.insertarVehiculoEnBD(data.patente, data.asientos);
-              this.registrarVehiculoBloqueado = true; // Deshabilitar el botón
             }
           },
         },
@@ -158,7 +281,7 @@ export class PerfilconductorPage implements OnInit {
 
   validarAsientos(asientos: number): boolean {
     // Validar que los asientos estén en el rango de 2 a 20
-    return asientos >= 2 && asientos <= 15;
+    return asientos >= 1 && asientos <= 15;
   }
 
   async presentAlert(header: string, message: string) {
@@ -186,11 +309,6 @@ export class PerfilconductorPage implements OnInit {
       .catch((error) => {
         console.error('Error al registrar el vehículo:', error);
       })
-      .finally(() => {
-        // Habilitar el botón nuevamente después de finalizar el registro
-        this.registrarVehiculoBloqueado = false;
-      });
   }
 
-  
-}
+  */

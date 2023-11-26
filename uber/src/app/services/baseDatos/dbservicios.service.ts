@@ -107,7 +107,7 @@ export class DbserviciosService {
         .then(() => console.log('Datos insertados en la tabla vehiculo'))
         .catch(error => console.error('Error al insertar datos en la tabla vehiculo', error));
 
-      db.executeSql("INSERT OR IGNORE INTO vehiculo (patente, userid, asientos) VALUES ('XYZ789',2,2);", [])
+      db.executeSql("INSERT OR IGNORE INTO vehiculo (patente, userid, asientos) VALUES ('CCC222',2,2);", [])
         .then(() => console.log('Datos insertados en la tabla vehiculo'))
         .catch(error => console.error('Error al insertar datos en la tabla vehiculo', error));
     });
@@ -333,6 +333,31 @@ actualizarVehiculo(autoid: number, nuevaPatente: string, nuevoUserid: number, nu
 eliminarVehiculo(autoid: number) {
   return this.crearDB().then((db: SQLiteObject) => {
     return db.executeSql("DELETE FROM vehiculo WHERE autoid = ?", [autoid]);
+  });
+}
+
+// Eliminar un vehículo por su userid
+eliminarVehiculoporuserid(userid: number) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("DELETE FROM vehiculo WHERE userid = ?", [userid]);
+  });
+}
+
+verificarVehiculoRegistrado(userId: number): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    this.crearDB().then((db: SQLiteObject) => {
+      const query = 'SELECT COUNT(*) as count FROM vehiculo WHERE userid = ?';
+      const params = [userId];
+
+      db.executeSql(query, params).then((result) => {
+        const count = result.rows.item(0).count;
+        resolve(count > 0); // Retorna true si hay al menos un vehículo registrado para el usuario
+      }).catch(error => {
+        reject(error);
+      });
+    }).catch(error => {
+      reject(error);
+    });
   });
 }
 
