@@ -4,6 +4,8 @@ import { AlertController } from '@ionic/angular';
 import { DbserviciosService } from 'src/app/services/baseDatos/dbservicios.service';
 import { CamaraService } from 'src/app/services/servCamara/camara.service';
 import { NgModel } from '@angular/forms';
+import { Location } from '@angular/common';
+
 
 @Component({
   selector: 'app-moduser',
@@ -22,7 +24,10 @@ export class ModuserPage implements OnInit {
   nombreUsuario: string;
   nuevoNombre: string; // Nuevo nombre del usuario
 
+  mensajes: string[] = [];
+
   constructor(
+    private location: Location,
     private cameraService: CamaraService,
     private alertController: AlertController,
     private aroute: ActivatedRoute,
@@ -84,9 +89,16 @@ export class ModuserPage implements OnInit {
   }
 
   guardarCambios(nuevoNombre: string) {
+
+    this.mensajes = [];
+
+    if (!nuevoNombre) {
+      return; // Sale de la función si no hay un nuevo nombre
+    }
+
     this.db.actualizarNombreUsuario(this.usuarioid, nuevoNombre)
       .then(() => {
-        console.log('Nombre actualizado con éxito.');
+        this.mensajes.push('Nombre actualizado con éxito.');
         console.log(this.nombreUsuario);
         console.log(nuevoNombre);
         // Actualiza la variable local de usuarios con los datos actualizados
@@ -103,6 +115,10 @@ export class ModuserPage implements OnInit {
   }
 
   //this.db.actualizarImagenUsuario(this.usuarioid, this.capturedImage);
+
+  goBack() {
+    this.location.back();
+  }
 
   volver() {
     // Consultar el rolid y tomar acciones según el rol

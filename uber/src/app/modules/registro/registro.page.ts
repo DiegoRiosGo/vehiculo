@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DbserviciosService } from 'src/app/services/baseDatos/dbservicios.service';
+import { AlertController } from '@ionic/angular';
 
 
 @Component({
@@ -21,7 +22,8 @@ export class RegistroPage implements OnInit {
   mensajes: string[] = [];
 
 
-  constructor(private dbService: DbserviciosService, private router: Router) { }
+  constructor(private alertController: AlertController,
+    private dbService: DbserviciosService, private router: Router) { }
 
   registrarUsuario() {
 
@@ -47,14 +49,15 @@ export class RegistroPage implements OnInit {
       return;
     } else if (this.contrasena !== this.con_contrasena) {
       this.mensajes.push('Las contraseñas no coinciden');
-      return;}
-      else if (!this.selectedSecurityQuestion) {
+      return;
+    }
+    else if (!this.selectedSecurityQuestion) {
       this.mensajes.push('Debes seleccionar una pregunta de seguridad');
       return;
-    }else if (!this.respuesta) {
+    } else if (!this.respuesta) {
       this.mensajes.push('Campo \'Respuesta\' es obligatorio');
       return;
-    } 
+    }
 
     // Validación de correo electrónico
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -74,13 +77,32 @@ export class RegistroPage implements OnInit {
       2 // Supongamos que el rol por defecto es 2 para un usuario cliente 
     ).then(() => {
       // Éxito al insertar el usuario
-      console.log('Usuario registrado exitosamente');
+      this.MsjRegistro();      
       this.router.navigate(['/home']);
       // Puedes redirigir a otra página o realizar alguna acción después del registro
     }).catch(error => {
       // Manejar cualquier error que ocurra al insertar el usuario
       console.error('Error al registrar usuario', error);
     });
+  }
+
+  async MsjRegistro() {
+    const alert = await this.alertController.create({
+      header: 'Te damos la bienvenida',
+      message: 'Usuario creado exitosamente',
+      buttons: [
+        {
+          text: 'OK',
+          role: 'ok',
+          cssClass: 'primary',
+          handler: (blah) => {
+            // El usuario canceló el cierre de sesión
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   ngOnInit() {

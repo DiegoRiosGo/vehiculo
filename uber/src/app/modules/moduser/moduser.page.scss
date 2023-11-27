@@ -65,6 +65,13 @@ ion-card.edit-profile-card {
   background: linear-gradient(to bottom, #00b894, #0984e3);
   z-index: -1;
 }
+.mensaje-error{
+  color: #0984e3;
+}
+
+.profile-name{
+  color: #00b894;
+}
 
 .center-container {
   display: flex;

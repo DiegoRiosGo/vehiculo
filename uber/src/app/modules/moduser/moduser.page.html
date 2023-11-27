@@ -7,7 +7,7 @@
       <ion-card-content>
         <h2>Editar perfil</h2>
         <ion-buttons slot="start">
-          <ion-button fill="clear" expand="full" color="success" class="back-button" (click)="volver()">
+          <ion-button fill="clear" expand="full" color="success" class="back-button" (click)="goBack()">
             <ion-icon name="arrow-back"></ion-icon>
           </ion-button>
         </ion-buttons>
@@ -18,6 +18,11 @@
         </div>
 
         <!-- Nombre de usuario -->
+        
+        <div *ngFor="let mensaje of mensajes" class="mensaje-error">
+          {{ mensaje }}
+        </div>
+
         <div class="profile-name">{{ nombreUsuario }}</div>
 
         <ion-item class="custom-item">
