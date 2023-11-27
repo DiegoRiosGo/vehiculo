@@ -120,24 +120,4 @@ export class ModuserPage implements OnInit {
     this.location.back();
   }
 
-  volver() {
-    // Consultar el rolid y tomar acciones según el rol
-    if (this.rolid === 1) {
-      // Rol de administrador
-      console.log('Usuario es un administrador.');
-      this.router.navigate(['/adminvista', this.rolid]);
-      // Realizar acciones específicas para un administrador si es necesario
-    } else if (this.rolid === 2) {
-      // Rol de alumno
-      console.log('Usuario es un cliente.');
-      this.router.navigate(['/perfiluser', this.rolid]);
-    } else if (this.rolid === 3) {
-      // Rol de conductor
-      console.log('Usuario es un conductor.');
-      this.router.navigate(['/perfilconductor', this.rolid]);
-    }else {
-      // Otro rol no manejado
-      console.error('Rol no manejado:', this.rolid);
-    }
-  }
 }

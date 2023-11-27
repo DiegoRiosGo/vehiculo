@@ -26,7 +26,6 @@ export class RegistroPage implements OnInit {
     private dbService: DbserviciosService, private router: Router) { }
 
   registrarUsuario() {
-
     this.mensajes = [];
 
     // Verificar que las contraseñas coincidan antes de continuar
@@ -47,11 +46,7 @@ export class RegistroPage implements OnInit {
     } else if (!this.contrasena) {
       this.mensajes.push('Campo \'Contraseña\' es obligatorio');
       return;
-    } else if (this.contrasena !== this.con_contrasena) {
-      this.mensajes.push('Las contraseñas no coinciden');
-      return;
-    }
-    else if (!this.selectedSecurityQuestion) {
+    } else if (!this.selectedSecurityQuestion) {
       this.mensajes.push('Debes seleccionar una pregunta de seguridad');
       return;
     } else if (!this.respuesta) {
@@ -66,25 +61,39 @@ export class RegistroPage implements OnInit {
       return;
     }
 
-    // Aquí puedes llamar al servicio para insertar los datos en la tabla de usuarios
-    this.dbService.insertarUsuario(
-      this.nombre,
-      this.apellido,
-      this.correo,
-      this.contrasena,
-      +this.selectedSecurityQuestion, // Convierte el ID de pregunta a número
-      this.respuesta,
-      2 // Supongamos que el rol por defecto es 2 para un usuario cliente 
-    ).then(() => {
-      // Éxito al insertar el usuario
-      this.MsjRegistro();      
-      this.router.navigate(['/home']);
-      // Puedes redirigir a otra página o realizar alguna acción después del registro
+    // Validación de contraseña
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/;
+    if (!passwordRegex.test(this.contrasena)) {
+      this.mensajes.push('La contraseña debe contener al menos 1 mayúscula, 1 minúscula, 1 número y tener al menos 8 caracteres');
+      return;
+    }
+
+    // Verificar si el correo ya existe
+    this.dbService.verificarCorreoExistente(this.correo).then(existe => {
+      if (existe) {
+        this.mensajes.push('El correo electrónico ya está registrado');
+      } else {
+        // Si el correo no existe, proceder con el registro
+        this.dbService.insertarUsuario(
+          this.nombre,
+          this.apellido,
+          this.correo,
+          this.contrasena,
+          +this.selectedSecurityQuestion,
+          this.respuesta,
+          2
+        ).then(() => {
+          this.MsjRegistro();
+          this.router.navigate(['/home']);
+        }).catch(error => {
+          console.error('Error al registrar usuario', error);
+        });
+      }
     }).catch(error => {
-      // Manejar cualquier error que ocurra al insertar el usuario
-      console.error('Error al registrar usuario', error);
+      console.error('Error al verificar correo existente', error);
     });
   }
+
 
   async MsjRegistro() {
     const alert = await this.alertController.create({
