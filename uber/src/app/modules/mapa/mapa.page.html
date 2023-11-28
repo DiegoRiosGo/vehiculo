@@ -18,10 +18,17 @@
   
   
   <ion-card *ngIf="mostrarinfoconductor">
+    <ion-card-header>
+      Conductores
+    </ion-card-header>
     <ion-card-content>
-      <ion-card-title>Conductores en Ruta</ion-card-title>
-      <ion-card-subtitle>Detalles sobre la ruta calculada</ion-card-subtitle>
+      <ion-list *ngIf="userconductor && userconductor.length > 0">
+        <ion-item *ngFor="let usuarioc of userconductor">
+          <ion-label>{{ usuarioc.nombre }} {{ usuarioc.apellido }} - {{ usuarioc.patente }}</ion-label>
+        </ion-item>
+      </ion-list>
+      <div *ngIf="!userconductor || userconductor.length === 0">
+        No hay conductores disponibles por el momento.
+      </div>
     </ion-card-content>
   </ion-card>
-  <capacitor-google-map #map class="map"></capacitor-google-map>
-</ion-content>

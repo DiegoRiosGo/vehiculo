@@ -561,6 +561,22 @@ export class DbserviciosService {
         });
     });
   }
+  //Vehiculo
+  buscarConductorPorRol(idRol: number): Promise<any[]> {
+    return this.crearDB().then((db: SQLiteObject) => {
+      return db.executeSql("SELECT usuario.nombre, usuario.apellido, vehiculo.patente FROM usuario INNER JOIN vehiculo ON usuario.usuarioid = vehiculo.userid WHERE usuario.rolid = ?", [idRol])
+        .then(data => {
+          const usuarios: any[] = [];
+          for (let i = 0; i < data.rows.length; i++) {
+            usuarios.push(data.rows.item(i));
+          }
+          return usuarios; // Devuelve un array con los datos de los usuarios encontrados
+        }).catch(error => {
+          console.error('Error al obtener usuarios por rol:', error);
+          return []; // Devuelve un array vacío en caso de error
+        });
+    });
+  }
   // Dentro de DbserviciosService
 
   verificarCorreoExistente(correo: string): Promise<boolean> {

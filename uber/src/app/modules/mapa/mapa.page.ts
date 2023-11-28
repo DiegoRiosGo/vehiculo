@@ -48,6 +48,8 @@ export class MapaPage implements OnInit {
         });
       }
     });
+
+    this.obtenerConductores();
   }
 //Cosas del mapa
   async getCurrentPosition() { //DONDE ESTOY
@@ -134,8 +136,10 @@ export class MapaPage implements OnInit {
     localStorage.setItem('direccion', direccionDestino)
   }
 //mostrar informacion del ion-card-content
-obtenerConductores(rolconductor: number) {
-  this.db.buscarUsuariosPorRol(rolconductor)
+async obtenerConductores() {
+  const usuariosConductores = await this.db.buscarUsuariosPorRol(this.rolconductor);
+  this.userconductor = usuariosConductores;
+  
 }
 
 
