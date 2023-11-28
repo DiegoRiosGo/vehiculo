@@ -14,7 +14,14 @@
     <ion-input type="text" [(ngModel)]="direccionDestino"></ion-input>
   </ion-item>
   <ion-button expand="full" *ngIf="idRol === 3" (click)="calcularRuta()">calcular ruta</ion-button>
-  <ion-button expand="full" *ngIf="idRol === 2" (click)="">solicitar conductor</ion-button>
-
+  <ion-button expand="full" *ngIf="idRol === 2" (click)="calcularRuta()">solicitar conductor</ion-button>
+  
+  
+  <ion-card *ngIf="mostrarinfoconductor">
+    <ion-card-content>
+      <ion-card-title>Conductores en Ruta</ion-card-title>
+      <ion-card-subtitle>Detalles sobre la ruta calculada</ion-card-subtitle>
+    </ion-card-content>
+  </ion-card>
   <capacitor-google-map #map class="map"></capacitor-google-map>
 </ion-content>

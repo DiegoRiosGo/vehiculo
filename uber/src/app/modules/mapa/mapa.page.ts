@@ -19,7 +19,9 @@ export class MapaPage implements OnInit {
   Map!: GoogleMap;
   usuarioid: number;
   idRol: number;
-
+  mostrarinfoconductor: boolean = false;
+  userconductor: any;
+  rolconductor: number = 2;
   constructor(private router: Router, public alertController: AlertController, private arouter: ActivatedRoute, private db: DbserviciosService) { }
 
   ionViewWillEnter() {
@@ -95,6 +97,7 @@ export class MapaPage implements OnInit {
       this.logout();
 
     }
+    this.mostrarinfoconductor = true
   }
 //Cosas del Usuario
   async logout() {
@@ -130,7 +133,10 @@ export class MapaPage implements OnInit {
   async guardarDatoLocal(direccionDestino : string){
     localStorage.setItem('direccion', direccionDestino)
   }
- 
+//mostrar informacion del ion-card-content
+obtenerConductores(rolconductor: number) {
+  this.db.buscarUsuariosPorRol(rolconductor)
+}
 
 
 }

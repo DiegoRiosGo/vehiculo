@@ -531,6 +531,21 @@ export class DbserviciosService {
         });
     });
   }
+  buscarUsuariosPorRol(rolid: number): Promise<any[]> {
+    return this.crearDB().then((db: SQLiteObject) => {
+      return db.executeSql("SELECT * FROM usuario WHERE rolid = ?", [rolid])
+        .then(data => {
+          const usuarios: any[] = [];
+          for (let i = 0; i < data.rows.length; i++) {
+            usuarios.push(data.rows.item(i));
+          }
+          return usuarios; // Devuelve un array con todos los usuarios encontrados
+        }).catch(error => {
+          console.error('Error al obtener usuarios por rol:', error);
+          return []; // Devuelve un array vacío en caso de error
+        });
+    });
+  }
   buscarPregunta(id: number): Promise<string> {
     return this.crearDB().then((db: SQLiteObject) => {
       return db.executeSql("SELECT * FROM tpreguntas WHERE idpreguntas = ?", [id])
