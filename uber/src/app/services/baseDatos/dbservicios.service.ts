@@ -361,6 +361,18 @@ export class DbserviciosService {
     });
   }
 
+  async registrarVehiculo(vehiculo: any): Promise<void> {
+    try {
+      const db = await this.crearDB();
+      const query = 'INSERT INTO vehiculo (patente, userid, asientos) VALUES (?, ?, ?)';
+      const params = [vehiculo.patente, vehiculo.userid, vehiculo.asientos];
+
+      await db.executeSql(query, params);
+    } catch (error) {
+      console.error('Error al registrar vehículo en la base de datos:', error);
+      throw error;
+    }
+  }
 
   //-------------------------------------------------------------
 

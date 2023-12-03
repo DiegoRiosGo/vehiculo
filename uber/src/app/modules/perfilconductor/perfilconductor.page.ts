@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClimaService } from 'src/app/services/servClima/clima.service';
@@ -26,7 +26,7 @@ export class PerfilconductorPage implements OnInit {
     private alertController: AlertController,
     private api: ClimaService,
     private cdr: ChangeDetectorRef,
-    private db: DbserviciosService
+    private db: DbserviciosService,
   ) { }
 
   ngOnInit() {
@@ -141,6 +141,7 @@ export class PerfilconductorPage implements OnInit {
         //si no funciona la idea crear alerta que recuerde registrar vehiculo
       }
     }
+
   }
 
 
@@ -185,7 +186,7 @@ export class PerfilconductorPage implements OnInit {
       // Recargar la lista de vehículos después de eliminar
       console.log('Datos de vehiculos borrados:');
       this.cargarVehiculos();
-      this.actualizarBotones();
+
     } catch (error) {
       console.error('Error al eliminar vehículo:', error);
     }
@@ -199,77 +200,83 @@ export class PerfilconductorPage implements OnInit {
       const vehiculoRegistrado = await this.db.verificarVehiculoRegistrado(this.usuarioid);
 
       if (vehiculoRegistrado) {
-        // Si ya hay un vehículo registrado, puedes mostrar un mensaje o tomar otras acciones
-        // Por ejemplo, mostrar una alerta
         const alert = await this.alertController.create({
           header: 'Registro de Vehículo',
           message: 'Ya tienes un vehículo registrado.',
           buttons: ['OK']
         });
         await alert.present();
-        console.log('registro bloqueado vehiculo ya creado ', this.usuarioid); 
-        //funciona pero no aparece porque se deshabilita el botón
       } else {
-        // Si no hay un vehículo registrado, puedes redirigir a la página de registro de vehículo
-        console.log('registro abierto ', this.usuarioid); 
-        //aqui hacer la vista de registro
-        //funciona
+        const registroVehiculoAlert = await this.alertController.create({
+          header: 'Registro de Vehículo',
+          message: 'Completa los datos del vehículo:',
+          inputs: [
+            {
+              name: 'patente',
+              type: 'text',
+              placeholder: 'Patente'
+            },
+            {
+              name: 'asientos',
+              type: 'number',
+              placeholder: 'Cantidad de Asientos'
+            }
+          ],
+          buttons: [
+            {
+              text: 'Cancelar',
+              role: 'cancel'
+            },
+            {
+              text: 'Registrar',
+              handler: (data) => {
+                // Lógica para registrar el vehículo con los datos ingresados
+                const nuevoVehiculo = {
+                  patente: data.patente,
+                  asientos: data.asientos,
+                  usuarioid: this.usuarioid
+                };
+                const patenteValida = this.validarPatente(data.patente);
+                const asientosValidos = this.validarAsientos(data.asientos);
+
+                if (!patenteValida && !asientosValidos) {
+                  this.mostrarAlerta('Error', 'Por favor, ingrese valores válidos para la patente y el número de asientos.');
+                } else if (!patenteValida) {
+                  this.mostrarAlerta('Error', 'La patente ingresada no es válida.');
+                } else if (!asientosValidos) {
+                  this.mostrarAlerta('Error', 'Ingrese un número de asientos válido (entre 2 y 20).');
+                } else {
+                  // Insertar en la tabla vehiculo
+                  this.db.registrarVehiculo(nuevoVehiculo).then(() => {
+                  // Mostrar mensaje de vehículo agregado
+                  this.mostrarAlerta('Vehículo Agregado', 'El vehículo ha sido registrado correctamente.');
+
+                  // Actualizar la visibilidad de los botones
+                    this.actualizarBotones();
+                  }).catch(error => {
+                    console.error('Error al registrar vehículo:', error);
+                  });
+                }                
+              }
+            }
+          ]
+        });
+
+        await registroVehiculoAlert.present();
       }
     } catch (error) {
       console.error('Error al verificar vehículo registrado:', error);
     }
   }
 
+  // ...
 
-
-  // actualizar pagina cuando se actualizan los botones
-  // arreglar el aviso de debe registrar primero el vehiculo en el botón inicio viaje
-}
-
-
-
-/*
-//funcion registro vehiculo. 
-  async openRegistrarVehiculoAlert() {
+  private async mostrarAlerta(header: string, message: string) {
     const alert = await this.alertController.create({
-      header: 'Registrar Vehículo',
-      inputs: [
-        {
-          name: 'patente',
-          type: 'text',
-          placeholder: 'Patente del vehículo',
-        },
-        {
-          name: 'asientos',
-          type: 'number',
-          placeholder: 'Número de asientos',
-        },
-      ],
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-        },
-        {
-          text: 'Registrar',
-          handler: (data) => {
-            const patenteValida = this.validarPatente(data.patente);
-            const asientosValidos = this.validarAsientos(data.asientos);     
-
-            if (!patenteValida && !asientosValidos) {
-              this.presentAlert('Error', 'Por favor, ingrese valores válidos para la patente y el número de asientos.');
-            } else if (!patenteValida) {
-              this.presentAlert('Error', 'La patente ingresada no es válida.');
-            } else if (!asientosValidos) {
-              this.presentAlert('Error', 'Ingrese un número de asientos válido (entre 2 y 20).');
-            } else {
-              this.insertarVehiculoEnBD(data.patente, data.asientos);
-            }
-          },
-        },
-      ],
+      header,
+      message,
+      buttons: ['OK']
     });
-
     await alert.present();
   }
 
@@ -284,31 +291,10 @@ export class PerfilconductorPage implements OnInit {
     return asientos >= 1 && asientos <= 15;
   }
 
-  async presentAlert(header: string, message: string) {
-    const alert = await this.alertController.create({
-      header,
-      message,
-      buttons: [
-        {
-          text: 'OK',
-          handler: () => {
-            this.openRegistrarVehiculoAlert();
-          },
-        },
-      ],
-    });
-    await alert.present();
-  }
+  // actualizar pagina cuando se actualizan los botones
+  // arreglar el aviso de debe registrar primero el vehiculo en el botón inicio viaje
+  // arreglar funcion actualizar botones funciona al inicio y al borrar vehiculo, 
+  //pero no funciona cuando registro nuevo vehiculo
+  //puede ser que no valida bien la relacion con el usuario? 
+}
 
-  private insertarVehiculoEnBD(patente: string, asientos: number) {
-    this.db
-      .insertarVehiculo(patente, 1, asientos)
-      .then(() => {
-        console.log('Vehículo registrado con éxito.');
-      })
-      .catch((error) => {
-        console.error('Error al registrar el vehículo:', error);
-      })
-  }
-
-  */
