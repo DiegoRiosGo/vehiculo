@@ -40,6 +40,8 @@ export class MapaPage implements OnInit {
         this.db.buscarUsuarioPorId(this.usuarioid).then((usuario: any) => {
           if (usuario) {
             this.idRol = usuario.idrol
+
+            this.mostrarBotonCalculaRuta();
           } else {
             // Manejo si el usuario no se encuentra
           }
@@ -51,6 +53,22 @@ export class MapaPage implements OnInit {
 
     this.obtenerConductores();
   }
+
+  mostrarBotonCalculaRuta() {
+    // Obtén el botón por su ID
+    const botonCalculaRuta = document.getElementById('botonCalculaRuta') as HTMLButtonElement;
+  
+    if (botonCalculaRuta) {
+      // Dependiendo del idRol, muestra o no el botón
+      if (this.idRol === 2) { // Puedes ajustar el valor según el idRol deseado
+        botonCalculaRuta.style.display = ''; // Muestra el botón
+      } else {
+        botonCalculaRuta.style.display = 'none'; // Oculta el botón
+      }
+    }
+  }
+
+
 //Cosas del mapa
   async getCurrentPosition() { //DONDE ESTOY
     const coordinates = await Geolocation.getCurrentPosition();
@@ -84,7 +102,7 @@ export class MapaPage implements OnInit {
     })
   }
 
- async calcularRuta() {
+ async calculaRuta() {
     if (this.direccionDestino.trim() === '') {
       // Si el campo está vacío, muestra una alerta "No se ha registrado ruta"
       const alert = await this.alertController.create({
@@ -101,6 +119,7 @@ export class MapaPage implements OnInit {
     }
     this.mostrarinfoconductor = true
   }
+
 //Cosas del Usuario
   async logout() {
     const alert = await this.alertController.create({

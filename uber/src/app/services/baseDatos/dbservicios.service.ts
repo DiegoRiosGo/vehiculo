@@ -107,9 +107,7 @@ export class DbserviciosService {
         .then(() => console.log('Datos insertados en la tabla vehiculo'))
         .catch(error => console.error('Error al insertar datos en la tabla vehiculo', error));
 
-      db.executeSql("INSERT OR IGNORE INTO vehiculo (patente, userid, asientos) VALUES ('CCC222',2,2);", [])
-        .then(() => console.log('Datos insertados en la tabla vehiculo'))
-        .catch(error => console.error('Error al insertar datos en la tabla vehiculo', error));
+      
     });
   }
 

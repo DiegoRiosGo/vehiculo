@@ -13,8 +13,8 @@
     <ion-label position="stacked">direccion destino</ion-label>
     <ion-input type="text" [(ngModel)]="direccionDestino"></ion-input>
   </ion-item>
-  <ion-button expand="full" *ngIf="idRol === 3" (click)="calcularRuta()">calcular ruta</ion-button>
-  <ion-button expand="full" *ngIf="idRol === 2" (click)="calcularRuta()">solicitar conductor</ion-button>
+  <ion-button id="botonCalculaRuta" (click)="calculaRuta()">Calcular Ruta</ion-button>
+  <ion-button expand="full" *ngIf="usuarioid === 2" (click)="calculaRuta()">solicitar conductor</ion-button>
   
   
   <ion-card *ngIf="mostrarinfoconductor">
@@ -30,5 +30,9 @@
       <div *ngIf="!userconductor || userconductor.length === 0">
         No hay conductores disponibles por el momento.
       </div>
+ 
     </ion-card-content>
   </ion-card>
+
+  <capacitor-google-map #map class="map"></capacitor-google-map>
+</ion-content>

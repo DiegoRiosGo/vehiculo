@@ -59,7 +59,7 @@ export class PerfilconductorPage implements OnInit {
     if (this.usuarioid) {
       this.db.verificarVehiculoRegistrado(this.usuarioid).then((existeVehiculo: boolean) => {
         this.vehiculoRegistrado = existeVehiculo;
-        console.log('pasé por acá', this.usuarioid);
+
 
         // Deshabilitar o ocultar los botones según la existencia del vehículo
         this.actualizarBotones();
@@ -100,7 +100,6 @@ export class PerfilconductorPage implements OnInit {
     // Por ejemplo, redireccionar a una página de edición de perfil
     console.log('ID de Usuario P user:', this.usuarioid);
     this.router.navigate(['/moduser', this.usuarioid]);
-    console.log('si toy.');
   }
 
   //api clima
@@ -121,9 +120,21 @@ export class PerfilconductorPage implements OnInit {
   }
  
 
-  //vehiculoooooooooo
+  //vehiculoo
   // Método para deshabilitar o habilitar los botones según la existencia del vehículo
   private actualizarBotones() {
+
+    if (this.usuarioid) {
+      this.db.verificarVehiculoRegistrado(this.usuarioid).then((existeVehiculo: boolean) => {
+        this.vehiculoRegistrado = existeVehiculo;
+
+        // Deshabilitar o ocultar los botones según la existencia del vehículo
+        this.actualizarBotones();
+      }).catch(error => {
+        // Manejo de errores al verificar el vehículo
+      });
+    }
+
     const registrarVehiculoButton = document.getElementById('registrarVehiculoButton') as HTMLIonButtonElement;
     const iniciarViajeButton = document.getElementById('iniciarViajeButton') as HTMLIonButtonElement;
     const eliminarVehiculoButton = document.getElementById('eliminarVehiculoButton') as HTMLButtonElement;
@@ -131,12 +142,15 @@ export class PerfilconductorPage implements OnInit {
     if (registrarVehiculoButton && iniciarViajeButton) {
       if (this.vehiculoRegistrado) {
         // Si hay un vehículo registrado, ocultar el botón de registrar vehículo
-        console.log('hay vehiculo', this.usuarioid);
+
+        iniciarViajeButton.disabled = false;
+        eliminarVehiculoButton.style.display = '';
         registrarVehiculoButton.style.display = 'none';
       } else {
         // Si no hay un vehículo registrado, deshabilitar el botón de iniciar viaje
-        console.log('no hay vehiculo', this.usuarioid);
+
         iniciarViajeButton.disabled = true;
+        registrarVehiculoButton.style.display = '';
         eliminarVehiculoButton.style.display = 'none';
         //si no funciona la idea crear alerta que recuerde registrar vehiculo
       }
@@ -150,7 +164,7 @@ export class PerfilconductorPage implements OnInit {
     if (this.vehiculoRegistrado) {
       // Lógica para iniciar el viaje como conductor
       // Por ejemplo, redireccionar a la página de inicio de viaje
-      console.log('inicie el viaje ', this.usuarioid);
+
       this.router.navigate(['/mapa']);
     } else {
       const alert = await this.alertController.create({
@@ -160,7 +174,7 @@ export class PerfilconductorPage implements OnInit {
       });
 
       //entra en conflicto porque el botón no se puede presionar
-      console.log('no inicie el viaje ', this.usuarioid); 
+
       await alert.present();
       
       //no funciona ya que el botón se deshabilita, ver otra forma de informar
@@ -186,7 +200,7 @@ export class PerfilconductorPage implements OnInit {
       // Recargar la lista de vehículos después de eliminar
       console.log('Datos de vehiculos borrados:');
       this.cargarVehiculos();
-
+      this.actualizarBotones();
     } catch (error) {
       console.error('Error al eliminar vehículo:', error);
     }
@@ -234,7 +248,7 @@ export class PerfilconductorPage implements OnInit {
                 const nuevoVehiculo = {
                   patente: data.patente,
                   asientos: data.asientos,
-                  usuarioid: this.usuarioid
+                  userid: this.usuarioid
                 };
                 const patenteValida = this.validarPatente(data.patente);
                 const asientosValidos = this.validarAsientos(data.asientos);
@@ -250,9 +264,8 @@ export class PerfilconductorPage implements OnInit {
                   this.db.registrarVehiculo(nuevoVehiculo).then(() => {
                   // Mostrar mensaje de vehículo agregado
                   this.mostrarAlerta('Vehículo Agregado', 'El vehículo ha sido registrado correctamente.');
-
                   // Actualizar la visibilidad de los botones
-                    this.actualizarBotones();
+                  this.actualizarBotones();
                   }).catch(error => {
                     console.error('Error al registrar vehículo:', error);
                   });
