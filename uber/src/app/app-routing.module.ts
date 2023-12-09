@@ -32,7 +32,7 @@ const routes: Routes = [
     loadChildren: () => import('./modules/adminvista/adminvista.module').then( m => m.AdminvistaPageModule)
   },
   {
-    path: 'mapa',
+    path: 'mapa/:usuarioid',
     loadChildren: () => import('./modules/mapa/mapa.module').then( m => m.MapaPageModule)
   },
   {
@@ -56,6 +56,15 @@ const routes: Routes = [
     path: 'perfilconductor/:usuarioid',
     loadChildren: () => import('./modules/perfilconductor/perfilconductor.module').then( m => m.PerfilconductorPageModule)
   },
+  {
+    path: 'detalleconductor',
+    loadChildren: () => import('./modules/detalleconductor/detalleconductor.module').then( m => m.DetalleconductorPageModule)
+  },
+  {
+    path: 'detallecliente',
+    loadChildren: () => import('./modules/detallecliente/detallecliente.module').then( m => m.DetalleclientePageModule)
+  },
+
 
  
 

@@ -9,30 +9,12 @@
 
 
 <ion-content [fullscreen]="true">
-  <ion-item>
-    <ion-label position="stacked">direccion destino</ion-label>
-    <ion-input type="text" [(ngModel)]="direccionDestino"></ion-input>
-  </ion-item>
-  <ion-button id="botonCalculaRuta" (click)="calculaRuta()">Calcular Ruta</ion-button>
-  <ion-button expand="full" *ngIf="usuarioid === 2" (click)="calculaRuta()">solicitar conductor</ion-button>
-  
-  
-  <ion-card *ngIf="mostrarinfoconductor">
-    <ion-card-header>
-      Conductores
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list *ngIf="userconductor && userconductor.length > 0">
-        <ion-item *ngFor="let usuarioc of userconductor">
-          <ion-label>{{ usuarioc.nombre }} {{ usuarioc.apellido }} - {{ usuarioc.patente }}</ion-label>
-        </ion-item>
-      </ion-list>
-      <div *ngIf="!userconductor || userconductor.length === 0">
-        No hay conductores disponibles por el momento.
-      </div>
- 
-    </ion-card-content>
-  </ion-card>
+  <ion-button id="botonBuscaConductor" (click)="obtenerConductores()">Busca un Conductor</ion-button>
+  <ion-button id="botonCrearViaje" (click)="IniciarViaje()">Crear Viaje</ion-button> 
+   
+
+  <!-- hacer que esto sea un pop up y que solo sirva con el cliente para mostrar lista de viajes posibles
+  con nombre conductor, cant asientos, destino y precio-->
 
   <capacitor-google-map #map class="map"></capacitor-google-map>
 </ion-content>

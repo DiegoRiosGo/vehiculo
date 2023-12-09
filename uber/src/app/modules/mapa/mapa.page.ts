@@ -39,9 +39,10 @@ export class MapaPage implements OnInit {
       if (this.usuarioid) {
         this.db.buscarUsuarioPorId(this.usuarioid).then((usuario: any) => {
           if (usuario) {
-            this.idRol = usuario.idrol
+            this.idRol = usuario.rolid;
 
-            this.mostrarBotonCalculaRuta();
+            this.mostrarBotonBuscarConductor();
+
           } else {
             // Manejo si el usuario no se encuentra
           }
@@ -51,22 +52,134 @@ export class MapaPage implements OnInit {
       }
     });
 
-    this.obtenerConductores();
+    //this.obtenerConductores();
   }
 
-  mostrarBotonCalculaRuta() {
+  //vista cliente 
+
+  mostrarBotonBuscarConductor() {
     // Obtén el botón por su ID
-    const botonCalculaRuta = document.getElementById('botonCalculaRuta') as HTMLButtonElement;
-  
-    if (botonCalculaRuta) {
+    console.log('rolid:', this.idRol);
+    const botonBuscaConductor = document.getElementById('botonBuscaConductor') as HTMLButtonElement;
+    const botonCrearViaje = document.getElementById('botonCrearViaje') as HTMLButtonElement;
+    
+    if (botonBuscaConductor && botonCrearViaje) {
       // Dependiendo del idRol, muestra o no el botón
       if (this.idRol === 2) { // Puedes ajustar el valor según el idRol deseado
-        botonCalculaRuta.style.display = ''; // Muestra el botón
+        botonBuscaConductor.style.display = ''; // Muestra el botón
+        botonCrearViaje.style.display = 'none'; // Oculta el botón
       } else {
-        botonCalculaRuta.style.display = 'none'; // Oculta el botón
+        botonCrearViaje.style.display = ''; // Muestra el botón
+        botonBuscaConductor.style.display = 'none'; // Oculta el botón
       }
     }
   }
+
+  //mostrar 
+  //mostrar informacion del ion-card-content
+  async obtenerConductores() {
+    const usuariosConductores = await this.db.buscarUsuariosPorRol(this.rolconductor);
+    this.userconductor = usuariosConductores;
+  
+  }
+
+
+  async IniciarViaje() {
+    const alert = await this.alertController.create({
+      header: 'Crear Viaje',
+      inputs: [
+        {
+          name: 'direccionInicio',
+          type: 'text',
+          placeholder: 'Dirección de inicio',
+        },
+        {
+          name: 'direccionDestino',
+          type: 'text',
+          placeholder: 'Dirección de destino',
+        },
+        {
+          name: 'valorViaje',
+          type: 'number',
+          placeholder: 'Valor del viaje',
+        },
+        {
+          name: 'cantidadAsientos',
+          type: 'number',
+          placeholder: 'Cantidad de asientos',
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancelar');
+          }
+        },
+        {
+          text: 'Iniciar Viaje',
+          handler: (data) => {
+            this.guardarViaje(data);
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  // Método para validar la cantidad de asientos
+  async validarAsientos(cantidadAsientos: number, usuarioid: number): Promise<boolean> {
+    try {
+      // Obtener la información del vehículo del usuario actual
+      const vehiculo = await this.db.obtenerVehiculoPorUsuario(usuarioid);
+
+      if (vehiculo) {
+        const asientosDisponibles = vehiculo.asientos;
+        return cantidadAsientos <= asientosDisponibles;
+      } else {
+        console.error('No se encontró el vehículo para el usuario.');
+        return false;
+      }
+    } catch (error) {
+      console.error('Error al obtener información del vehículo:', error);
+      return false;
+    }
+  }
+
+   // Método para guardar la información del viaje en la base de datos
+   async guardarViaje(data: any) {
+    // Obtén el usuarioid según tu lógica de usuario actual
+    const usuarioid = this.usuarioid; // Ajusta esto según tu lógica
+
+    const vehiculo = await this.db.obtenerVehiculoPorUsuario(usuarioid);
+    const autoid = vehiculo.autoid;
+
+    // Verifica que la cantidad de asientos no sea mayor a la cantidad de asientos disponibles
+    const esCantidadValida = await this.validarAsientos(data.cantidadAsientos, usuarioid);
+
+    if (esCantidadValida) {
+
+      // Guarda la información del viaje en la tabla 'viaje'
+      this.db.insertarViaje(autoid, data.direccionInicio, data.direccionDestino, data.valorViaje)
+        .then(() => {
+          console.log('Viaje creado exitosamente');
+          // Puedes realizar otras acciones después de crear el viaje, si es necesario
+
+          this.router.navigate(['/detalleconductor']);
+        })
+        .catch(error => {
+          console.error('Error al crear el viaje:', error);
+        });
+    } else {
+      // Muestra un mensaje si la cantidad de asientos es inválida
+      console.log('Cantidad de asientos inválida');
+    }
+  }
+
+
+
 
 
 //Cosas del mapa
@@ -102,8 +215,15 @@ export class MapaPage implements OnInit {
     })
   }
 
- async calculaRuta() {
-    if (this.direccionDestino.trim() === '') {
+ 
+
+
+
+}
+
+
+/*
+if (this.direccionDestino.trim() === '') {
       // Si el campo está vacío, muestra una alerta "No se ha registrado ruta"
       const alert = await this.alertController.create({
         header: 'Alerta',
@@ -118,49 +238,4 @@ export class MapaPage implements OnInit {
 
     }
     this.mostrarinfoconductor = true
-  }
-
-//Cosas del Usuario
-  async logout() {
-    const alert = await this.alertController.create({
-      header: 'Seguro?',
-      message: '¿Estás seguro de que la dirección es correcta?',
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: (blah) => {
-            // El usuario canceló el cierre de sesión
-          }
-        },
-        {
-          text: 'Sí',
-          handler: () => {
-            const alertSuccess = this.alertController.create({
-              header: 'Éxito',
-              message: `SE HA REGISTRADO LA RUTA A: ${this.direccionDestino}`,
-              buttons: ['OK']
-            }).then(alert => {
-              alert.present(); // Debes presentar la alerta aquí
-            });
-          }
-        }
-      ]
-    });
-
-    await alert.present();
-  }
-  async guardarDatoLocal(direccionDestino : string){
-    localStorage.setItem('direccion', direccionDestino)
-  }
-//mostrar informacion del ion-card-content
-async obtenerConductores() {
-  const usuariosConductores = await this.db.buscarUsuariosPorRol(this.rolconductor);
-  this.userconductor = usuariosConductores;
-  
-}
-
-
-}
-
+  */

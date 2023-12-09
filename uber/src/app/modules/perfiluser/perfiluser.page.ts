@@ -105,4 +105,7 @@ export class PerfiluserPage implements OnInit {
     this.obtenerclima();
   }
 
+  async pedirviaje() {
+      this.router.navigate(['/mapa', this.usuarioid]);
+  }
 }

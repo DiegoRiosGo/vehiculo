@@ -53,7 +53,7 @@ export class DbserviciosService {
         .catch(error => console.error('Error al crear la tabla vehiculo', error));
 
       // Crea la tabla 'viaje' clave de clave 
-      db.executeSql("CREATE TABLE IF NOT EXISTS viaje (idviaje INTEGER PRIMARY KEY AUTOINCREMENT, autoid INTEGER, ppartida VARCHAR(50), pdestino VARCHAR(50), FOREIGN KEY (autoid) REFERENCES vehiculo(autoid));", [])
+      db.executeSql("CREATE TABLE IF NOT EXISTS viaje (idviaje INTEGER PRIMARY KEY AUTOINCREMENT, autoid INTEGER, ppartida VARCHAR(50), pdestino VARCHAR(50),valorViaje INTEGER, FOREIGN KEY (autoid) REFERENCES vehiculo(autoid));", [])
         .then(() => console.log('Tabla viaje creada'))
         .catch(error => console.error('Error al crear la tabla viaje', error));
 
@@ -65,6 +65,8 @@ export class DbserviciosService {
       db.executeSql("CREATE TABLE IF NOT EXIST imagenes (idimagen INTEGER PRIMARY KEY AUTOINCREMENT, imagen BLOB, usuarioid INTEGER, FOREIGN KEY (usuarioid) REFERENCES usuario(usuarioid))")
         .then(() => console.log('Tabla detalle imagen'))
         .catch(error => console.error('Error al crear la tabla imagen', error));
+
+      db.close();
     });
   }
 
@@ -107,7 +109,7 @@ export class DbserviciosService {
         .then(() => console.log('Datos insertados en la tabla vehiculo'))
         .catch(error => console.error('Error al insertar datos en la tabla vehiculo', error));
 
-      
+      db.close();
     });
   }
 
@@ -117,7 +119,7 @@ export class DbserviciosService {
       console.log('Database already initialized. Skipping initialization.');
       return Promise.resolve();
     }
-
+  
     return this.createTable().then(() => {
       console.log('Tables created successfully.');
       return this.insertData();
@@ -315,6 +317,7 @@ export class DbserviciosService {
         for (let i = 0; i < data.rows.length; i++) {
           vehiculos.push(data.rows.item(i));
         }
+        db.close();
         return vehiculos;
       });
     });
@@ -351,10 +354,12 @@ export class DbserviciosService {
           const count = result.rows.item(0).count;
           resolve(count > 0); // Retorna true si hay al menos un vehículo registrado para el usuario
         }).catch(error => {
-          reject(error);
+          console.error('Error al ver vehículo en la base de datos:', error);
+          throw error;
         });
       }).catch(error => {
-        reject(error);
+        console.error('Error al ver vehículo en la base de datos:', error);
+        throw error;
       });
     });
   }
@@ -372,14 +377,32 @@ export class DbserviciosService {
     }
   }
 
+   // Obtener vehículo por usuario
+   obtenerVehiculoPorUsuario(usuarioid: number): Promise<any> {
+    return this.crearDB().then((db: SQLiteObject) => {
+      return db.executeSql("SELECT * FROM vehiculo WHERE userid = ?", [usuarioid])
+        .then(data => {
+          if (data.rows.length > 0) {
+            return data.rows.item(0); // Devuelve la información del vehículo
+          } else {
+            return null;
+          }
+        })
+        .catch(error => {
+          console.error('Error al obtener vehículo por usuario:', error);
+          throw error;
+        });
+    });
+  }
+
   //-------------------------------------------------------------
 
 
   // Función para cargar datos de la tabla "viaje"
   // Insertar un viaje
-  insertarViaje(autoid: number, ppartida: string, pdestino: string) {
+  insertarViaje(autoid: number, ppartida: string, pdestino: string, valorViaje: number) {
     return this.crearDB().then((db: SQLiteObject) => {
-      return db.executeSql("INSERT INTO viaje (autoid, ppartida, pdestino) VALUES (?, ?, ?)", [autoid, ppartida, pdestino]);
+      return db.executeSql("INSERT INTO viaje (autoid, ppartida, pdestino, valorViaje) VALUES (?, ?, ?, ?)", [autoid, ppartida, pdestino, valorViaje]);
     });
   }
 

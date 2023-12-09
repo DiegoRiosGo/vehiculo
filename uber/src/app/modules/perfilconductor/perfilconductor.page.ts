@@ -165,7 +165,7 @@ export class PerfilconductorPage implements OnInit {
       // Lógica para iniciar el viaje como conductor
       // Por ejemplo, redireccionar a la página de inicio de viaje
 
-      this.router.navigate(['/mapa']);
+      this.router.navigate(['/mapa', this.usuarioid]);
     } else {
       const alert = await this.alertController.create({
         header: 'Advertencia',
