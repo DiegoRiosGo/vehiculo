@@ -1,24 +1,55 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>detalleconductor</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true" class="content">
+  <div class="background-gradient"></div>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">detalleconductor</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="center-container">
+    <ion-card class="profile-card">
 
+      <ion-card-header>
 
-  <ion-item-divider color="primary">
-    Viajes
-  </ion-item-divider>
-  <ion-item *ngFor="let viaje of viajes">
-    <ion-label>Numero Rol: {{ viaje.ppartida }} Nombre Rol: {{ viaje.pdestino }}</ion-label>
-    <ion-label>Numero Rol: {{ viaje.valorViaje }} Nombre Rol: {{ viaje.cantAsientos }}</ion-label>
-  </ion-item>
+        Detalles viaje
 
+      </ion-card-header>
 
+      <ion-card-content>
+        <ion-list>
+          <ion-item>
+            <ion-label>Dirección de Inicio:</ion-label>
+            <ion-note>{{ ppartida }}</ion-note>
+          </ion-item>
+  
+          <ion-item>
+            <ion-label>Dirección de Destino:</ion-label>
+            <ion-note>{{ pdestino }}</ion-note>
+          </ion-item>
+  
+          <ion-item>
+            <ion-label>Valor del Viaje:</ion-label>
+            <ion-note>{{ valorViaje }}</ion-note>
+          </ion-item>
+  
+          <ion-item>
+            <ion-label>Cantidad de Asientos:</ion-label>
+            <ion-note>{{ cantAsientos }}</ion-note>
+          </ion-item>
+        </ion-list>
+        
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+   <!-- Mostrar la lista de pasajeros -->
+   <ion-card>
+    <ion-card-header>
+      <ion-card-title>Pasajeros</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <!-- Recorre la lista de pasajeros y muestra la información -->
+        <ion-item *ngFor="let pasajero of pasajeros">
+          <ion-label>{{ pasajero.nombre }}</ion-label>
+          <ion-note slot="end">{{ pasajero.asiento }}</ion-note>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

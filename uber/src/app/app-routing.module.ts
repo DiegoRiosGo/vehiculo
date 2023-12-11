@@ -57,7 +57,7 @@ const routes: Routes = [
     loadChildren: () => import('./modules/perfilconductor/perfilconductor.module').then( m => m.PerfilconductorPageModule)
   },
   {
-    path: 'detalleconductor/:usuarioid',
+    path: 'detalleconductor/:idviaje',
     loadChildren: () => import('./modules/detalleconductor/detalleconductor.module').then( m => m.DetalleconductorPageModule)
   },
   {

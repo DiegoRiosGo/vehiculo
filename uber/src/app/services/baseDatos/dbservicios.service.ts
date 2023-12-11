@@ -27,6 +27,18 @@ export class DbserviciosService {
 
   createTable() {
     return this.crearDB().then((db: SQLiteObject) => {
+
+      /*
+      db.executeSql("DROP TABLE IF EXISTS usuario;")
+      db.executeSql("DROP TABLE IF EXISTS rol;")
+      db.executeSql("DROP TABLE IF EXISTS sede;")
+      db.executeSql("DROP TABLE IF EXISTS tpreguntas;")
+      db.executeSql("DROP TABLE IF EXISTS vehiculo;")
+      db.executeSql("DROP TABLE IF EXISTS viaje;")
+      db.executeSql("DROP TABLE IF EXISTS detalle;")
+      db.executeSql("DROP TABLE IF EXISTS imagenes;")
+      */
+
       // Crea la tabla 'rol'
       db.executeSql("CREATE TABLE IF NOT EXISTS rol (id INTEGER PRIMARY KEY AUTOINCREMENT, nomrol VARCHAR(30) NOT NULL);", [])
         .then(() => console.log('Tabla rol creada'))
@@ -62,9 +74,15 @@ export class DbserviciosService {
         .then(() => console.log('Tabla detalle creada'))
         .catch(error => console.error('Error al crear la tabla detalle', error));
       // Crea la tabla 'imagenes'
-      db.executeSql("CREATE TABLE IF NOT EXIST imagenes (idimagen INTEGER PRIMARY KEY AUTOINCREMENT, imagen BLOB, usuarioid INTEGER, FOREIGN KEY (usuarioid) REFERENCES usuario(usuarioid))")
+      db.executeSql("CREATE TABLE IF NOT EXIST imagenes (idimagen INTEGER PRIMARY KEY AUTOINCREMENT, imagen BLOB, usuarioid INTEGER, FOREIGN KEY (usuarioid) REFERENCES usuario(usuarioid));",[])
         .then(() => console.log('Tabla detalle imagen'))
         .catch(error => console.error('Error al crear la tabla imagen', error));
+
+      //tabla pasajeros
+      db.executeSql("CREATE TABLE IF NOT EXISTS pasajeros ( pasajerosid INTEGER PRIMARY KEY AUTOINCREMENT, userid INTEGER, viajeid INTEGER, FOREIGN KEY (userid) REFERENCES usuario(userid), FOREIGN KEY (viajeid) REFERENCES viaje(idviaje));",[])
+        .then(() => console.log('Tabla pasajeros creada'))
+        .catch(error => console.error('Error al crear la tabla pasajeros', error));
+
 
       db.close();
     });
@@ -398,7 +416,7 @@ export class DbserviciosService {
   //-------------------------------------------------------------
 
   // Insertar un viaje
-  insertarViaje(autoid: number, ppartida: string, pdestino: string, valorViaje: number, cantAsientos: number): Promise<void> {
+  insertarViaje(autoid: number, ppartida: string, pdestino: string, valorViaje: number, cantAsientos: number): Promise<any> {
     return this.crearDB().then((db: SQLiteObject) => {
       return db.executeSql("INSERT INTO viaje (autoid, ppartida, pdestino, valorViaje, cantAsientos) VALUES (?, ?, ?, ?, ?)", [autoid, ppartida, pdestino, valorViaje, cantAsientos]);
     });
@@ -408,30 +426,30 @@ export class DbserviciosService {
   obtenerViajes(): Promise<any[]> {
     return this.crearDB().then((db: SQLiteObject) => {
       return db.executeSql("SELECT * FROM viaje", []).then(data => {
-        const viajes: any[] = [];
+        let viajes = [];
         for (let i = 0; i < data.rows.length; i++) {
           viajes.push(data.rows.item(i));
         }
-        db.close();
         return viajes;
       });
     });
   }
 
   // Actualizar un viaje
-  actualizarViaje(idviaje: number, nuevoAutoid: number, nuevaPpartida: string, nuevaPdestino: string, nuevoValorViaje: number, nuevocantAsientos: number): Promise<void> {
+  actualizarViaje(idviaje: number, nuevoAutoid: number, nuevaPpartida: string, nuevaPdestino: string, nuevoValorViaje: number, nuevaCantAsientos: number) {
     return this.crearDB().then((db: SQLiteObject) => {
-      return db.executeSql("UPDATE viaje SET autoid = ?, ppartida = ?, pdestino = ?, valorViaje = ?, cantAsientos = ? WHERE idviaje = ?", [nuevoAutoid, nuevaPpartida, nuevaPdestino, nuevoValorViaje, nuevocantAsientos, idviaje]);
+      return db.executeSql("UPDATE viaje SET autoid = ?, ppartida = ?, pdestino = ?, valorViaje = ?, cantAsientos = ? WHERE idviaje = ?", [nuevoAutoid, nuevaPpartida, nuevaPdestino, nuevoValorViaje, nuevaCantAsientos, idviaje]);
     });
   }
 
   // Eliminar un viaje
-  eliminarViaje(idviaje: number): Promise<void> {
+  eliminarViaje(idviaje: number) {
     return this.crearDB().then((db: SQLiteObject) => {
       return db.executeSql("DELETE FROM viaje WHERE idviaje = ?", [idviaje]);
     });
   }
 
+  
   obtenerViajesPorAutoid(autoid: number): Promise<any> {
     return this.crearDB().then((db: SQLiteObject) => {
       return db.executeSql("SELECT * FROM viaje WHERE autoid = ?", [autoid])
@@ -449,8 +467,59 @@ export class DbserviciosService {
     });
   }
 
- 
+ async obtenerDatosViaje(idviaje: number): Promise<any> {
+    try {
+      const db = await this.crearDB();
+      const query = 'SELECT * FROM viaje WHERE idviaje = ?';
+      const result = await db.executeSql(query, [idviaje]);
 
+      if (result.rows.length > 0) {
+        // Si hay resultados, devolver la primera fila (asumiendo que idviaje es único)
+        return result.rows.item(0);
+      } else {
+        // No se encontró ningún viaje con el id proporcionado
+        return null;
+      }
+    } catch (error) {
+      console.error('Error al obtener datos del viaje:', error);
+      throw error;
+    }
+  }
+
+  obtenerUltimoIdViaje(): Promise<number> {
+    return this.crearDB().then((db: SQLiteObject) => {
+      const consultaSQL = 'SELECT MAX(idviaje) AS ultimoId FROM viaje';
+  
+      return db.executeSql(consultaSQL, []).then((resultado) => {
+        if (resultado.rows.length > 0) {
+          const ultimoId = resultado.rows.item(0).ultimoId;
+          return ultimoId || 0; // Si es nulo, devuelve 0
+        } else {
+          return 0; // Si no hay resultados, devuelve 0
+        }
+      });
+    });
+  }
+
+  async obtenerTodosViajesConConductores(): Promise<any[]> {
+    try {
+      const db = await this.crearDB();
+      // Realiza una consulta que incluya la información del conductor
+      const query = `
+        SELECT idviaje, pdestino, valorViaje 
+        FROM viaje`;
+
+      const result = await db.executeSql(query);
+
+      return result.rows;
+    } catch (error) {
+      console.error('Error al obtener viajes con conductores:', error);
+      throw error;
+    }
+  }
+
+
+  
   //-------------------------------------------------------------
   // Función para cargar datos de la tabla "detalle"
   // Insertar un detalle
@@ -487,6 +556,19 @@ export class DbserviciosService {
     });
   }
 
+  // Obtener detalles por idviaje
+  obtenerDetallesPorViaje(idviaje: number): Promise<any[]> {
+    return this.crearDB().then((db: SQLiteObject) => {
+      return db.executeSql("SELECT * FROM detalle WHERE idviaje = ?", [idviaje])
+        .then(data => {
+          let detalles = [];
+          for (let i = 0; i < data.rows.length; i++) {
+            detalles.push(data.rows.item(i));
+          }
+          return detalles;
+        });
+    });
+  }
   //-------------------------------------------------------------
   // Función para cargar datos de la tabla "imagenes"
   // Insertar una imagen
@@ -531,6 +613,7 @@ export class DbserviciosService {
 
   //-------------------------------------------------------------
 
+  
   //login de usuario
 
   loginUsuario(correo: string, contrasena: string): Promise<any> {
@@ -643,6 +726,94 @@ export class DbserviciosService {
     });
   }
 
+  //=======================================================
+
+  // Insertar un pasajero
+insertarPasajero(userid: number, viajeid: number) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("INSERT INTO pasajeros (userid, viajeid) VALUES (?, ?)", [userid, viajeid]);
+  });
+}
+
+// Obtener todos los pasajeros
+obtenerPasajeros() {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("SELECT * FROM pasajeros", []).then(data => {
+      let pasajeros = [];
+      for (let i = 0; i < data.rows.length; i++) {
+        pasajeros.push(data.rows.item(i));
+      }
+      return pasajeros;
+    });
+  });
+}
+
+// Actualizar un pasajero
+actualizarPasajero(pasajerosid: number, nuevoUserid: number, nuevoViajeid: number) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("UPDATE pasajeros SET userid = ?, viajeid = ? WHERE pasajerosid = ?", [nuevoUserid, nuevoViajeid, pasajerosid]);
+  });
+}
+
+// Eliminar un pasajero
+eliminarPasajero(pasajerosid: number) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("DELETE FROM pasajeros WHERE pasajerosid = ?", [pasajerosid]);
+  });
+}
+
+// Obtener pasajeros por userid
+obtenerPasajerosPorUsuario(userid: number): Promise<any[]> {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("SELECT * FROM pasajeros WHERE userid = ?", [userid])
+      .then(data => {
+        let pasajeros = [];
+        for (let i = 0; i < data.rows.length; i++) {
+          pasajeros.push(data.rows.item(i));
+        }
+        return pasajeros;
+      });
+  });
+}
+
+// Obtener pasajeros por viajeid
+obtenerPasajerosPorViaje(viajeid: number): Promise<any[]> {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("SELECT * FROM pasajeros WHERE viajeid = ?", [viajeid])
+      .then(data => {
+        let pasajeros = [];
+        for (let i = 0; i < data.rows.length; i++) {
+          pasajeros.push(data.rows.item(i));
+        }
+        return pasajeros;
+      });
+  });
+}
+
+async obtenerPasajerosPorViajeId(idviaje: number): Promise<any[]> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const db = await this.crearDB();
+      // Ejecuta la consulta SQL con un JOIN para obtener el nombre del usuario
+      const result = await db.executeSql(
+        'SELECT usuario.nombre AS usuarioNombre FROM pasajeros  JOIN usuario  ON pasajeros.userid = usuario.usuarioid WHERE pasajeros.viajeid = ?',
+        [idviaje]
+      );
+
+      return result.rows;
+
+    } catch (error) {
+      // Rechaza la promesa en caso de error
+      reject(error);
+    }
+  });
+}
+
 }
 
 
+
+/*
+INNER JOIN vehiculo f on v.autoid = f.autoid
+INNER JOIN usuario u ON f.userid = u.usuarioid;`; //cambiar a userid o usuarioid
+*/

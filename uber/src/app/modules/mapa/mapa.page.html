@@ -1,20 +1,21 @@
-<ion-header [translucent]="true">
-  <ion-toolbar class="custom-toolbar">
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/" class="custom-back-button"></ion-back-button>
-    </ion-buttons>
-    <ion-title>mapa</ion-title>
-  </ion-toolbar>
-</ion-header>
+  <ion-header [translucent]="true">
+    <ion-toolbar class="custom-toolbar">
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/" class="custom-back-button"></ion-back-button>
+      </ion-buttons>
+      <ion-title>mapa</ion-title>
+    </ion-toolbar>
+  </ion-header>
 
 
-<ion-content [fullscreen]="true">
-  <ion-button id="botonBuscaConductor" (click)="obtenerConductores()">Busca un Conductor</ion-button>
-  <ion-button id="botonCrearViaje" (click)="IniciarViaje()">Crear Viaje</ion-button> 
-   
+  <ion-content [fullscreen]="true">
+    <ion-button id="botonBuscaConductor" (click)="obtenerviajes()">Busca un Conductor</ion-button>
+    <ion-button id="botonCrearViaje" (click)="IniciarViaje()">Crear Viaje</ion-button> 
+    <ion-button id="botonVolver" (click)="volverAlViaje()">volver Al Viaje</ion-button> 
+    
 
-  <!-- hacer que esto sea un pop up y que solo sirva con el cliente para mostrar lista de viajes posibles
-  con nombre conductor, cant asientos, destino y precio-->
+    <!-- hacer que esto sea un pop up y que solo sirva con el cliente para mostrar lista de viajes posibles
+    con nombre conductor, cant asientos, destino y precio-->
 
-  <capacitor-google-map #map class="map"></capacitor-google-map>
-</ion-content>
+    <capacitor-google-map #map class="map"></capacitor-google-map>
+  </ion-content>

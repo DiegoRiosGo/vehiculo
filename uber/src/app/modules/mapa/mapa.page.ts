@@ -23,7 +23,11 @@ export class MapaPage implements OnInit {
   userconductor: any;
   rolconductor: number = 2;
 
+  viajeid: any;
+
   asientos : number; 
+  autoid: number;
+  idviaje: number;
 
   constructor(private router: Router, public alertController: AlertController, private arouter: ActivatedRoute, private db: DbserviciosService) { }
 
@@ -64,24 +68,93 @@ export class MapaPage implements OnInit {
     console.log('rolid:', this.idRol);
     const botonBuscaConductor = document.getElementById('botonBuscaConductor') as HTMLButtonElement;
     const botonCrearViaje = document.getElementById('botonCrearViaje') as HTMLButtonElement;
-    
-    if (botonBuscaConductor && botonCrearViaje) {
+    const botonVolver = document.getElementById('botonVolver') as HTMLButtonElement;
+
+    if (botonBuscaConductor && botonCrearViaje && botonVolver) {
       // Dependiendo del idRol, muestra o no el botón
       if (this.idRol === 2) { // Puedes ajustar el valor según el idRol deseado
         botonBuscaConductor.style.display = ''; // Muestra el botón
         botonCrearViaje.style.display = 'none'; // Oculta el botón
+        botonVolver.style.display = 'none'; // Oculta el botón
       } else {
         botonCrearViaje.style.display = ''; // Muestra el botón
+        botonVolver.style.display = ''; // Oculta el botón
         botonBuscaConductor.style.display = 'none'; // Oculta el botón
       }
     }
   }
 
+  volverAlViaje(){
+    this.db.obtenerUltimoIdViaje().then((viajeId: any) => {
+      console.log('Viaje creado exitosamente. Id del viaje:', viajeId);
+      // Puedes realizar otras acciones después de crear el viaje, si es necesario
+      this.router.navigate(['/detalleconductor', viajeId]); // Aquí pasamos el ID del viaje a la página de detalleconductor
+    });
+  }
   //mostrar conductores
-  async obtenerConductores() {
-    const usuariosConductores = await this.db.buscarUsuariosPorRol(this.rolconductor);
-    this.userconductor = usuariosConductores;
+  async obtenerviajes() {
+    try {
+      const viajes = await this.db.obtenerViajes(); // Ajusta esto según tus necesidades
   
+      const alert = await this.alertController.create({
+        header: 'Selecciona un viaje',
+        inputs: viajes.map((viaje) => ({
+          name: `viaje-${viaje.idviaje}`,
+          type: 'radio',
+          label: `Viaje a ${viaje.pdestino} con valor de viaje:  ${viaje.valorViaje} `, // Modifica esta línea
+          value: viaje.idviaje.toString(),
+        })),
+        buttons: [
+          {
+            text: 'Cancelar',
+            role: 'cancel',
+            handler: () => {
+              console.log('Cancelar');
+            },
+          },
+          {
+            text: 'Solicitar Viaje',
+            handler: async (viajeId) => {
+              if (!viajeId) {
+                // Si no se selecciona ninguna opción, muestra un mensaje de error
+                this.mostrarAlerta('Error', 'Debes seleccionar un viaje antes de continuar');
+                return;
+              }
+  
+              viajeId = parseInt(viajeId, 10);
+  
+              await this.agregarPasajeroAlViaje(viajeId);
+  
+              this.mostrarAlerta('Éxito', 'Viaje agregado correctamente');
+            },
+          },
+        ],
+      });
+  
+      await alert.present();
+    } catch (error) {
+      console.error('Error al obtener viajes con conductores:', error);
+      if (error instanceof Error) {
+        console.error('Error message:', error.message);
+        console.error('Stack trace:', error.stack);
+      }
+      // Maneja el error según tus necesidades
+    }
+  }
+
+  async agregarPasajeroAlViaje(viajeId: number) {
+    try {
+      // Reemplaza 1 con el valor correcto de tu usuario actual
+      const usuarioId = 1;
+  
+      // Realiza la operación para agregar el pasajero al viaje
+      await this.db.insertarPasajero(usuarioId, viajeId);
+  
+      console.log('Pasajero agregado al viaje correctamente.');
+    } catch (error) {
+      console.error('Error al agregar pasajero al viaje:', error);
+      // Maneja el error según tus necesidades
+    }
   }
 
   //vista conductor
@@ -180,31 +253,36 @@ export class MapaPage implements OnInit {
   // Método para guardar la información del viaje en la base de datos
   async guardarViaje(data: any) {
     // Obtén el usuarioid según tu lógica de usuario actual
-    const usuarioid = this.usuarioid; 
-
+    const usuarioid = this.usuarioid;
+  
     const vehiculo = await this.db.obtenerVehiculoPorUsuario(usuarioid);
-    const autoid = vehiculo.autoid;
-
+    this.autoid = vehiculo.autoid;
+  
     // Verifica que la cantidad de asientos no sea mayor a la cantidad de asientos disponibles
     const esCantidadValida = await this.validarAsientos(data.cantidadAsientos, usuarioid);
-
+  
     if (esCantidadValida) {
-
       // Guarda la información del viaje en la tabla 'viaje'
-      this.db.insertarViaje(autoid, data.direccionInicio, data.direccionDestino, data.valorViaje, data.cantidadAsientos)
-        .then(() => {
-          console.log('Viaje creado exitosamente');
-          // Puedes realizar otras acciones después de crear el viaje, si es necesario
-          this.router.navigate(['/detalleconductor', this.usuarioid]);
-          this.mostrarAlerta('Éxito', 'Viaje creado exitosamente');
-        })
-        .catch(error => {
-          console.error('Error al crear el viaje:', error);
-        });
+      this.db.insertarViaje(this.autoid, data.direccionInicio, data.direccionDestino, data.valorViaje, data.cantidadAsientos)
+    .then(() => {
+      // Después de insertar el viaje, realiza una consulta para obtener el ID del viaje recién insertado
+      this.db.obtenerUltimoIdViaje().then((viajeId: any) => {
+      console.log('Viaje creado exitosamente. Id del viaje:', viajeId);
+      // Puedes realizar otras acciones después de crear el viaje, si es necesario
+      this.router.navigate(['/detalleconductor', viajeId]); // Aquí pasamos el ID del viaje a la página de detalleconductor
+      this.mostrarAlerta('Éxito', 'Viaje creado exitosamente');
+    });
+  })
+  .catch(error => {
+    console.error('Error al crear el viaje:', error);
+  });
     } else {
       // Muestra un mensaje si la cantidad de asientos es inválida
       console.log('Cantidad de asientos inválida');
-      this.mostrarAlerta('Error', 'La cantidad de asientos no debe ser superior a la ingresada');
+      this.mostrarAlerta(
+        'Error',
+        'La cantidad de asientos no debe ser superior a la ingresada'
+      );
     }
   }
   
@@ -249,45 +327,7 @@ export class MapaPage implements OnInit {
 
 }
 
-/*
 
 
 
 
-
-
-
-// Método para guardar la información del viaje en la base de datos
-   async guardarViaje(data: any) {
-    // Obtén el usuarioid según tu lógica de usuario actual
-    const usuarioid = this.usuarioid; // Ajusta esto según tu lógica
-
-    const vehiculo = await this.db.obtenerVehiculoPorUsuario(usuarioid);
-    const autoid = vehiculo.autoid;
-
-    // Verifica que la cantidad de asientos no sea mayor a la cantidad de asientos disponibles
-    const esCantidadValida = await this.validarAsientos(data.cantidadAsientos, usuarioid);
-
-    if (esCantidadValida) {
-
-      // Guarda la información del viaje en la tabla 'viaje'
-      this.db.insertarViaje(autoid, data.direccionInicio, data.direccionDestino, data.valorViaje)
-        .then(() => {
-          console.log('Viaje creado exitosamente');
-          // Puedes realizar otras acciones después de crear el viaje, si es necesario
-
-          this.router.navigate(['/detalleconductor']);
-        })
-        .catch(error => {
-          console.error('Error al crear el viaje:', error);
-        });
-    } else {
-      // Muestra un mensaje si la cantidad de asientos es inválida
-      console.log('Cantidad de asientos inválida');
-      this.mostrarAlerta('Error', 'La cantidad de asientos no debe ser superior a la ingresada');
-    }
-  }
-
-
-
-  */
