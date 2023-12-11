@@ -10,4 +10,15 @@
       <ion-title size="large">detalleconductor</ion-title>
     </ion-toolbar>
   </ion-header>
+
+
+  <ion-item-divider color="primary">
+    Viajes
+  </ion-item-divider>
+  <ion-item *ngFor="let viaje of viajes">
+    <ion-label>Numero Rol: {{ viaje.ppartida }} Nombre Rol: {{ viaje.pdestino }}</ion-label>
+    <ion-label>Numero Rol: {{ viaje.valorViaje }} Nombre Rol: {{ viaje.cantAsientos }}</ion-label>
+  </ion-item>
+
+
 </ion-content>

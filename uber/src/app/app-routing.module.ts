@@ -57,11 +57,11 @@ const routes: Routes = [
     loadChildren: () => import('./modules/perfilconductor/perfilconductor.module').then( m => m.PerfilconductorPageModule)
   },
   {
-    path: 'detalleconductor',
+    path: 'detalleconductor/:usuarioid',
     loadChildren: () => import('./modules/detalleconductor/detalleconductor.module').then( m => m.DetalleconductorPageModule)
   },
   {
-    path: 'detallecliente',
+    path: 'detallecliente/:usuarioid',
     loadChildren: () => import('./modules/detallecliente/detallecliente.module').then( m => m.DetalleclientePageModule)
   },
 

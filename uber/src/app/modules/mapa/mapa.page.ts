@@ -22,6 +22,9 @@ export class MapaPage implements OnInit {
   mostrarinfoconductor: boolean = false;
   userconductor: any;
   rolconductor: number = 2;
+
+  asientos : number; 
+
   constructor(private router: Router, public alertController: AlertController, private arouter: ActivatedRoute, private db: DbserviciosService) { }
 
   ionViewWillEnter() {
@@ -51,12 +54,11 @@ export class MapaPage implements OnInit {
         });
       }
     });
+    
 
-    //this.obtenerConductores();
   }
 
   //vista cliente 
-
   mostrarBotonBuscarConductor() {
     // Obtén el botón por su ID
     console.log('rolid:', this.idRol);
@@ -75,15 +77,14 @@ export class MapaPage implements OnInit {
     }
   }
 
-  //mostrar 
-  //mostrar informacion del ion-card-content
+  //mostrar conductores
   async obtenerConductores() {
     const usuariosConductores = await this.db.buscarUsuariosPorRol(this.rolconductor);
     this.userconductor = usuariosConductores;
   
   }
 
-
+  //vista conductor
   async IniciarViaje() {
     const alert = await this.alertController.create({
       header: 'Crear Viaje',
@@ -120,13 +121,40 @@ export class MapaPage implements OnInit {
         {
           text: 'Iniciar Viaje',
           handler: (data) => {
-            this.guardarViaje(data);
+            // Validar que todos los campos estén llenos
+            if (this.camposVacios(data)) {
+              this.mostrarAlerta('Error', 'Todos los campos deben ser completados');
+            } else if (!this.validarValorViaje(data.valorViaje)) {
+              this.mostrarAlerta('Error', 'El valor del viaje debe ser mayor a 1000 y menor a 101000');
+            } else if (!this.validarAsientos(data.cantidadAsientos, this.usuarioid)) {
+              this.mostrarAlerta('Error', 'La cantidad de asientos no es válida');
+            } else {
+              this.guardarViaje(data);
+              
+            }
           }
         }
       ]
     });
-
+  
     await alert.present();
+  }
+  
+  validarValorViaje(valorViaje: number): boolean {
+    return valorViaje > 900 && valorViaje < 101000;
+  }
+  
+  camposVacios(data: any): boolean {
+    // Verifica si algún campo está vacío
+    return Object.values(data).some(value => value === undefined || value === '');
+  }
+  
+  mostrarAlerta(header: string, message: string) {
+    this.alertController.create({
+      header: header,
+      message: message,
+      buttons: ['OK']
+    }).then(alert => alert.present());
   }
 
   // Método para validar la cantidad de asientos
@@ -134,10 +162,11 @@ export class MapaPage implements OnInit {
     try {
       // Obtener la información del vehículo del usuario actual
       const vehiculo = await this.db.obtenerVehiculoPorUsuario(usuarioid);
+      this.asientos = vehiculo.asientos;
 
       if (vehiculo) {
         const asientosDisponibles = vehiculo.asientos;
-        return cantidadAsientos <= asientosDisponibles;
+        return cantidadAsientos > 0 && cantidadAsientos <= asientosDisponibles && cantidadAsientos <= vehiculo.asientos;
       } else {
         console.error('No se encontró el vehículo para el usuario.');
         return false;
@@ -148,10 +177,10 @@ export class MapaPage implements OnInit {
     }
   }
 
-   // Método para guardar la información del viaje en la base de datos
-   async guardarViaje(data: any) {
+  // Método para guardar la información del viaje en la base de datos
+  async guardarViaje(data: any) {
     // Obtén el usuarioid según tu lógica de usuario actual
-    const usuarioid = this.usuarioid; // Ajusta esto según tu lógica
+    const usuarioid = this.usuarioid; 
 
     const vehiculo = await this.db.obtenerVehiculoPorUsuario(usuarioid);
     const autoid = vehiculo.autoid;
@@ -162,12 +191,12 @@ export class MapaPage implements OnInit {
     if (esCantidadValida) {
 
       // Guarda la información del viaje en la tabla 'viaje'
-      this.db.insertarViaje(autoid, data.direccionInicio, data.direccionDestino, data.valorViaje)
+      this.db.insertarViaje(autoid, data.direccionInicio, data.direccionDestino, data.valorViaje, data.cantidadAsientos)
         .then(() => {
           console.log('Viaje creado exitosamente');
           // Puedes realizar otras acciones después de crear el viaje, si es necesario
-
-          this.router.navigate(['/detalleconductor']);
+          this.router.navigate(['/detalleconductor', this.usuarioid]);
+          this.mostrarAlerta('Éxito', 'Viaje creado exitosamente');
         })
         .catch(error => {
           console.error('Error al crear el viaje:', error);
@@ -175,9 +204,12 @@ export class MapaPage implements OnInit {
     } else {
       // Muestra un mensaje si la cantidad de asientos es inválida
       console.log('Cantidad de asientos inválida');
+      this.mostrarAlerta('Error', 'La cantidad de asientos no debe ser superior a la ingresada');
     }
   }
+  
 
+   
 
 
 
@@ -215,27 +247,47 @@ export class MapaPage implements OnInit {
     })
   }
 
- 
-
-
-
 }
 
-
 /*
-if (this.direccionDestino.trim() === '') {
-      // Si el campo está vacío, muestra una alerta "No se ha registrado ruta"
-      const alert = await this.alertController.create({
-        header: 'Alerta',
-        message: 'No se ha registrado ruta',
-        buttons: ['OK']
-      });
 
-      await alert.present();
+
+
+
+
+
+
+// Método para guardar la información del viaje en la base de datos
+   async guardarViaje(data: any) {
+    // Obtén el usuarioid según tu lógica de usuario actual
+    const usuarioid = this.usuarioid; // Ajusta esto según tu lógica
+
+    const vehiculo = await this.db.obtenerVehiculoPorUsuario(usuarioid);
+    const autoid = vehiculo.autoid;
+
+    // Verifica que la cantidad de asientos no sea mayor a la cantidad de asientos disponibles
+    const esCantidadValida = await this.validarAsientos(data.cantidadAsientos, usuarioid);
+
+    if (esCantidadValida) {
+
+      // Guarda la información del viaje en la tabla 'viaje'
+      this.db.insertarViaje(autoid, data.direccionInicio, data.direccionDestino, data.valorViaje)
+        .then(() => {
+          console.log('Viaje creado exitosamente');
+          // Puedes realizar otras acciones después de crear el viaje, si es necesario
+
+          this.router.navigate(['/detalleconductor']);
+        })
+        .catch(error => {
+          console.error('Error al crear el viaje:', error);
+        });
     } else {
-
-      this.logout();
-
+      // Muestra un mensaje si la cantidad de asientos es inválida
+      console.log('Cantidad de asientos inválida');
+      this.mostrarAlerta('Error', 'La cantidad de asientos no debe ser superior a la ingresada');
     }
-    this.mostrarinfoconductor = true
+  }
+
+
+
   */

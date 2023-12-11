@@ -25,7 +25,6 @@ export class PerfilconductorPage implements OnInit {
     private aroute: ActivatedRoute,
     private alertController: AlertController,
     private api: ClimaService,
-    private cdr: ChangeDetectorRef,
     private db: DbserviciosService,
   ) { }
 
@@ -128,8 +127,8 @@ export class PerfilconductorPage implements OnInit {
       this.db.verificarVehiculoRegistrado(this.usuarioid).then((existeVehiculo: boolean) => {
         this.vehiculoRegistrado = existeVehiculo;
 
-        // Deshabilitar o ocultar los botones según la existencia del vehículo
-        this.actualizarBotones();
+        //esto da spam de base de datos, por ahora lo dejaré para continuar con lo demás
+        //this.actualizarBotones();
       }).catch(error => {
         // Manejo de errores al verificar el vehículo
       });
@@ -211,16 +210,6 @@ export class PerfilconductorPage implements OnInit {
   //mientras 
   async registrarVehiculo() {
     try {
-      const vehiculoRegistrado = await this.db.verificarVehiculoRegistrado(this.usuarioid);
-
-      if (vehiculoRegistrado) {
-        const alert = await this.alertController.create({
-          header: 'Registro de Vehículo',
-          message: 'Ya tienes un vehículo registrado.',
-          buttons: ['OK']
-        });
-        await alert.present();
-      } else {
         const registroVehiculoAlert = await this.alertController.create({
           header: 'Registro de Vehículo',
           message: 'Completa los datos del vehículo:',
@@ -276,7 +265,7 @@ export class PerfilconductorPage implements OnInit {
         });
 
         await registroVehiculoAlert.present();
-      }
+
     } catch (error) {
       console.error('Error al verificar vehículo registrado:', error);
     }

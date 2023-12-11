@@ -53,7 +53,7 @@ export class DbserviciosService {
         .catch(error => console.error('Error al crear la tabla vehiculo', error));
 
       // Crea la tabla 'viaje' clave de clave 
-      db.executeSql("CREATE TABLE IF NOT EXISTS viaje (idviaje INTEGER PRIMARY KEY AUTOINCREMENT, autoid INTEGER, ppartida VARCHAR(50), pdestino VARCHAR(50),valorViaje INTEGER, FOREIGN KEY (autoid) REFERENCES vehiculo(autoid));", [])
+      db.executeSql("CREATE TABLE IF NOT EXISTS viaje (idviaje INTEGER PRIMARY KEY AUTOINCREMENT, autoid INTEGER, ppartida VARCHAR(50), pdestino VARCHAR(50),valorViaje INTEGER, cantAsientos INTEGER, FOREIGN KEY (autoid) REFERENCES vehiculo(autoid));", [])
         .then(() => console.log('Tabla viaje creada'))
         .catch(error => console.error('Error al crear la tabla viaje', error));
 
@@ -344,26 +344,6 @@ export class DbserviciosService {
     });
   }
 
-  verificarVehiculoRegistrado(userId: number): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      this.crearDB().then((db: SQLiteObject) => {
-        const query = 'SELECT COUNT(*) as count FROM vehiculo WHERE userid = ?';
-        const params = [userId];
-
-        db.executeSql(query, params).then((result) => {
-          const count = result.rows.item(0).count;
-          resolve(count > 0); // Retorna true si hay al menos un vehículo registrado para el usuario
-        }).catch(error => {
-          console.error('Error al ver vehículo en la base de datos:', error);
-          throw error;
-        });
-      }).catch(error => {
-        console.error('Error al ver vehículo en la base de datos:', error);
-        throw error;
-      });
-    });
-  }
-
   async registrarVehiculo(vehiculo: any): Promise<void> {
     try {
       const db = await this.crearDB();
@@ -395,44 +375,81 @@ export class DbserviciosService {
     });
   }
 
+  verificarVehiculoRegistrado(userId: number): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.crearDB().then((db: SQLiteObject) => {
+        const query = 'SELECT COUNT(*) as count FROM vehiculo WHERE userid = ?';
+        const params = [userId];
+
+        db.executeSql(query, params).then((result) => {
+          const count = result.rows.item(0).count;
+          resolve(count > 0); // Retorna true si hay al menos un vehículo registrado para el usuario
+        }).catch(error => {
+          console.error('Error al ver vehículo en la base de datos:', error);
+          throw error;
+        });
+      }).catch(error => {
+        console.error('Error al ver vehículo en la base de datos:', error);
+        throw error;
+      });
+    });
+  }
+
   //-------------------------------------------------------------
 
-
-  // Función para cargar datos de la tabla "viaje"
   // Insertar un viaje
-  insertarViaje(autoid: number, ppartida: string, pdestino: string, valorViaje: number) {
+  insertarViaje(autoid: number, ppartida: string, pdestino: string, valorViaje: number, cantAsientos: number): Promise<void> {
     return this.crearDB().then((db: SQLiteObject) => {
-      return db.executeSql("INSERT INTO viaje (autoid, ppartida, pdestino, valorViaje) VALUES (?, ?, ?, ?)", [autoid, ppartida, pdestino, valorViaje]);
+      return db.executeSql("INSERT INTO viaje (autoid, ppartida, pdestino, valorViaje, cantAsientos) VALUES (?, ?, ?, ?, ?)", [autoid, ppartida, pdestino, valorViaje, cantAsientos]);
     });
   }
 
   // Obtener todos los viajes
-  obtenerViajes() {
+  obtenerViajes(): Promise<any[]> {
     return this.crearDB().then((db: SQLiteObject) => {
       return db.executeSql("SELECT * FROM viaje", []).then(data => {
-        let viajes = [];
+        const viajes: any[] = [];
         for (let i = 0; i < data.rows.length; i++) {
           viajes.push(data.rows.item(i));
         }
+        db.close();
         return viajes;
       });
     });
   }
 
   // Actualizar un viaje
-  actualizarViaje(idviaje: number, nuevoAutoid: number, nuevaPpartida: string, nuevaPdestino: string) {
+  actualizarViaje(idviaje: number, nuevoAutoid: number, nuevaPpartida: string, nuevaPdestino: string, nuevoValorViaje: number, nuevocantAsientos: number): Promise<void> {
     return this.crearDB().then((db: SQLiteObject) => {
-      return db.executeSql("UPDATE viaje SET autoid = ?, ppartida = ?, pdestino = ? WHERE idviaje = ?", [nuevoAutoid, nuevaPpartida, nuevaPdestino, idviaje]);
+      return db.executeSql("UPDATE viaje SET autoid = ?, ppartida = ?, pdestino = ?, valorViaje = ?, cantAsientos = ? WHERE idviaje = ?", [nuevoAutoid, nuevaPpartida, nuevaPdestino, nuevoValorViaje, nuevocantAsientos, idviaje]);
     });
   }
 
   // Eliminar un viaje
-  eliminarViaje(idviaje: number) {
+  eliminarViaje(idviaje: number): Promise<void> {
     return this.crearDB().then((db: SQLiteObject) => {
       return db.executeSql("DELETE FROM viaje WHERE idviaje = ?", [idviaje]);
     });
   }
 
+  obtenerViajesPorAutoid(autoid: number): Promise<any> {
+    return this.crearDB().then((db: SQLiteObject) => {
+      return db.executeSql("SELECT * FROM viaje WHERE autoid = ?", [autoid])
+        .then(data => {
+          if (data.rows.length > 0) {
+            return data.rows.item(0); // Devuelve la información del vehículo
+          } else {
+            return null;
+          }
+        })
+        .catch(error => {
+          console.error('Error al obtener viaje por autoid:', error);
+          throw error;
+        });
+    });
+  }
+
+ 
 
   //-------------------------------------------------------------
   // Función para cargar datos de la tabla "detalle"
