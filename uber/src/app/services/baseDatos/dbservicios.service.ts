@@ -957,9 +957,64 @@ async obtenerDisponibilidadViajeConductor(userId: number): Promise<boolean> {
   }
 }
 
+async obtenerHistorialViajes(autoid: number): Promise<any[]> {
+  try {
+    const result = await this.crearDB().then((db: SQLiteObject) => {
+      return db.executeSql('SELECT * FROM viaje WHERE autoid = ? ORDER BY idviaje DESC', [autoid]);
+    });
 
+    if (result.rows.length > 0) {
+      const historialViajes = [];
+      for (let i = 0; i < result.rows.length; i++) {
+        historialViajes.push(result.rows.item(i));
+      }
+      return historialViajes;
+    }
 
+    return [];
+  } catch (error) {
+    console.error('Error al obtener historial de viajes:', error);
+    throw error;
+  }
+}
 
+async obtenerHistorialViajesCliente(usuarioid: number): Promise<any[]> {
+  try {
+    const result = await this.crearDB().then((db: SQLiteObject) => {
+      return db.executeSql('SELECT * FROM pasajeros JOIN usuario ON pasajeros.userid = usuario.usuarioid JOIN viaje ON pasajeros.viajeid = viaje.idviaje JOIN vehiculo ON viaje.autoid = vehiculo.autoid WHERE pasajeros.userid = ?', [usuarioid]);
+    });
+
+    if (result.rows.length > 0) {
+      const historialViajes = [];
+      for (let i = 0; i < result.rows.length; i++) {
+        historialViajes.push(result.rows.item(i));
+      }
+      return historialViajes;
+    }
+
+    return [];
+  } catch (error) {
+    console.error('Error al obtener historial de viajes del cliente:', error);
+    throw error;
+  }
+}
+
+async obtenerInfoViaje(viajeId: number): Promise<any | null> {
+  try {
+    const result = await this.crearDB().then((db: SQLiteObject) => {
+      return db.executeSql('SELECT * FROM viaje WHERE idviaje = ?', [viajeId]);
+    });
+
+    if (result.rows.length > 0) {
+      return result.rows.item(0);
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Error al obtener información del viaje:', error);
+    throw error;
+  }
+}
 
 
 mostrarAlerta(header: string, message: string) {

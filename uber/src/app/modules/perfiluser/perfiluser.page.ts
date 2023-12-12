@@ -108,4 +108,10 @@ export class PerfiluserPage implements OnInit {
   async pedirviaje() {
       this.router.navigate(['/mapa', this.usuarioid]);
   }
+
+  async mostrarHistorialViajes() {
+
+    const usuarioid = this.usuarioid;
+    this.router.navigate(['/historialcliente', usuarioid]);
+  }
 }

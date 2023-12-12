@@ -59,6 +59,16 @@
           <ion-input type="text" [(ngModel)]="respuesta"></ion-input>
         </ion-item>
 
+
+        <!-- Lista de opciones para seleccionar el rol -->
+        <ion-item class="custom-item">
+          <ion-label position="floating" color="primary">Selecciona tu rol</ion-label>
+          <ion-select [(ngModel)]="selectedRole">
+            <ion-select-option value="2">Cliente</ion-select-option>
+            <ion-select-option value="3">Conductor</ion-select-option>
+          </ion-select>
+        </ion-item>
+
         <div *ngFor="let mensaje of mensajes" class="mensaje-error">
           {{ mensaje }}
         </div>

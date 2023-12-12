@@ -19,6 +19,7 @@ export class RegistroPage implements OnInit {
   con_contrasena: string = '';
   selectedSecurityQuestion: string = ''; // Aquí almacenaremos el ID de la pregunta seleccionada
   respuesta: string = '';
+  selectedRole: number = 0; // Variable para almacenar el rol seleccionado por el usuario
   mensajes: string[] = [];
 
 
@@ -28,12 +29,18 @@ export class RegistroPage implements OnInit {
   registrarUsuario() {
     this.mensajes = [];
 
+    // Validar que se haya seleccionado un rol
+    if (this.selectedRole === 0) {
+      this.mensajes.push('Debes seleccionar un rol antes de registrarte.');
+      return;
+    }
+
     // Verificar que las contraseñas coincidan antes de continuar
     if (this.contrasena !== this.con_contrasena) {
       this.mensajes.push('Las contraseñas no coinciden');
       return;
     }
-
+    
     if (!this.nombre) {
       this.mensajes.push('Campo \'Nombre\' es obligatorio');
       return;
@@ -81,7 +88,7 @@ export class RegistroPage implements OnInit {
           this.contrasena,
           +this.selectedSecurityQuestion,
           this.respuesta,
-          2
+          this.selectedRole,
         ).then(() => {
           this.MsjRegistro();
           this.router.navigate(['/home']);

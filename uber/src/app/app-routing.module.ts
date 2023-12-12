@@ -64,6 +64,16 @@ const routes: Routes = [
     path: 'detallecliente/:usuarioid',
     loadChildren: () => import('./modules/detallecliente/detallecliente.module').then( m => m.DetalleclientePageModule)
   },
+  {
+    path: 'historialconductor/:usuarioid',
+    loadChildren: () => import('./modules/historialconductor/historialconductor.module').then( m => m.HistorialconductorPageModule)
+  },
+  {
+    path: 'historialcliente/:usuarioid',
+    loadChildren: () => import('./modules/historialcliente/historialcliente.module').then( m => m.HistorialclientePageModule)
+  },
+
+
 
 
  

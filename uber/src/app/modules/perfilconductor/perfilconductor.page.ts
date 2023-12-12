@@ -18,6 +18,8 @@ export class PerfilconductorPage implements OnInit {
   nombreUsuario: string;
   correoUsuario: string;
 
+  autoid : number; 
+
   vehiculoRegistrado: boolean = false;
 
   constructor(
@@ -291,6 +293,13 @@ export class PerfilconductorPage implements OnInit {
   validarAsientos(asientos: number): boolean {
     // Validar que los asientos estén en el rango de 2 a 20
     return asientos >= 1 && asientos <= 15;
+  }
+
+
+  async mostrarHistorialViajes() {
+
+    const usuarioid = this.usuarioid;
+    this.router.navigate(['/historialconductor', usuarioid]);
   }
 
   // actualizar pagina cuando se actualizan los botones
