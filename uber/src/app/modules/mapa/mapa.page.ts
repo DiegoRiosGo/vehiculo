@@ -29,6 +29,8 @@ export class MapaPage implements OnInit {
   autoid: number;
   idviaje: number;
 
+  viajedisponible: boolean = false;
+
   constructor(private router: Router, public alertController: AlertController, private arouter: ActivatedRoute, private db: DbserviciosService) { }
 
   ionViewWillEnter() {
@@ -63,24 +65,52 @@ export class MapaPage implements OnInit {
   }
 
   //vista cliente 
-  mostrarBotonBuscarConductor() {
-    // Obtén el botón por su ID
-    console.log('rolid:', this.idRol);
-    const botonBuscaConductor = document.getElementById('botonBuscaConductor') as HTMLButtonElement;
-    const botonCrearViaje = document.getElementById('botonCrearViaje') as HTMLButtonElement;
-    const botonVolver = document.getElementById('botonVolver') as HTMLButtonElement;
-
-    if (botonBuscaConductor && botonCrearViaje && botonVolver) {
-      // Dependiendo del idRol, muestra o no el botón
-      if (this.idRol === 2) { // Puedes ajustar el valor según el idRol deseado
-        botonBuscaConductor.style.display = ''; // Muestra el botón
-        botonCrearViaje.style.display = 'none'; // Oculta el botón
-        botonVolver.style.display = 'none'; // Oculta el botón
-      } else {
-        botonCrearViaje.style.display = ''; // Muestra el botón
-        botonVolver.style.display = ''; // Oculta el botón
-        botonBuscaConductor.style.display = 'none'; // Oculta el botón
+  async mostrarBotonBuscarConductor() {
+    try {
+      console.log('rolid:', this.idRol);
+      const botonBuscaConductor = document.getElementById('botonBuscaConductor') as HTMLButtonElement;
+      const botonCrearViaje = document.getElementById('botonCrearViaje') as HTMLButtonElement;
+      const botonVolver = document.getElementById('botonVolver') as HTMLButtonElement;
+  
+      if (botonBuscaConductor && botonCrearViaje && botonVolver) {
+        if (this.idRol === 2) {
+          botonBuscaConductor.style.display = '';
+          botonCrearViaje.style.display = 'none';
+          botonVolver.style.display = 'none';
+        } else {
+          botonCrearViaje.style.display = '';
+          botonVolver.style.display = '';
+          botonBuscaConductor.style.display = 'none';
+        }
       }
+  
+      // Obtén el estado de disponibilidad del último viaje del conductor (ajusta según tu lógica)
+      if (this.usuarioid) {
+        const disponibilidad = await this.db.obtenerDisponibilidadViajeConductor(this.usuarioid);
+        this.viajedisponible = disponibilidad;
+    
+        const botonCrearViaje = document.getElementById('botonCrearViaje') as HTMLButtonElement;
+        const botonVolver = document.getElementById('botonVolver') as HTMLButtonElement;
+    
+        console.log('Disponibilidad del viaje para el usuario', this.usuarioid + ':', this.viajedisponible);
+        console.log('Boton Crear Viaje:', botonCrearViaje);
+        console.log('Boton Volver:', botonVolver);
+
+        if (botonCrearViaje && botonVolver) {
+          if (this.viajedisponible) {
+            console.log('toy positivo');
+            botonCrearViaje.disabled = true;
+            botonVolver.disabled = false;
+          } else {
+            console.log('toy negativo');
+            botonCrearViaje.disabled = false;
+            botonVolver.disabled = true;
+          }
+
+        }
+      }
+    } catch (error) {
+      console.error('Error al mostrar botones:', error);
     }
   }
 
@@ -94,14 +124,20 @@ export class MapaPage implements OnInit {
   //mostrar conductores
   async obtenerviajes() {
     try {
-      const viajes = await this.db.obtenerViajes(); // Ajusta esto según tus necesidades
+      
+      const viajes = await this.db.obtenerViajesConDisponibilidad();
+  
+      if (viajes.length === 0) {
+        this.mostrarAlerta('Error', 'No hay viajes disponibles con asientos libres.');
+        return;
+      }
   
       const alert = await this.alertController.create({
         header: 'Selecciona un viaje',
         inputs: viajes.map((viaje) => ({
           name: `viaje-${viaje.idviaje}`,
           type: 'radio',
-          label: `Viaje a ${viaje.pdestino} con valor de viaje:  ${viaje.valorViaje} `, // Modifica esta línea
+          label: `Conductor: ${viaje.nombre}, Viaje a ${viaje.pdestino} con valor de viaje: ${viaje.valorViaje}`,
           value: viaje.idviaje.toString(),
         })),
         buttons: [
@@ -116,7 +152,6 @@ export class MapaPage implements OnInit {
             text: 'Solicitar Viaje',
             handler: async (viajeId) => {
               if (!viajeId) {
-                // Si no se selecciona ninguna opción, muestra un mensaje de error
                 this.mostrarAlerta('Error', 'Debes seleccionar un viaje antes de continuar');
                 return;
               }
@@ -144,19 +179,30 @@ export class MapaPage implements OnInit {
 
   async agregarPasajeroAlViaje(viajeId: number) {
     try {
-      // Reemplaza 1 con el valor correcto de tu usuario actual
-      const usuarioId = 1;
+      // Obtén el usuario actual
+      const usuarioId = this.usuarioid;
   
-      // Realiza la operación para agregar el pasajero al viaje
-      await this.db.insertarPasajero(usuarioId, viajeId);
+      // Verifica si hay asientos disponibles en el viaje
+      const asientosDisponibles = await this.db.obtenerAsientosDisponiblesEnViaje(viajeId);
   
-      console.log('Pasajero agregado al viaje correctamente.');
+      if (asientosDisponibles > 0) {
+        // Realiza la operación para agregar el pasajero al viaje
+        await this.db.insertarPasajero(usuarioId, viajeId);
+        
+        // Después de agregar el pasajero, actualiza la disponibilidad del viaje
+        await this.db.actualizarDisponibilidadViaje(viajeId);
+
+        console.log('Pasajero agregado al viaje correctamente.');
+      } else {
+        console.log('No hay asientos disponibles en el viaje.');
+        // Puedes manejar el caso en el que no hay asientos disponibles
+        // Puedes mostrar un mensaje al usuario o realizar otras acciones según tus necesidades
+      }
     } catch (error) {
       console.error('Error al agregar pasajero al viaje:', error);
       // Maneja el error según tus necesidades
     }
   }
-
   //vista conductor
   async IniciarViaje() {
     const alert = await this.alertController.create({

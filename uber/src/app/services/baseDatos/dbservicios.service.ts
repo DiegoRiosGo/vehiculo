@@ -65,7 +65,7 @@ export class DbserviciosService {
         .catch(error => console.error('Error al crear la tabla vehiculo', error));
 
       // Crea la tabla 'viaje' clave de clave 
-      db.executeSql("CREATE TABLE IF NOT EXISTS viaje (idviaje INTEGER PRIMARY KEY AUTOINCREMENT, autoid INTEGER, ppartida VARCHAR(50), pdestino VARCHAR(50),valorViaje INTEGER, cantAsientos INTEGER, FOREIGN KEY (autoid) REFERENCES vehiculo(autoid));", [])
+      db.executeSql("CREATE TABLE IF NOT EXISTS viaje (idviaje INTEGER PRIMARY KEY AUTOINCREMENT, autoid INTEGER, ppartida VARCHAR(50), pdestino VARCHAR(50),valorViaje INTEGER, cantAsientos INTEGER, disponible BOOLEAN DEFAULT 1, FOREIGN KEY (autoid) REFERENCES vehiculo(autoid));", [])
         .then(() => console.log('Tabla viaje creada'))
         .catch(error => console.error('Error al crear la tabla viaje', error));
 
@@ -425,7 +425,7 @@ export class DbserviciosService {
   // Obtener todos los viajes
   obtenerViajes(): Promise<any[]> {
     return this.crearDB().then((db: SQLiteObject) => {
-      return db.executeSql("SELECT * FROM viaje", []).then(data => {
+      return db.executeSql("SELECT * FROM viaje JOIN vehiculo ON viaje.autoid = vehiculo.autoid JOIN usuario ON vehiculo.userid = usuario.usuarioid  ", []).then(data => {
         let viajes = [];
         for (let i = 0; i < data.rows.length; i++) {
           viajes.push(data.rows.item(i));
@@ -809,9 +809,262 @@ async obtenerPasajerosPorViajeId(idviaje: number): Promise<any[]> {
   });
 }
 
+obtenerPasajerosalviaje(viajeid: number) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("SELECT * FROM pasajeros JOIN usuario on pasajeros.userid = usuario.usuarioid WHERE pasajeros.viajeid = ?", [viajeid]).then(data => {
+      let prueba = [];
+      for (let i = 0; i < data.rows.length; i++) {
+        prueba.push(data.rows.item(i));
+      }
+      return prueba;
+    });
+  });
+}
+
+async obtenerAsientosDisponiblesEnViaje(viajeId: number): Promise<number> {
+  try {
+    const db = await this.crearDB();
+    const result = await db.executeSql("SELECT cantAsientos FROM viaje WHERE idviaje = ?", [viajeId]);
+
+    if (result.rows.length > 0) {
+      const cantAsientos = result.rows.item(0).cantAsientos;
+      const pasajerosEnViaje = await this.obtenerCantidadPasajerosEnViaje(viajeId); // Debes implementar esta función
+
+      const asientosDisponibles = cantAsientos - pasajerosEnViaje;
+      return Math.max(asientosDisponibles, 0); // Asegura que no haya asientos negativos
+    } else {
+      console.error('No se encontró el viaje con ID:', viajeId);
+      return 0; // Si no se encuentra el viaje, se considera que no hay asientos disponibles
+    }
+  } catch (error) {
+    console.error('Error al obtener asientos disponibles en el viaje:', error);
+    throw error;
+  }
+}
+
+async obtenerViajePorId(viajeId: number): Promise<any | null> {
+  try {
+    const result = await this.crearDB().then((db: SQLiteObject) => {
+      return db.executeSql("SELECT * FROM viaje WHERE idviaje = ?", [viajeId]);
+    });
+
+    if (result.rows.length > 0) {
+      return result.rows.item(0);
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Error al obtener el viaje por ID:', error);
+    return null;
+  }
+}
+
+async actualizarDisponibilidadViaje(viajeId: number): Promise<void> {
+  try {
+    // Obtén la información del viaje
+    const viaje = await this.obtenerViajePorId(viajeId);
+
+    if (viaje) {
+      // Consulta la cantidad de pasajeros actuales en el viaje
+      const pasajerosActuales = await this.obtenerCantidadPasajerosEnViaje(viajeId);
+
+      // Verifica si hay asientos disponibles
+      const asientosDisponibles = viaje.cantAsientos - pasajerosActuales;
+
+      // Actualiza el valor de la columna 'disponible' en la tabla 'viaje'
+      const disponible = asientosDisponibles > 0;
+      //quizas acá el error aaaa
+
+
+
+      await this.crearDB().then((db: SQLiteObject) => {
+        return db.executeSql("UPDATE viaje SET disponible = ? WHERE idviaje = ?", [disponible ? 1 : 0, viajeId]);
+      });
+
+      console.log(`Disponibilidad del viaje ${viajeId} actualizada a ${disponible}`);
+      
+    } else {
+      console.error(`No se encontró el viaje con ID ${viajeId}`);
+    }
+  } catch (error) {
+    console.error('Error al actualizar la disponibilidad del viaje:', error);
+    // Maneja el error según tus necesidades
+  }
+}
+
+// Esta función auxiliar podría ser útil para obtener la cantidad de pasajeros en un viaje
+async obtenerCantidadPasajerosEnViaje(viajeId: number): Promise<number> {
+  try {
+    const db = await this.crearDB();
+    const result = await db.executeSql("SELECT COUNT(*) AS cantidad FROM pasajeros WHERE viajeid = ?", [viajeId]);
+
+    if (result.rows.length > 0) {
+      const cantidad = result.rows.item(0).cantidad;
+      return cantidad !== null ? cantidad : 0;
+    }
+
+    return 0;
+  } catch (error) {
+    console.error('Error al obtener la cantidad de pasajeros en el viaje:', error);
+    throw error;
+  }
+}
+
+async obtenerViajesConDisponibilidad(): Promise<any[]> {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("SELECT * FROM viaje JOIN vehiculo ON viaje.autoid = vehiculo.autoid JOIN usuario ON vehiculo.userid = usuario.usuarioid WHERE disponible = 1", []).then(data => {
+      let viajes = [];
+      for (let i = 0; i < data.rows.length; i++) {
+        viajes.push(data.rows.item(i));
+      }
+      return viajes;
+    });
+  });
+}
+
+ // Nueva función para finalizar el viaje
+ finalizarViaje(viajeId: number): Promise<void> {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("UPDATE viaje SET disponible = 0 WHERE idviaje = ?", [viajeId])
+      .then(() => {
+        this.mostrarAlerta('Exito','Viaje finalizado correctamente.');
+      })
+      .catch(error => {
+        console.error('Error al finalizar el viaje:', error);
+        throw error;
+      });
+  });
 }
 
 
+
+// Función para obtener la disponibilidad del viaje del conductor actual
+async obtenerDisponibilidadViajeConductor(userId: number): Promise<boolean> {
+  try {
+    const result = await this.crearDB().then((db: SQLiteObject) => {
+      return db.executeSql('SELECT viaje.disponible FROM viaje JOIN vehiculo ON viaje.autoid = vehiculo.autoid WHERE vehiculo.userid = ? ORDER BY idviaje DESC LIMIT 1', [userId]);
+    });
+
+    if (result.rows.length > 0) {
+      const disponibilidad = result.rows.item(0).disponible;
+      return disponibilidad === 1; // Devuelve true si la disponibilidad es 1 (true), de lo contrario, devuelve false
+    }
+
+    return false;
+  } catch (error) {
+    console.error('Error al obtener la disponibilidad del viaje del conductor:', error);
+    return false;
+  }
+}
+
+
+
+
+
+
+mostrarAlerta(header: string, message: string) {
+  this.alertController.create({
+    header: header,
+    message: message,
+    buttons: ['OK']
+  }).then(alert => alert.present());
+}
+}
+
+/* probar mezclar}
+
+obtenerDisponibilidadViajeConductor(userId: number): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    this.crearDB().then((db: SQLiteObject) => {
+      const query = 'SELECT viaje.disponible FROM viaje JOIN vehiculo ON viaje.autoid = vehiculo.autoid WHERE vehiculo.userid = ? ORDER BY idviaje DESC LIMIT 1';
+      const params = [userId];
+
+      db.executeSql(query, params).then((result) => {
+        if (result.rows.length > 0) {
+          const disponibilidad = result.rows.item(0).disponible;
+          return disponibilidad === 1; // Devuelve true si la disponibilidad es 1 (true), de lo contrario, devuelve false
+        }
+        return false;
+      });
+    }).catch(error => {
+      console.error('Error al ver vehículo en la base de datos:', error);
+      throw error;
+    });
+  });
+}
+
+
+verificarVehiculoRegistrado(userId: number): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.crearDB().then((db: SQLiteObject) => {
+        const query = 'SELECT COUNT(*) as count FROM vehiculo WHERE userid = ?';
+        const params = [userId];
+
+        db.executeSql(query, params).then((result) => {
+          const count = result.rows.item(0).count;
+          resolve(count > 0); // Retorna true si hay al menos un vehículo registrado para el usuario
+        }).catch(error => {
+          console.error('Error al ver vehículo en la base de datos:', error);
+          throw error;
+        });
+      }).catch(error => {
+        console.error('Error al ver vehículo en la base de datos:', error);
+        throw error;
+      });
+    });
+  }
+
+
+
+
+"SELECT * FROM viaje JOIN vehiculo ON viaje.autoid = vehiculo.autoid JOIN usuario ON vehiculo.userid = usuario.usuarioid  ", []
+
+
+guarda
+obtenerPasajerosalviaje(viajeid: number) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("SELECT * FROM pasajeros WHERE viajeid = ?", [viajeid]).then(data => {
+      let prueba = [];
+      for (let i = 0; i < data.rows.length; i++) {
+        prueba.push(data.rows.item(i));
+      }
+      return prueba;
+    });
+  });
+}
+
+
+obtenerPasajerosPorelviaje(viajeid: number): Promise<any[]> {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("SELECT userid AS usuario FROM pasajeros WHERE viajeid = ?", [viajeid])
+      .then(data => {
+        let pasajerose = [];
+        for (let i = 0; i < data.rows.length; i++) {
+          pasajerose.push(data.rows.item(i));
+        }
+        return pasajerose;
+      });
+  });
+}
+
+
+try {
+      const db = await this.crearDB();
+      const query = 'SELECT * FROM viaje WHERE idviaje = ?';
+      const result = await db.executeSql(query, [idviaje]);
+
+      if (result.rows.length > 0) {
+        // Si hay resultados, devolver la primera fila (asumiendo que idviaje es único)
+        return result.rows.item(0);
+      } else {
+        // No se encontró ningún viaje con el id proporcionado
+        return null;
+      }
+    } catch (error) {
+      console.error('Error al obtener datos del viaje:', error);
+      throw error;
+    }
+*/
 
 /*
 INNER JOIN vehiculo f on v.autoid = f.autoid

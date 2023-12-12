@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { DbserviciosService } from 'src/app/services/baseDatos/dbservicios.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-detalleconductor',
@@ -22,10 +23,10 @@ export class DetalleconductorPage implements OnInit {
   viaje: any;
   idviaje: number;
 
-  pasajeros: any[] = [];
+  prueba: any[] = [];
   usuario: string;
 
-  constructor(private router: Router, public alertController: AlertController, private arouter: ActivatedRoute, private db: DbserviciosService) { }
+  constructor(private location: Location,private router: Router, public alertController: AlertController, private arouter: ActivatedRoute, private db: DbserviciosService) { }
 
   ngOnInit() {
     this.arouter.paramMap.subscribe(params => {
@@ -52,16 +53,28 @@ export class DetalleconductorPage implements OnInit {
         });
 
         // Llamada a tu servicio para obtener los datos de los pasajeros por idviaje
-        this.db.obtenerPasajerosPorViajeId(this.idviaje).then((pasajerosData: any) => {
-          console.log('si hay viaje 1 ', pasajerosData.usuarioNombre);
-          console.log('si hay viaje 1 ', pasajerosData.nombre)
-          this.usuario = pasajerosData.usuarioNombre;
+        this.db.obtenerPasajerosalviaje(this.idviaje).then((data) => {
+          console.log('si hay viajesito 1 ', data);
+          console.log('si hay viajesito siempre ', data)
+          this.prueba = data;
         }).catch(error => {
           // Manejo de errores al obtener los pasajeros
         });
 
         
       }
+    });
+  }
+
+  // Nueva función para finalizar el viaje
+  finalizarViaje() {
+    // Lógica para finalizar el viaje
+    this.db.finalizarViaje(this.idviaje).then(() => {
+      // Redirige al conductor a la vista anterior
+      this.location.back();
+    }).catch(error => {
+      console.error('Error al finalizar el viaje:', error);
+      // Maneja el error según tus necesidades
     });
   }
 }

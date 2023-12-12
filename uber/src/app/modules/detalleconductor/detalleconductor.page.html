@@ -34,22 +34,24 @@
         </ion-list>
         
       </ion-card-content>
-    </ion-card>
-  </div>
 
-   <!-- Mostrar la lista de pasajeros -->
-   <ion-card>
+      <!-- Mostrar la lista de pasajeros -->
+
     <ion-card-header>
       <ion-card-title>Pasajeros</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-list>
         <!-- Recorre la lista de pasajeros y muestra la información -->
-        <ion-item *ngFor="let pasajero of pasajeros">
-          <ion-label>{{ pasajero.nombre }}</ion-label>
-          <ion-note slot="end">{{ pasajero.asiento }}</ion-note>
+        <ion-item *ngFor="let pasajero of prueba">
+          <ion-label>Nombre: {{ pasajero.nombre }}</ion-label>
         </ion-item>
       </ion-list>
     </ion-card-content>
-  </ion-card>
+
+    <ion-button expand="full" (click)="finalizarViaje()">Finalizar Viaje</ion-button>
+    
+    </ion-card>
+  </div>
+
 </ion-content>
