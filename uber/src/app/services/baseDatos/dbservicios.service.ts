@@ -9,10 +9,33 @@ import { AlertController, Platform } from '@ionic/angular';
 })
 export class DbserviciosService {
 
+  private db: SQLiteObject; // Almacena la conexión a la base de datos
+
   private isDatabaseInitialized: boolean = false;
 
   //constructor
-  constructor(public sqlite: SQLite, private platform: Platform, private alertController: AlertController) { }
+  constructor(public sqlite: SQLite, private platform: Platform, private alertController: AlertController) {
+    this.initDatabase();
+   }
+
+   // Método para inicializar la base de datos
+   initDatabase(): Promise<void> { // Asegúrate de que initDatabase() devuelva una promesa
+    if (this.isDatabaseInitialized) {
+      console.log('Database already initialized. Skipping initialization.');
+      return Promise.resolve();
+    }
+    
+    return this.createTable().then(() => {
+      console.log('Tables created successfully.');
+      return this.insertData();
+    }).then(() => {
+      console.log('Data inserted successfully.');
+      this.isDatabaseInitialized = true;
+    }).catch(error => {
+      console.error('Error during database initialization:', error);
+      throw error; // Lanza el error para que pueda ser capturado por la función que llama a initDatabase()
+    });
+  }
 
   //crear la base de datos
   crearDB() {
@@ -132,23 +155,7 @@ export class DbserviciosService {
   }
 
   // Método para inicializar la base de datos (llama a createTable e insertData en secuencia)
-  initDatabase() {
-    if (this.isDatabaseInitialized) {
-      console.log('Database already initialized. Skipping initialization.');
-      return Promise.resolve();
-    }
   
-    return this.createTable().then(() => {
-      console.log('Tables created successfully.');
-      return this.insertData();
-    }).then(() => {
-      console.log('Data inserted successfully.');
-      this.isDatabaseInitialized = true;
-    }).catch(error => {
-      console.error('Error during database initialization:', error);
-    });
-  }
-
   //observable para las tablas
 
   //-------------------------------------------------------------
@@ -235,15 +242,15 @@ export class DbserviciosService {
 
   // Obtener todas las sedes
   obtenerSedes() {
-    return this.crearDB().then((db: SQLiteObject) => {
-      return db.executeSql("SELECT * FROM sede", []).then(data => {
+    
+      return this.db.executeSql("SELECT * FROM sede", []).then(data => {
         let sedes = [];
         for (let i = 0; i < data.rows.length; i++) {
           sedes.push(data.rows.item(i));
         }
         return sedes;
       });
-    });
+    
   }
 
   // Actualizar una sede
@@ -272,15 +279,15 @@ export class DbserviciosService {
 
   // Obtener todos los usuarios
   obtenerUsuarios() {
-    return this.crearDB().then((db: SQLiteObject) => {
-      return db.executeSql("SELECT * FROM usuario", []).then(data => {
+    
+      return this.db.executeSql("SELECT * FROM usuario", []).then(data => {
         let usuarios = [];
         for (let i = 0; i < data.rows.length; i++) {
           usuarios.push(data.rows.item(i));
         }
         return usuarios;
       });
-    });
+    
   }
 
   // Actualizar un usuario

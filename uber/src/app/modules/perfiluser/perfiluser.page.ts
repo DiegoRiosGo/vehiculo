@@ -114,4 +114,9 @@ export class PerfiluserPage implements OnInit {
     const usuarioid = this.usuarioid;
     this.router.navigate(['/historialcliente', usuarioid]);
   }
+
+  async agregarsaldo() {
+
+    this.router.navigate(['/pagos']);
+  }
 }

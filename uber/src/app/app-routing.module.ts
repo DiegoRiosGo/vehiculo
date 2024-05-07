@@ -12,6 +12,10 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
+    path: 'pagos',
+    loadChildren: () => import('./modules/pagos/pagos.module').then( m => m.PagosPageModule)
+  },
+  {
     path: 'moduser/:usuarioid',
     loadChildren: () => import('./modules/moduser/moduser.module').then( m => m.ModuserPageModule)
   },
@@ -72,6 +76,8 @@ const routes: Routes = [
     path: 'historialcliente/:usuarioid',
     loadChildren: () => import('./modules/historialcliente/historialcliente.module').then( m => m.HistorialclientePageModule)
   },
+ 
+
 
 
 
