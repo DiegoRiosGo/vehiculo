@@ -8,7 +8,7 @@ export class FlowService {
   
   private apiKey = '5737EF2A-C228-4AA7-AAAE-8F69FC86LF19';
   private apiSecret = '66e3eaf21090fceff589659881baa31bbd05d36a';
-  private flowBaseUrl = 'https://sandbox.flow.cl/api';
+  private flowBaseUrl = 'https://www.flow.cl/api';
 
   constructor(private http: HttpClient) {}
 
@@ -22,4 +22,11 @@ export class FlowService {
       }
     });
   }
+
+  obtenerPagosRecibidos(): Promise<any> {
+    const url = 'http://localhost:3000/pagos-recibidos'; // Cambia esto por la URL de tu servidor backend
+    return this.http.get(url).toPromise();
+  }
+
+
 }
