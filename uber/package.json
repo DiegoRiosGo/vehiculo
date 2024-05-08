@@ -37,6 +37,7 @@
     "@ionic/angular": "^7.5.2",
     "@ionic/pwa-elements": "^3.2.2",
     "@types/flowjs": "^2.13.13",
+    "cordova-plugin-advanced-http": "^3.3.1",
     "cordova-sqlite-storage": "^6.1.0",
     "flowjs": "^1.0.0",
     "ionicons": "^7.0.0",
