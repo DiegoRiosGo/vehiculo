@@ -8,8 +8,6 @@ import { FlowService } from 'src/app/services/flow.service';
 })
 export class PaymentPage {
 
-  pagosRecibidos: any[];
-
   constructor(private flowService: FlowService) {}
 
   enlaceDePago: string = "https://www.flow.cl/btn.php?token=27mhkwc";
@@ -18,18 +16,6 @@ export class PaymentPage {
     window.location.href = this.enlaceDePago;
   }
 
-  ngOnInit() {
-    this.obtenerPagosRecibidos();
-  }
-
-  async obtenerPagosRecibidos() {
-    try {
-      const response = await this.flowService.obtenerPagosRecibidos();
-      this.pagosRecibidos = response.data; // Ajusta esto según la estructura real de la respuesta de la API de Flow
-    } catch (error) {
-      console.error('Error al obtener los pagos recibidos:', error);
-    }
-  }
   
 }
 

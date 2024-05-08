@@ -7,19 +7,6 @@
 <ion-content>
   <button (click)="irAPago()" class="boton-pago">Pagar Ahora</button>
 
-  <ion-list *ngIf="pagosRecibidos && pagosRecibidos.length > 0">
-    <ion-item *ngFor="let pago of pagosRecibidos">
-      <!-- Aquí muestras los detalles de cada pago recibido -->
-      <ion-label>{{ pago.nombre }}</ion-label>
-      <ion-label>{{ pago.monto }}</ion-label>
-      <!-- Ajusta esto según la estructura real de los datos del pago recibido -->
-    </ion-item>
-  </ion-list>
-  <ion-spinner *ngIf="!pagosRecibidos"></ion-spinner>
-  <!-- Muestra un spinner mientras se carga la lista de pagos -->
-  <ion-text *ngIf="pagosRecibidos && pagosRecibidos.length === 0" color="warning">
-    No se encontraron pagos recibidos.
-  </ion-text>
   
 </ion-content>
 
