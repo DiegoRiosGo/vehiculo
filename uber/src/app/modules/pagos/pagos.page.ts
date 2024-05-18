@@ -31,5 +31,18 @@ export class PaymentPage {
     }
   }
   
+  signature: string;
+  statusResponse: string;
+  errorMessage: string;
+
+  getStatus() {
+    this.flowService.getStatus(this.signature)
+      .then((response: any) => {
+        this.statusResponse = response;
+      })
+      .catch((error: any) => {
+        this.errorMessage = error.message;
+      });
+  }
 }
 
