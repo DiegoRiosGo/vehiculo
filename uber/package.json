@@ -78,5 +78,8 @@
     "ts-node": "^8.3.0",
     "typescript": "~5.0.2"
   },
-  "description": "An Ionic project"
+  "description": "An Ionic project",
+  "engines": {
+    "node": "20.12.2"
+  }
 }
