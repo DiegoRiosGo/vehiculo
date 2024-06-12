@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
 import { AlertController, Platform } from '@ionic/angular';
 
@@ -9,14 +10,74 @@ import { AlertController, Platform } from '@ionic/angular';
 })
 export class DbserviciosService {
 
+  
+
   private db: SQLiteObject; // Almacena la conexión a la base de datos
 
   private isDatabaseInitialized: boolean = false;
 
   //constructor
-  constructor(public sqlite: SQLite, private platform: Platform, private alertController: AlertController) {
+  constructor(public sqlite: SQLite, private platform: Platform, private alertController: AlertController, private firestore: AngularFirestore) {
     this.initDatabase();
    }
+   async syncDataToFirebase() {
+    try {
+      const db: SQLiteObject = await this.sqlite.create({
+        name: 'data.db',
+        location: 'default'
+      });
+
+      const res = await db.executeSql('SELECT * FROM usuario', []);
+      for (let i = 0; i < res.rows.length; i++) {
+        let item = res.rows.item(i);
+        this.firestore.collection('usuario').add(item);
+      }
+
+      const res1 = await db.executeSql('SELECT * FROM rol', []);
+      for (let i = 0; i < res1.rows.length; i++) {
+        let item = res1.rows.item(i);
+        this.firestore.collection('rol').add(item);
+      }
+
+      const res2 = await db.executeSql('SELECT * FROM sede', []);
+      for (let i = 0; i < res2.rows.length; i++) {
+        let item = res2.rows.item(i);
+        this.firestore.collection('sede').add(item);
+      }
+
+      const res3 = await db.executeSql('SELECT * FROM tpreguntas', []);
+      for (let i = 0; i < res3.rows.length; i++) {
+        let item = res3.rows.item(i);
+        this.firestore.collection('tpreguntas').add(item);
+      }
+
+      const res4 = await db.executeSql('SELECT * FROM vehiculo', []);
+      for (let i = 0; i < res4.rows.length; i++) {
+        let item = res4.rows.item(i);
+        this.firestore.collection('vehiculo').add(item);
+      }
+
+      const res5 = await db.executeSql('SELECT * FROM viaje', []);
+      for (let i = 0; i < res5.rows.length; i++) {
+        let item = res5.rows.item(i);
+        this.firestore.collection('viaje').add(item);
+      }
+
+      const res6 = await db.executeSql('SELECT * FROM detalle', []);
+      for (let i = 0; i < res6.rows.length; i++) {
+        let item = res6.rows.item(i);
+        this.firestore.collection('detalle').add(item);
+      }
+
+      const res7 = await db.executeSql('SELECT * FROM imagenes', []);
+      for (let i = 0; i < res7.rows.length; i++) {
+        let item = res7.rows.item(i);
+        this.firestore.collection('imagenes').add(item);
+      }
+    } catch (error) {
+      console.error('Error syncing data', error);
+    }
+  }
 
    // Método para inicializar la base de datos
    initDatabase(): Promise<void> { // Asegúrate de que initDatabase() devuelva una promesa
