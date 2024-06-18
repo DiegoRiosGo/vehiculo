@@ -4,15 +4,7 @@
 
 export const environment = {
   production: false,
-  firebaseConfig: {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    numero: "516458220216",
-    projectId: "vehiculo-7aa3b",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "1:516458220216:android:656948cd39a1bb1117824d"
-  }
+
   
 };
 

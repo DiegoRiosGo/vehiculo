@@ -15,19 +15,10 @@ import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 import { HttpClientModule } from '@angular/common/http';
 
 
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
-
-
-import { AngularFireModule } from '@angular/fire';
-import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { environment } from '../environments/environment';
-
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, IonicModule.forRoot(), AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFirestoreModule, AppRoutingModule,HttpClientModule],
-  providers: [StatusBar,SplashScreen, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy, },CamaraService,SQLite,ClimaService],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,HttpClientModule],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy, },CamaraService,SQLite,ClimaService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
