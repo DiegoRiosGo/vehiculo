@@ -20,13 +20,13 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 
 import { AngularFireModule } from '@angular/fire';
-import { FirestoreModule } from '@angular/fire/firestore';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AngularFireModule.initializeApp(environment.firebaseConfig),
-    FirestoreModule, AppRoutingModule,HttpClientModule],
+    AngularFirestoreModule, AppRoutingModule,HttpClientModule],
   providers: [StatusBar,SplashScreen, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy, },CamaraService,SQLite,ClimaService],
   bootstrap: [AppComponent],
 })
