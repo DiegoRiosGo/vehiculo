@@ -106,6 +106,10 @@ export class DbserviciosService {
         .then(() => console.log('Tabla pasajeros creada'))
         .catch(error => console.error('Error al crear la tabla pasajeros', error));
 
+      //  This method creates a table named 'historialcliente' to store user information
+      db.executeSql("CREATE TABLE IF NOT EXISTS historialcliente (idhistorial INTEGER PRIMARY KEY AUTOINCREMENT, usuarioid INTEGER UNIQUE, saldoagregado REAL, tipotransaccion TEXT, fechahora DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (usuarioid) REFERENCES usuario(usuarioid));", [])
+        .then(() => console.log('Tabla historialcliente creada'))
+        .catch(error => console.error('Error al crear la tabla historialcliente', error));
 
       db.close();
     });
@@ -157,6 +161,67 @@ export class DbserviciosService {
   // Método para inicializar la base de datos (llama a createTable e insertData en secuencia)
   
   //observable para las tablas
+  // Función para cargar datos de la tabla "historialcliente"
+   // Insertar un historial cliente
+   insertarHistorialCliente(usuarioid: number, saldoagregado: number, tipotransaccion: string) {
+    return this.crearDB().then((db: SQLiteObject) => {
+      return db.executeSql("INSERT INTO historialcliente (usuarioid, saldoagregado, tipotransaccion) VALUES (?, ?, ?)", [usuarioid, saldoagregado, tipotransaccion]);
+    });
+  }
+
+  // Obtener todos los historiales clientes
+  obtenerHistorialesClientes() {
+    return this.crearDB().then((db: SQLiteObject) => {
+      return db.executeSql("SELECT * FROM historialcliente", []).then(data => {
+        let historiales = [];
+        for (let i = 0; i < data.rows.length; i++) {
+          historiales.push(data.rows.item(i));
+        }
+        db.close();
+        return historiales;
+      });
+    });
+  }
+
+  // Actualizar un historial cliente
+  actualizarHistorialCliente(idhistorial: number, nuevoSaldoAgregado: number, nuevoTipoTransaccion: string) {
+    return this.crearDB().then((db: SQLiteObject) => {
+      return db.executeSql("UPDATE historialcliente SET saldoagregado = ?, tipotransaccion = ? WHERE idhistorial = ?", [nuevoSaldoAgregado, nuevoTipoTransaccion, idhistorial]);
+    });
+  }
+
+  // Eliminar un historial cliente
+  eliminarHistorialCliente(idhistorial: number) {
+    return this.crearDB().then((db: SQLiteObject) => {
+      return db.executeSql("DELETE FROM historialcliente WHERE idhistorial = ?", [idhistorial]);
+    });
+  }
+
+  // Eliminar un historial cliente por usuarioid
+  eliminarHistorialClientePorUsuarioId(usuarioid: number) {
+    return this.crearDB().then((db: SQLiteObject) => {
+      return db.executeSql("DELETE FROM historialcliente WHERE usuarioid = ?", [usuarioid]);
+    });
+  }
+
+  // Obtener historial cliente por usuarioid
+  obtenerHistorialClientePorUsuarioId(usuarioid: number): Promise<any> {
+    return this.crearDB().then((db: SQLiteObject) => {
+      return db.executeSql("SELECT * FROM historialcliente WHERE usuarioid = ?", [usuarioid])
+        .then(data => {
+          if (data.rows.length > 0) {
+            return data.rows.item(0); // Devuelve la información del historial cliente
+          } else {
+            return null;
+          }
+        })
+        .catch(error => {
+          console.error('Error al obtener historial cliente por usuario:', error);
+          throw error;
+        });
+    });
+  }
+
 
   //-------------------------------------------------------------
 
