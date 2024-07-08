@@ -19,6 +19,8 @@ export class PerfiluserPage implements OnInit {
   nombreUsuario: string;
   correoUsuario: string;
 
+  saldoActual: number = 0; // Inicializar con 0
+
   constructor(
     private router: Router,
     private aroute: ActivatedRoute,
@@ -103,6 +105,15 @@ export class PerfiluserPage implements OnInit {
 
   ionViewWillEnter() {
     this.obtenerclima();
+    this.obtenerSaldo();
+  }
+
+  obtenerSaldo() {
+    this.db.obtenerSaldoActual(this.usuarioid).then(saldo => {
+      this.saldoActual = saldo;
+    }).catch(error => {
+      console.error('Error al obtener el saldo:', error);
+    });
   }
 
   async pedirviaje() {

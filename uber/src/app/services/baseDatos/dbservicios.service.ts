@@ -183,12 +183,38 @@ export class DbserviciosService {
     });
   }
 
+  // Función para obtener el saldo actual del cliente
+obtenerSaldoActual(usuarioid: number): Promise<number> {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("SELECT SUM(saldoagregado) AS saldo_actual FROM historialcliente WHERE usuarioid = ?", [usuarioid])
+      .then(data => {
+        if (data.rows.length > 0 && data.rows.item(0).saldo_actual != null) {
+          return data.rows.item(0).saldo_actual;
+        } else {
+          return 0; // Si no hay saldo, retorna 0
+        }
+      })
+      .catch(error => {
+        console.error('Error al obtener el saldo actual:', error);
+        throw error;
+      });
+  });
+}
+
   // Actualizar un historial cliente
   actualizarHistorialCliente(idhistorial: number, nuevoSaldoAgregado: number, nuevoTipoTransaccion: string) {
     return this.crearDB().then((db: SQLiteObject) => {
       return db.executeSql("UPDATE historialcliente SET saldoagregado = ?, tipotransaccion = ? WHERE idhistorial = ?", [nuevoSaldoAgregado, nuevoTipoTransaccion, idhistorial]);
     });
   }
+
+ // Actualizar un historial cliente por usuario id
+ actualizarHistorialClientePorUsuarioId(usuarioid: number, nuevoSaldoAgregado: number, nuevoTipoTransaccion: string) {
+  return this.crearDB().then((db: SQLiteObject) => {
+    return db.executeSql("UPDATE historialcliente SET saldoagregado = ?, tipotransaccion = ? WHERE usuarioid = ?", [nuevoSaldoAgregado, nuevoTipoTransaccion, usuarioid]);
+  });
+}
+
 
   // Eliminar un historial cliente
   eliminarHistorialCliente(idhistorial: number) {
