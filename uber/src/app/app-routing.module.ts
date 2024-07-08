@@ -12,7 +12,7 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'pagos',
+    path: 'pagos/:usuarioid',
     loadChildren: () => import('./modules/pagos/pagos.module').then( m => m.PagosPageModule)
   },
   {

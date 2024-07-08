@@ -1,42 +1,49 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>pagos</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true" class="content">
+  <div class="background-gradient"></div>
 
-<ion-content>
-  <button (click)="irAPago()" class="boton-pago">Pagar Ahora</button>
+  <div class="center-container">
+    <ion-card class="profile-card">
 
-  <ion-list *ngIf="pagosRecibidos && pagosRecibidos.length > 0">
-    <ion-item *ngFor="let pago of pagosRecibidos">
-      <!-- Aquí muestras los detalles de cada pago recibido -->
-      <ion-label>{{ pago.nombre }}</ion-label>
-      <ion-label>{{ pago.monto }}</ion-label>
-      <!-- Ajusta esto según la estructura real de los datos del pago recibido -->
-    </ion-item>
-  </ion-list>
-  <ion-spinner *ngIf="!pagosRecibidos"></ion-spinner>
-  <!-- Muestra un spinner mientras se carga la lista de pagos -->
-  <ion-text *ngIf="pagosRecibidos && pagosRecibidos.length === 0" color="warning">
-    No se encontraron pagos recibidos.
-  </ion-text>
-  
+      <ion-item class="custom-item">
 
+        <ion-button fill="clear" expand="full" color="success" class="back-button" (click)="goBack()">
+          <ion-icon name="arrow-back"></ion-icon>
+        </ion-button>
 
-  <ion-item>
-    <ion-label position="stacked">Firma:</ion-label>
-    <ion-input type="text" [(ngModel)]="signature"></ion-input>
-  </ion-item>
+      </ion-item>
+      <ion-card-header>
 
-  <ion-button expand="block" (click)="getStatus()">Obtener Estado</ion-button>
+        <ion-list *ngIf="climaData" class="clima-container">
+          <ion-item class="clima-item">
+            <img slot="start" src="{{ climaData.current.condition.icon }}" alt="Clima Icon" class="clima-icon">
+            <ion-label slot="end" color="primary">{{ climaData.current.temp_c }}°C</ion-label>
+          </ion-item>
+        </ion-list>
 
-  <div *ngIf="statusResponse">
-    <p>Respuesta: {{ statusResponse }}</p>
+      </ion-card-header>
+
+      <ion-card-content>
+
+        <ion-button (click)="irAPago1()" class="boton-pago">Pagar 1.000 pesos</ion-button>
+
+        <ion-button (click)="irAPago2()" class="boton-pago">Pagar 2.000 pesos</ion-button>
+
+        <ion-button (click)="irAPago3()" class="boton-pago">Pagar 5.000 pesos</ion-button>
+
+        <ion-button (click)="irAPago4()" class="boton-pago">Pagar 10.000 pesos</ion-button>
+        
+        <ion-list>
+          <ion-item *ngFor="let historial of historialCliente">
+            <ion-label>
+              <h2>{{ historial.tipotransaccion }}</h2>
+              <p>Monto: {{ historial.saldoagregado | currency:'USD':'symbol' }}</p>
+              <p>Fecha: {{ historial.fechahora }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+
+      </ion-card-content>
+    </ion-card>
   </div>
-
-  <div *ngIf="errorMessage">
-    <p>Error: {{ errorMessage }}</p>
-  </div>
-  
 </ion-content>
-
+  

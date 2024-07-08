@@ -128,6 +128,6 @@ export class PerfiluserPage implements OnInit {
 
   async agregarsaldo() {
 
-    this.router.navigate(['/pagos']);
+    this.router.navigate(['/pagos', this.usuarioid]);
   }
 }

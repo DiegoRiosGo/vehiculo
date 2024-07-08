@@ -169,6 +169,25 @@ export class DbserviciosService {
     });
   }
 
+  
+   // Obtener vehículo por usuario
+   obtenerHistorialClientePorUsuario(usuarioid: number): Promise<any> {
+    return this.crearDB().then((db: SQLiteObject) => {
+      return db.executeSql("SELECT * FROM historialcliente WHERE usuarioid = ?", [usuarioid])
+        .then(data => {
+          if (data.rows.length > 0) {
+            return data.rows.item(0); // Devuelve la información del vehículo
+          } else {
+            return null;
+          }
+        })
+        .catch(error => {
+          console.error('Error al obtener historial por usuario:', error);
+          throw error;
+        });
+    });
+  }
+
   // Obtener todos los historiales clientes
   obtenerHistorialesClientes() {
     return this.crearDB().then((db: SQLiteObject) => {
