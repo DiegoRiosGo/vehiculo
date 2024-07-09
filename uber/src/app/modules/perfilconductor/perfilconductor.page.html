@@ -9,6 +9,9 @@
           <!-- Icono de tuerca para modificar perfil -->
           <ion-icon name="settings" slot="start"color="primary"
             class="settings-icon" (click)="editProfile()">Edit Perfil</ion-icon>
+          
+             <!--aqui puede ir saldo -->
+          <ion-label slot="end" color="primary" class="saldo-label">sueldo total: {{ saldoActual | currency:'USD':'symbol' }}</ion-label>
 
           <!-- Icono de cierre de sesión -->
           <ion-icon name="log-out" slot="end" color="primary" class="logout-icon"

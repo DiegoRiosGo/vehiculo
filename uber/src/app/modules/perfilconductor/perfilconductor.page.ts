@@ -22,6 +22,8 @@ export class PerfilconductorPage implements OnInit {
 
   vehiculoRegistrado: boolean = false;
 
+  saldoActual: number = 0; // Inicializar con 0
+  
   constructor(
     private router: Router,
     private aroute: ActivatedRoute,
@@ -70,6 +72,14 @@ export class PerfilconductorPage implements OnInit {
     }
   }
 
+  obtenerSaldo() {
+    this.db.obtenerSaldoActual(this.usuarioid).then(saldo => {
+      this.saldoActual = saldo;
+    }).catch(error => {
+      console.error('Error al obtener el saldo:', error);
+    });
+  }
+  
   async logout() {
     const alert = await this.alertController.create({
       header: 'Cerrar sesión',
@@ -118,6 +128,7 @@ export class PerfilconductorPage implements OnInit {
 
   ionViewWillEnter() {
     this.obtenerclima();
+    this.obtenerSaldo();
   }
  
 
