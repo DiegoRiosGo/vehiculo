@@ -107,7 +107,7 @@ export class DbserviciosService {
         .catch(error => console.error('Error al crear la tabla pasajeros', error));
 
       //  This method creates a table named 'historialcliente' to store user information
-      db.executeSql("CREATE TABLE IF NOT EXISTS historialcliente (idhistorial INTEGER PRIMARY KEY AUTOINCREMENT, usuarioid INTEGER UNIQUE, saldoagregado REAL, tipotransaccion TEXT, fechahora DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (usuarioid) REFERENCES usuario(usuarioid));", [])
+      db.executeSql("CREATE TABLE IF NOT EXISTS historialcliente (idhistorial INTEGER PRIMARY KEY AUTOINCREMENT, usuarioid INTEGER, saldoagregado REAL, tipotransaccion TEXT, fechahora DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (usuarioid) REFERENCES usuario(usuarioid));", [])
         .then(() => console.log('Tabla historialcliente creada'))
         .catch(error => console.error('Error al crear la tabla historialcliente', error));
 
@@ -169,38 +169,49 @@ export class DbserviciosService {
     });
   }
 
+  async obtenerHistorialClientePorUsuario(usuarioid: number): Promise<any[]> {
+    try {
+      const result = await this.crearDB().then((db: SQLiteObject) => {
+        return db.executeSql('SELECT * FROM historialcliente WHERE usuarioid = ?', [usuarioid]);
+      });
   
-   // Obtener vehículo por usuario
-   obtenerHistorialClientePorUsuario(usuarioid: number): Promise<any> {
-    return this.crearDB().then((db: SQLiteObject) => {
-      return db.executeSql("SELECT * FROM historialcliente WHERE usuarioid = ?", [usuarioid])
-        .then(data => {
-          if (data.rows.length > 0) {
-            return data.rows.item(0); // Devuelve la información del vehículo
-          } else {
-            return null;
-          }
-        })
-        .catch(error => {
-          console.error('Error al obtener historial por usuario:', error);
-          throw error;
-        });
-    });
+      if (result.rows.length > 0) {
+        const historialsaldo = [];
+        for (let i = 0; i < result.rows.length; i++) {
+          historialsaldo.push(result.rows.item(i));
+        }
+        return historialsaldo;
+      }
+  
+      return [];
+    } catch (error) {
+      console.error('Error al obtener historial de saldos del cliente:', error);
+      throw error;
+    }
   }
 
-  // Obtener todos los historiales clientes
-  obtenerHistorialesClientes() {
-    return this.crearDB().then((db: SQLiteObject) => {
-      return db.executeSql("SELECT * FROM historialcliente", []).then(data => {
-        let historiales = [];
-        for (let i = 0; i < data.rows.length; i++) {
-          historiales.push(data.rows.item(i));
-        }
-        db.close();
-        return historiales;
+// Obtener todos los historiales clientes
+  async obtenerHistorialesClientes(): Promise<any[]> {
+    try {
+      const result = await this.crearDB().then((db: SQLiteObject) => {
+        return db.executeSql('SELECT * FROM historialcliente', []);
       });
-    });
+  
+      if (result.rows.length > 0) {
+        const historiales = [];
+        for (let i = 0; i < result.rows.length; i++) {
+          historiales.push(result.rows.item(i));
+        }
+        return historiales;
+      }
+  
+      return [];
+    } catch (error) {
+      console.error('Error al obtener historial de saldos del cliente:', error);
+      throw error;
+    }
   }
+
 
   // Función para obtener el saldo actual del cliente
 obtenerSaldoActual(usuarioid: number): Promise<number> {

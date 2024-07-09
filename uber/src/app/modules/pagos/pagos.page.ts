@@ -45,16 +45,27 @@ export class PaymentPage {
         }).catch(error => {
           // Manejo de errores
         });
-        this.cargarHistorialCliente();
+        
       }
     });
   }
 
-  cargarHistorialCliente() {
+  cargarHistorialCliente2() {
     this.db.obtenerHistorialClientePorUsuario(this.usuarioid).then(historial => {
       this.historialCliente = historial;
     }).catch(error => {
       console.error('Error al cargar historial del cliente:', error);
+    });
+  }
+
+   // Luego, puedes usar this.usuarioid para obtener el historial de viajes
+   cargarHistorialCliente() {
+    this.db.obtenerHistorialClientePorUsuario(this.usuarioid).then(historialsaldo => {
+      console.log('Historial de saldos:', historialsaldo);
+      // Aquí puedes hacer lo que necesites con el historial de viajes
+      this.historialCliente = historialsaldo;
+    }).catch(error => {
+      console.error('Error al obtener historial de saldos:', error);
     });
   }
 
@@ -73,6 +84,7 @@ export class PaymentPage {
 
   ionViewWillEnter() {
     this.obtenerclima();
+    this.cargarHistorialCliente();
   }
 
 

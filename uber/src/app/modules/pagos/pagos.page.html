@@ -32,15 +32,26 @@
 
         <ion-button (click)="irAPago4()" class="boton-pago">Pagar 10.000 pesos</ion-button>
         
-        <ion-list>
-          <ion-item *ngFor="let historial of historialCliente">
-            <ion-label>
-              <h2>{{ historial.tipotransaccion }}</h2>
-              <p>Monto: {{ historial.saldoagregado | currency:'USD':'symbol' }}</p>
-              <p>Fecha: {{ historial.fechahora }}</p>
-            </ion-label>
-          </ion-item>
-        </ion-list>
+
+        <div class="historial-container">
+          <ion-list *ngIf="historialCliente.length > 0">
+            <ion-item *ngFor="let historial of historialCliente">
+              <ion-label>
+                <h2>{{ historial.tipotransaccion }}</h2>
+                <p>Monto: {{ historial.saldoagregado | currency:'CLP':'symbol' }}</p>
+                <p>Fecha: {{ historial.fechahora }}</p>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+          <ion-list *ngIf="historialCliente.length === 0">
+            <ion-item>
+              <ion-label>
+                <h2>No hay historial disponible</h2>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+        </div>
+        
 
       </ion-card-content>
     </ion-card>
