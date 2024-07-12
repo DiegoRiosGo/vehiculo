@@ -16,6 +16,10 @@ const routes: Routes = [
     loadChildren: () => import('./modules/pagos/pagos.module').then( m => m.PagosPageModule)
   },
   {
+    path: 'pagosconductor/:usuarioid',
+    loadChildren: () => import('./modules/pagosconductor/pagosconductor.module').then( m => m.PagosconductorPageModule)
+  },
+  {
     path: 'moduser/:usuarioid',
     loadChildren: () => import('./modules/moduser/moduser.module').then( m => m.ModuserPageModule)
   },

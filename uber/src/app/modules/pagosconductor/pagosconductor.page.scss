@@ -96,3 +96,8 @@ img.clima-icon {
         /* Ajusta el tamaño del texto según sea necesario */
     }
 }
+
+.historial-container {
+    max-height: 200px; /* Ajusta esto según sea necesario */
+    overflow-y: auto; /* Permite el desplazamiento vertical */
+  }

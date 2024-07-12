@@ -400,16 +400,17 @@ obtenerSaldoActual(usuarioid: number): Promise<number> {
 
   // Obtener todos los usuarios
   obtenerUsuarios() {
-    
-      return this.db.executeSql("SELECT * FROM usuario", []).then(data => {
+    return this.crearDB().then((db: SQLiteObject) => {
+      return db.executeSql("SELECT * FROM usuario", []).then(data => {
         let usuarios = [];
         for (let i = 0; i < data.rows.length; i++) {
           usuarios.push(data.rows.item(i));
         }
         return usuarios;
       });
-    
+    });
   }
+  
 
   // Actualizar un usuario
   actualizarUsuario(usuarioid: number, nuevoNombre: string, nuevoApellido: string, nuevoCorreo: string, nuevaContrasena: string, nuevoIdPreguntas: number, nuevaRespuesta: string, nuevoRolId: number, nuevaImagenPerfil: Blob) {
@@ -452,6 +453,24 @@ obtenerSaldoActual(usuarioid: number): Promise<number> {
   insertarVehiculo(patente: string, userid: number, asientos: number) {
     return this.crearDB().then((db: SQLiteObject) => {
       return db.executeSql("INSERT INTO vehiculo (patente, userid, asientos) VALUES (?, ?, ?)", [patente, userid, asientos]);
+    });
+  }
+
+  // Obtener vehículo por usuario
+  obtenerVehiculoPorAutoid(autoid: number): Promise<any> {
+    return this.crearDB().then((db: SQLiteObject) => {
+      return db.executeSql("SELECT * FROM vehiculo WHERE autoid = ?", [autoid])
+        .then(data => {
+          if (data.rows.length > 0) {
+            return data.rows.item(0); // Devuelve la información del vehículo
+          } else {
+            return null;
+          }
+        })
+        .catch(error => {
+          console.error('Error al obtener vehículo por autoid:', error);
+          throw error;
+        });
     });
   }
 
@@ -550,6 +569,25 @@ obtenerSaldoActual(usuarioid: number): Promise<number> {
     });
   }
 
+  async obtenerDatosViaje(idviaje: number): Promise<any> {
+    try {
+      const db = await this.crearDB();
+      const query = 'SELECT * FROM viaje JOIN vehiculo ON viaje.autoid = vehiculo.autoid JOIN usuario ON vehiculo.userid = usuario.usuarioid WHERE idviaje = ?';
+      const result = await db.executeSql(query, [idviaje]);
+
+      if (result.rows.length > 0) {
+        // Si hay resultados, devolver la primera fila (asumiendo que idviaje es único)
+        return result.rows.item(0);
+      } else {
+        // No se encontró ningún viaje con el id proporcionado
+        return null;
+      }
+    } catch (error) {
+      console.error('Error al obtener datos del viaje:', error);
+      throw error;
+    }
+  }
+
   // Obtener todos los viajes
   obtenerViajes(): Promise<any[]> {
     return this.crearDB().then((db: SQLiteObject) => {
@@ -595,24 +633,7 @@ obtenerSaldoActual(usuarioid: number): Promise<number> {
     });
   }
 
- async obtenerDatosViaje(idviaje: number): Promise<any> {
-    try {
-      const db = await this.crearDB();
-      const query = 'SELECT * FROM viaje WHERE idviaje = ?';
-      const result = await db.executeSql(query, [idviaje]);
-
-      if (result.rows.length > 0) {
-        // Si hay resultados, devolver la primera fila (asumiendo que idviaje es único)
-        return result.rows.item(0);
-      } else {
-        // No se encontró ningún viaje con el id proporcionado
-        return null;
-      }
-    } catch (error) {
-      console.error('Error al obtener datos del viaje:', error);
-      throw error;
-    }
-  }
+ 
 
   obtenerUltimoIdViaje(): Promise<number> {
     return this.crearDB().then((db: SQLiteObject) => {

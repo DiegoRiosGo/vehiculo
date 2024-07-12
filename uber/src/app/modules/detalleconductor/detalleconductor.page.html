@@ -44,6 +44,7 @@
       <ion-list>
         <!-- Recorre la lista de pasajeros y muestra la información -->
         <ion-item *ngFor="let pasajero of prueba">
+          <ion-label>pasajero id: {{ pasajero.userid }}</ion-label>
           <ion-label>Nombre: {{ pasajero.nombre }}</ion-label>
         </ion-item>
       </ion-list>

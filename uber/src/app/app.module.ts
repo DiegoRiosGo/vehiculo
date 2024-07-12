@@ -14,10 +14,11 @@ import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 
 import { HttpClientModule } from '@angular/common/http';
 
+import { FormsModule } from '@angular/forms';  // Importar FormsModule
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,HttpClientModule],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,HttpClientModule, FormsModule],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy, },CamaraService,SQLite,ClimaService],
   bootstrap: [AppComponent],
 })

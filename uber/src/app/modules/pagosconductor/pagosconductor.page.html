@@ -1,0 +1,50 @@
+<ion-content [fullscreen]="true" class="content">
+  <div class="background-gradient"></div>
+
+  <div class="center-container">
+    <ion-card class="profile-card">
+
+      <ion-item class="custom-item">
+
+        <ion-button fill="clear" expand="full" color="success" class="back-button" (click)="goBack()">
+          <ion-icon name="arrow-back"></ion-icon>
+        </ion-button>
+
+      </ion-item>
+      <ion-card-header>
+
+        <ion-list *ngIf="climaData" class="clima-container">
+          <ion-item class="clima-item">
+            <img slot="start" src="{{ climaData.current.condition.icon }}" alt="Clima Icon" class="clima-icon">
+            <ion-label slot="end" color="primary">{{ climaData.current.temp_c }}°C</ion-label>
+          </ion-item>
+        </ion-list>
+
+      </ion-card-header>
+
+      <ion-card-content>     
+        <div class="historial-container">
+          <ion-list *ngIf="historialCliente.length > 0">
+            <ion-item *ngFor="let historial of historialCliente">
+              <ion-label>
+                <h2>{{ historial.tipotransaccion }}</h2>
+                <p>Monto: {{ historial.saldoagregado | currency:'CLP':'symbol' }}</p>
+                <p>Fecha: {{ historial.fechahora }}</p>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+          <ion-list *ngIf="historialCliente.length === 0">
+            <ion-item>
+              <ion-label>
+                <h2>No hay historial disponible</h2>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+        </div>
+        
+
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
+  

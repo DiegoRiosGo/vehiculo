@@ -313,6 +313,11 @@ export class PerfilconductorPage implements OnInit {
     this.router.navigate(['/historialconductor', usuarioid]);
   }
 
+  async saldoconductor() {
+
+    this.router.navigate(['/pagosconductor', this.usuarioid]);
+  }
+
   // actualizar pagina cuando se actualizan los botones
   // arreglar el aviso de debe registrar primero el vehiculo en el botón inicio viaje
   // arreglar funcion actualizar botones funciona al inicio y al borrar vehiculo, 
