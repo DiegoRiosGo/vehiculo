@@ -1,0 +1,52 @@
+<ion-content [fullscreen]="true" class="admin-content">
+  <div class="background-gradient">
+    <div class="center-container">  
+      <ion-card class="login-card">
+
+        <ion-item class="custom-item">
+
+        </ion-item>
+
+        <ion-card-content class="welcome-message">
+            <h1>Administrar Saldos</h1>
+        </ion-card-content>
+      
+        <div class="historial-container">
+          <ion-card-content>
+            <ion-list>
+              <ion-item *ngFor="let usuario of usuariosclientes">
+                <ion-label>
+                  <h1>saldos de clientes</h1>
+                  <h2>{{ usuario.nombre }} {{ usuario.apellido }}</h2>
+                  <p>Saldo: {{ usuario.saldo | currency }}</p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>  
+  
+          <ion-card-content>
+            <ion-list>
+              <ion-item *ngFor="let usuarioconductor of usuariosconductores">
+
+                <ion-label>
+                  <h1>sueldos de conductores</h1>
+                  <h2>{{ usuarioconductor.nombre }} {{ usuarioconductor.apellido }}</h2>
+                  <p>Sueldo a pagar: {{ usuarioconductor.saldo | currency }}</p>
+                  <ion-button (click)="pagarSueldo(usuarioconductor.usuarioid, usuarioconductor.saldo)">
+                    Pagar Sueldo
+                  </ion-button>
+                </ion-label>
+               
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
+
+        </div>
+        
+
+      </ion-card>
+    </div>
+  </div>
+
+
+</ion-content>

@@ -190,6 +190,48 @@ export class DbserviciosService {
     }
   }
 
+  async obtenerHistorialClientePorsaldoscliente(): Promise<any[]> {
+    try {
+      const result = await this.crearDB().then((db: SQLiteObject) => {
+        return db.executeSql('SELECT usuario.usuarioid, usuario.nombre, usuario.apellido, usuario.rolid, SUM(historialcliente.saldoagregado) AS saldo FROM usuario JOIN historialcliente ON usuario.usuarioid = historialcliente.usuarioid WHERE usuario.rolid = 2 GROUP BY usuario.usuarioid, usuario.nombre, usuario.apellido ', []);
+      });
+  
+      if (result.rows.length > 0) {
+        const historialsaldo = [];
+        for (let i = 0; i < result.rows.length; i++) {
+          historialsaldo.push(result.rows.item(i));
+        }
+        return historialsaldo;
+      }
+  
+      return [];
+    } catch (error) {
+      console.error('Error al obtener historial de saldos del cliente:', error);
+      throw error;
+    }
+  }
+
+  async obtenerHistorialClientePorsaldosconductor(): Promise<any[]> {
+    try {
+      const result = await this.crearDB().then((db: SQLiteObject) => {
+        return db.executeSql('SELECT usuario.usuarioid, usuario.nombre, usuario.apellido, usuario.rolid, SUM(historialcliente.saldoagregado) AS saldo FROM usuario JOIN historialcliente ON usuario.usuarioid = historialcliente.usuarioid WHERE usuario.rolid = 3 GROUP BY usuario.usuarioid, usuario.nombre, usuario.apellido ', []);
+      });
+  
+      if (result.rows.length > 0) {
+        const historialsaldo = [];
+        for (let i = 0; i < result.rows.length; i++) {
+          historialsaldo.push(result.rows.item(i));
+        }
+        return historialsaldo;
+      }
+  
+      return [];
+    } catch (error) {
+      console.error('Error al obtener historial de saldos del cliente:', error);
+      throw error;
+    }
+  }
+  
 // Obtener todos los historiales clientes
   async obtenerHistorialesClientes(): Promise<any[]> {
     try {

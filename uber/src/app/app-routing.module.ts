@@ -79,7 +79,11 @@ const routes: Routes = [
   {
     path: 'historialcliente/:usuarioid',
     loadChildren: () => import('./modules/historialcliente/historialcliente.module').then( m => m.HistorialclientePageModule)
+  },  {
+    path: 'adminsaldos',
+    loadChildren: () => import('./modules/adminsaldos/adminsaldos.module').then( m => m.AdminsaldosPageModule)
   },
+
  
 
 

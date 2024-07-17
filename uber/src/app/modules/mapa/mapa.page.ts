@@ -31,11 +31,14 @@ export class MapaPage implements OnInit {
 
   viajedisponible: boolean = false;
 
+  saldoActual: number = 0;
+
   constructor(private router: Router, public alertController: AlertController, private arouter: ActivatedRoute, private db: DbserviciosService) { }
 
   ionViewWillEnter() {
     this.createmap().then(() => {
     });
+    this.obtenerSaldo();
   }
 
   ngOnInit() {
@@ -114,14 +117,16 @@ export class MapaPage implements OnInit {
     }
   }
 
-  volverAlViaje(){
-    this.db.obtenerUltimoIdViaje().then((viajeId: any) => {
-      console.log('Viaje creado exitosamente. Id del viaje:', viajeId);
-      // Puedes realizar otras acciones después de crear el viaje, si es necesario
-      this.router.navigate(['/detalleconductor', viajeId]); // Aquí pasamos el ID del viaje a la página de detalleconductor
+
+  obtenerSaldo() {
+    this.db.obtenerSaldoActual(this.usuarioid).then(saldo => {
+      this.saldoActual = saldo;
+    }).catch(error => {
+      console.error('Error al obtener el saldo:', error);
     });
   }
-  //mostrar conductores
+
+
   async obtenerviajes() {
     try {
       
@@ -157,7 +162,17 @@ export class MapaPage implements OnInit {
               }
   
               viajeId = parseInt(viajeId, 10);
-  
+              
+              // Obtener el valor del viaje seleccionado
+            const viajeSeleccionado = viajes.find(viaje => viaje.idviaje === viajeId);
+            const valorViaje = viajeSeleccionado.valorViaje;
+
+              if (this.saldoActual < valorViaje) {
+                this.mostrarAlerta('Error', 'No tienes suficiente saldo para solicitar este viaje.');
+                return;
+              }
+
+
               await this.agregarPasajeroAlViaje(viajeId);
   
               this.mostrarAlerta('Éxito', 'Viaje agregado correctamente');
@@ -176,6 +191,24 @@ export class MapaPage implements OnInit {
       // Maneja el error según tus necesidades
     }
   }
+
+
+
+
+
+
+
+
+
+  volverAlViaje(){
+    this.db.obtenerUltimoIdViaje().then((viajeId: any) => {
+      console.log('Viaje creado exitosamente. Id del viaje:', viajeId);
+      // Puedes realizar otras acciones después de crear el viaje, si es necesario
+      this.router.navigate(['/detalleconductor', viajeId]); // Aquí pasamos el ID del viaje a la página de detalleconductor
+    });
+  }
+  //mostrar conductores
+  
 
   async agregarPasajeroAlViaje(viajeId: number) {
     try {
